@@ -28,12 +28,15 @@ const calculateCurrentValues = (metricIdx: number, metricKeys: readonly string[]
     const previousNumericValue = Number(previousBrandValue) || 0;
 
     let formattedValue: string;
+    const isRevenue = currentMetricKey === 'revenue';
+    const prefix = isRevenue ? '$' : '';
+    
     if (numericValue >= 1000000) {
-      formattedValue = `${(numericValue / 1000000).toFixed(1)}M`;
+      formattedValue = `${prefix}${(numericValue / 1000000).toFixed(1)}M`;
     } else if (numericValue >= 1000) {
-      formattedValue = `${(numericValue / 1000).toFixed(1)}K`;
+      formattedValue = `${prefix}${(numericValue / 1000).toFixed(1)}K`;
     } else {
-      formattedValue = `${numericValue}`;
+      formattedValue = `${prefix}${numericValue}`;
     }
 
     const sharePercentage = totalValue > 0 ? (numericValue / totalValue) * 100 : 0;
@@ -67,10 +70,11 @@ const brandColorMap = rawData.reduce((acc, brand, index) => {
 
 const parseNumber = (val: string) => {
   if (typeof val !== 'string') return Number(val) || 0;
-  if (val.includes('M')) return parseFloat(val) * 1000000;
-  if (val.includes('K')) return parseFloat(val) * 1000;
-  if (val.includes('%')) return parseFloat(val);
-  return parseFloat(val) || 0;
+  const cleanVal = val.replace('$', '');
+  if (cleanVal.includes('M')) return parseFloat(cleanVal) * 1000000;
+  if (cleanVal.includes('K')) return parseFloat(cleanVal) * 1000;
+  if (cleanVal.includes('%')) return parseFloat(cleanVal);
+  return parseFloat(cleanVal) || 0;
 };
 
 const generateSparkline = (brandName: string, metricIdx: number, chartDataSource: any, metricKeys: readonly string[]) => {

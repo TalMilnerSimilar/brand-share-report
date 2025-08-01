@@ -14,7 +14,7 @@ export const competitorBrands = ['Adidas', 'New Balance', 'Hoka', 'Asics'];
 export const rawData: RowData[] = [
   {
     brand: 'Nike',
-    totalRevenue: '7.5K',
+    totalRevenue: '$7.5K',
     unitsSold: '25K',
     productViews: '120K',
     share: '75.5%',
@@ -24,7 +24,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Adidas',
-    totalRevenue: '2.5K',
+    totalRevenue: '$2.5K',
     unitsSold: '8K',
     productViews: '45K',
     share: '24.8%',
@@ -34,7 +34,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'New Balance',
-    totalRevenue: '0.8K',
+    totalRevenue: '$0.8K',
     unitsSold: '3K',
     productViews: '18K',
     share: '8.3%',
@@ -44,7 +44,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Hoka',
-    totalRevenue: '0.4K',
+    totalRevenue: '$0.4K',
     unitsSold: '1.5K',
     productViews: '10K',
     share: '3.5%',
@@ -54,7 +54,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Asics',
-    totalRevenue: '0.1K',
+    totalRevenue: '$0.1K',
     unitsSold: '0.3K',
     productViews: '2K',
     share: '1.2%',
@@ -64,7 +64,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Brooks',
-    totalRevenue: '0.06K',
+    totalRevenue: '$0.06K',
     unitsSold: '0.15K',
     productViews: '1K',
     share: '0.6%',
@@ -74,7 +74,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Saucony',
-    totalRevenue: '0.05K',
+    totalRevenue: '$0.05K',
     unitsSold: '0.12K',
     productViews: '0.8K',
     share: '0.5%',
@@ -84,7 +84,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Under Armour',
-    totalRevenue: '0.03K',
+    totalRevenue: '$0.03K',
     unitsSold: '0.08K',
     productViews: '0.5K',
     share: '0.3%',
@@ -94,7 +94,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Puma',
-    totalRevenue: '0.02K',
+    totalRevenue: '$0.02K',
     unitsSold: '0.06K',
     productViews: '0.4K',
     share: '0.2%',
@@ -104,7 +104,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Reebok',
-    totalRevenue: '0.04K',
+    totalRevenue: '$0.04K',
     unitsSold: '0.1K',
     productViews: '0.6K',
     share: '0.4%',
@@ -114,7 +114,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Fila',
-    totalRevenue: '0.03K',
+    totalRevenue: '$0.03K',
     unitsSold: '0.09K',
     productViews: '0.5K',
     share: '0.35%',
@@ -124,7 +124,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Mizuno',
-    totalRevenue: '0.025K',
+    totalRevenue: '$0.025K',
     unitsSold: '0.07K',
     productViews: '0.45K',
     share: '0.28%',
@@ -134,7 +134,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Skechers',
-    totalRevenue: '0.035K',
+    totalRevenue: '$0.035K',
     unitsSold: '0.11K',
     productViews: '0.7K',
     share: '0.42%',
@@ -144,7 +144,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Converse',
-    totalRevenue: '0.05K',
+    totalRevenue: '$0.05K',
     unitsSold: '0.15K',
     productViews: '0.9K',
     share: '0.6%',
@@ -154,7 +154,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Jordan',
-    totalRevenue: '0.06K',
+    totalRevenue: '$0.06K',
     unitsSold: '0.18K',
     productViews: '1.0K',
     share: '0.7%',
@@ -164,7 +164,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Vans',
-    totalRevenue: '0.045K',
+    totalRevenue: '$0.045K',
     unitsSold: '0.13K',
     productViews: '0.8K',
     share: '0.55%',
@@ -174,7 +174,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'DC Shoes',
-    totalRevenue: '0.015K',
+    totalRevenue: '$0.015K',
     unitsSold: '0.05K',
     productViews: '0.3K',
     share: '0.18%',
@@ -184,7 +184,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Columbia',
-    totalRevenue: '0.025K',
+    totalRevenue: '$0.025K',
     unitsSold: '0.07K',
     productViews: '0.4K',
     share: '0.25%',
@@ -194,7 +194,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Salomon',
-    totalRevenue: '0.03K',
+    totalRevenue: '$0.03K',
     unitsSold: '0.09K',
     productViews: '0.5K',
     share: '0.3%',
@@ -204,7 +204,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Merrell',
-    totalRevenue: '0.02K',
+    totalRevenue: '$0.02K',
     unitsSold: '0.06K',
     productViews: '0.35K',
     share: '0.22%',
@@ -214,7 +214,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Timberland',
-    totalRevenue: '0.055K',
+    totalRevenue: '$0.055K',
     unitsSold: '0.16K',
     productViews: '0.95K',
     share: '0.65%',
@@ -224,7 +224,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'La Sportiva',
-    totalRevenue: '0.012K',
+    totalRevenue: '$0.012K',
     unitsSold: '0.04K',
     productViews: '0.25K',
     share: '0.15%',
@@ -234,7 +234,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'The North Face',
-    totalRevenue: '0.05K',
+    totalRevenue: '$0.05K',
     unitsSold: '0.14K',
     productViews: '0.85K',
     share: '0.58%',
@@ -244,7 +244,7 @@ export const rawData: RowData[] = [
   },
   {
     brand: 'Anta',
-    totalRevenue: '0.02K',
+    totalRevenue: '$0.02K',
     unitsSold: '0.07K',
     productViews: '0.45K',
     share: '0.27%',
