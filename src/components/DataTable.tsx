@@ -4,50 +4,48 @@ import ViewSwitcher from './ViewSwitcher';
 import ChartView from './ChartView';
 import { rawData, competitorBrands, RowData } from '../data/brandData';
 import { chartData } from '../data/chartData';
-
-const metricKeys = ['productViews', 'unitsSold', 'totalRevenue'] as const;
-const metricLabels = ['Total Product Views', 'Total Units Sold', 'Total Revenue'];
+import { funnelChartData } from '../data/funnelChartData';
+import Tooltip from './Tooltip';
 
 // Function to calculate current values from chart data
-const calculateCurrentValues = (metricIdx: number) => {
-  const data = metricIdx === 0 ? chartData.productViews : metricIdx === 1 ? chartData.unitsSold : chartData.revenue;
-  const latestData = data[data.length - 1]; // Get the latest month (Dec 20)
-  const previousData = data[data.length - 2]; // Get the previous month (Nov 20)
-  
-  // Calculate total for share percentage
+const calculateCurrentValues = (metricIdx: number, metricKeys: readonly string[], chartDataSource: any) => {
+  const currentMetricKey = metricKeys[metricIdx];
+  const data = chartDataSource[currentMetricKey];
+  const latestData = data[data.length - 1];
+  const previousData = data[data.length - 2];
+
   const totalValue = Object.entries(latestData)
-    .filter(([key]) => key !== 'name') // Exclude the 'name' field
+    .filter(([key]) => key !== 'name')
     .reduce((sum, [_, val]) => {
       const numVal = Number(val);
       return sum + (isNaN(numVal) ? 0 : numVal);
     }, 0);
-  
+
   return rawData.map(brand => {
     const brandValue = latestData[brand.brand as keyof typeof latestData];
     const previousBrandValue = previousData[brand.brand as keyof typeof previousData];
     const numericValue = Number(brandValue) || 0;
     const previousNumericValue = Number(previousBrandValue) || 0;
-    
-    // Format the value based on metric type
+
     let formattedValue: string;
-    if (numericValue >= 1000) {
-      formattedValue = `${(numericValue / 1000).toFixed(1)}M`;
+    if (numericValue >= 1000000) {
+      formattedValue = `${(numericValue / 1000000).toFixed(1)}M`;
+    } else if (numericValue >= 1000) {
+      formattedValue = `${(numericValue / 1000).toFixed(1)}K`;
     } else {
-      formattedValue = `${numericValue}K`;
+      formattedValue = `${numericValue}`;
     }
-    
-    // Calculate share percentage
+
     const sharePercentage = totalValue > 0 ? (numericValue / totalValue) * 100 : 0;
     const shareFormatted = `${sharePercentage.toFixed(1)}%`;
-    
-    // Calculate change (difference from previous month)
+
     const changeValue = numericValue - previousNumericValue;
     const changeFormatted = changeValue >= 0 ? `+${changeValue.toFixed(1)}` : `${changeValue.toFixed(1)}`;
     const isPositive = changeValue >= 0;
-    
+
     return {
       ...brand,
-      [metricKeys[metricIdx]]: formattedValue,
+      [currentMetricKey]: formattedValue,
       share: shareFormatted,
       change: changeFormatted,
       isPositive,
@@ -55,19 +53,11 @@ const calculateCurrentValues = (metricIdx: number) => {
   });
 };
 
-type MetricKey = typeof metricKeys[number];
-
+type MetricKey = 'productViews' | 'unitsSold' | 'totalRevenue' | 'brandedSearchVolume' | 'searchVisibility' | 'shareOfPaidClicks' | 'shareOfTotalClicks';
 type SortKey = MetricKey | 'share' | 'brand' | 'change';
 
 const brandColors = [
-  '#3E74FE', // blue
-  '#FF7A1A', // orange
-  '#00CA9A', // green
-  '#FFB800', // yellow
-  '#A020F0', // purple
-  '#FF69B4', // pink
-  '#008080', // teal
-  '#DC143C', // crimson
+  '#3E74FE', '#FF7A1A', '#00CA9A', '#FFB800', '#A020F0', '#FF69B4', '#008080', '#DC143C',
 ];
 
 const brandColorMap = rawData.reduce((acc, brand, index) => {
@@ -76,43 +66,82 @@ const brandColorMap = rawData.reduce((acc, brand, index) => {
 }, {} as Record<string, string>);
 
 const parseNumber = (val: string) => {
+  if (typeof val !== 'string') return Number(val) || 0;
+  if (val.includes('M')) return parseFloat(val) * 1000000;
   if (val.includes('K')) return parseFloat(val) * 1000;
   if (val.includes('%')) return parseFloat(val);
-  return parseFloat(val);
+  return parseFloat(val) || 0;
 };
 
-const generateSparkline = (brandName: string, metricIdx: number) => {
-  const data = metricIdx === 0 ? chartData.productViews : metricIdx === 1 ? chartData.unitsSold : chartData.revenue;
-  const values = data.map(d => Number(d[brandName as keyof typeof d])).filter(val => !isNaN(val));
+const generateSparkline = (brandName: string, metricIdx: number, chartDataSource: any, metricKeys: readonly string[]) => {
+  const currentMetricKey = metricKeys[metricIdx];
+  const data = chartDataSource[currentMetricKey];
+  const values = data.map((d: any) => Number(d[brandName as keyof typeof d])).filter((val: number) => !isNaN(val));
   const max = Math.max(...values);
   const min = Math.min(...values);
 
-  const points = values.map((val, i) => {
+  const points = values.map((val: number, i: number) => {
     const x = i * (100 / (values.length - 1));
-    const y = 15 - (11 * (val - min) / (max - min));
+    const y = 15 - (11 * ((val - min) / (max - min || 1)));
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(' ');
 
   return points;
 };
 
-const DataTable: React.FC = () => {
+interface DataTableProps {
+  activeAnalysisTab: string;
+  onAnalyzeBrand: (brandName: string, metrics: string[]) => void;
+}
+
+const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand }) => {
+  const isFunnelAnalysis = activeAnalysisTab === 'Funnel Analysis';
+
+  const getMetricTooltip = (metric: string) => {
+    const tooltips: Record<string, string> = {
+      'Product Views': 'Track customer interest and discovery - higher views mean more potential customers finding your products',
+      'Units Sold': 'Monitor actual sales performance - higher units mean stronger market demand and revenue growth',
+      'Revenue': 'Measure financial success and market position - higher revenue means better profitability and competitive strength',
+      'Branded Search Volume': 'Gauge brand awareness and customer intent - higher volume means stronger brand recognition and customer loyalty',
+      'Search Visibility': 'Assess organic reach and discoverability - higher visibility means more free traffic and reduced ad costs',
+      'Share of Paid Clicks': 'Evaluate ad effectiveness and market capture - higher share means better ROI on advertising spend',
+      'Share of Total Clicks': 'Measure overall search dominance - higher share means you\'re winning both organic and paid search battles'
+    };
+    return tooltips[metric] || 'Metric information';
+  };
+
   const [isTableView, setIsTableView] = useState(true);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [selectedBrands, setSelectedBrands] = useState<Set<string>>(new Set(['Nike', ...competitorBrands]));
 
-  /* ------------------- metric & sort state ------------------- */
   const [metricIdx, setMetricIdx] = useState(0);
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
 
-  /* ------------------- pagination state ---------------------- */
+  const { metricKeys, metricLabels, chartData: currentChartData } = useMemo(() => {
+    if (isFunnelAnalysis) {
+      return {
+        metricKeys: ['brandedSearchVolume', 'searchVisibility', 'shareOfPaidClicks', 'shareOfTotalClicks'] as const,
+        metricLabels: ['Branded Search Volume', 'Search Visibility', 'Share of Paid Clicks', 'Share of Total Clicks'],
+        chartData: funnelChartData,
+      };
+    }
+    return {
+      metricKeys: ['productViews', 'unitsSold', 'revenue'] as const,
+      metricLabels: ['Product Views', 'Units Sold', 'Revenue'],
+      chartData: chartData,
+    };
+  }, [isFunnelAnalysis]);
+
+  useEffect(() => {
+    setMetricIdx(0);
+  }, [activeAnalysisTab]);
+
   const rowsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInput, setPageInput] = useState('1');
 
-  /* ------------------- derived / memo data ------------------- */
-  const dynamicData = useMemo(() => calculateCurrentValues(metricIdx), [metricIdx]);
+  const dynamicData = useMemo(() => calculateCurrentValues(metricIdx, metricKeys, currentChartData), [metricIdx, metricKeys, currentChartData]);
   
   const sortedData: RowData[] = useMemo(() => {
     const myBrand = dynamicData.find((r) => r.brand === 'Nike');
@@ -136,7 +165,6 @@ const DataTable: React.FC = () => {
 
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
 
-  // ensure currentPage in range
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [totalPages, currentPage]);
@@ -150,7 +178,7 @@ const DataTable: React.FC = () => {
     return sortedData.slice(start, start + rowsPerPage);
   }, [sortedData, currentPage]);
 
-  const sparkPointsArr = useMemo(() => sortedData.map(row => generateSparkline(row.brand, metricIdx)), [sortedData, metricIdx]);
+  const sparkPointsArr = useMemo(() => sortedData.map(row => generateSparkline(row.brand, metricIdx, currentChartData, metricKeys)), [sortedData, metricIdx, currentChartData, metricKeys]);
 
   const handleCompareClick = (brandName: string) => {
     setIsTableView(false);
@@ -162,22 +190,21 @@ const DataTable: React.FC = () => {
     if (p > totalPages) return totalPages;
     return p;
   };
-
-  /* ----------------------------- JSX ------------------------- */
+  
   return (
-    <div className="bg-white border border-gray-200 rounded-md">
-      {/* Table header bar */}
+    <div className="bg-white border border-gray-200 rounded-md" style={{ marginTop: activeAnalysisTab === 'Brand Share Overview' ? '0px' : undefined }}>
       <div className="flex items-center justify-between p-6 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-medium text-gray-900">Overtime View</h2>
-          <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
+          <Tooltip content="View your brand performance over time with detailed metrics and trends">
+            <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
+          </Tooltip>
         </div>
         <ViewSwitcher isTableView={isTableView} setIsTableView={setIsTableView} />
       </div>
 
-      {/* Metric tabs */}
       <div className="flex border-b border-gray-200 select-none">
-        {['Product View', 'Units Sold', 'Revenues'].map((label, idx) => {
+        {metricLabels.map((label, idx) => {
           const isActive = metricIdx === idx;
           return (
             <div
@@ -189,7 +216,9 @@ const DataTable: React.FC = () => {
               style={isActive ? { borderBottomColor: '#195afe', color: '#195afe' } : undefined}
             >
               <span className="text-base">{label}</span>
-              <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
+              <Tooltip content={getMetricTooltip(label)}>
+                <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
+              </Tooltip>
             </div>
           );
         })}
@@ -197,7 +226,6 @@ const DataTable: React.FC = () => {
 
       {isTableView ? (
         <>
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -209,16 +237,18 @@ const DataTable: React.FC = () => {
                       setSortAsc(sortKey === 'brand' ? !sortAsc : true);
                     }}
                   >
-                    <div className="flex items-center gap-1">
-                      <span>Brand</span>
-                      {sortKey === 'brand' && (
-                        <img
-                          src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
-                          className="w-3 h-3 text-[#4D87F7]"
-                          alt="sort"
-                        />
-                      )}
-                    </div>
+                    <Tooltip content="Click to sort by brand name">
+                      <div className="flex items-center gap-1">
+                        <span>Brand</span>
+                        {sortKey === 'brand' && (
+                          <img
+                            src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                            className="w-3 h-3 text-[#4D87F7]"
+                            alt="sort"
+                          />
+                        )}
+                      </div>
+                    </Tooltip>
                   </th>
                   <th
                     className="text-left p-4 cursor-pointer text-[#3A5166] border-r border-gray-200"
@@ -228,16 +258,18 @@ const DataTable: React.FC = () => {
                       setSortAsc(sortKey === key ? !sortAsc : true);
                     }}
                   >
-                    <div className="flex items-center gap-1">
-                      <span>{metricLabels[metricIdx]}</span>
-                      {sortKey === metricKeys[metricIdx] && (
-                        <img
-                          src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
-                          className="w-3 h-3 text-[#4D87F7]"
-                          alt="sort"
-                        />
-                      )}
-                    </div>
+                    <Tooltip content={`Click to sort by ${metricLabels[metricIdx].toLowerCase()}`}>
+                      <div className="flex items-center gap-1">
+                        <span>{metricLabels[metricIdx]}</span>
+                        {sortKey === metricKeys[metricIdx] && (
+                          <img
+                            src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                            className="w-3 h-3 text-[#4D87F7]"
+                            alt="sort"
+                          />
+                        )}
+                      </div>
+                    </Tooltip>
                   </th>
                   <th
                     className="text-left p-4 cursor-pointer text-[#3A5166]"
@@ -246,16 +278,18 @@ const DataTable: React.FC = () => {
                       setSortAsc(sortKey === 'share' ? !sortAsc : true);
                     }}
                   >
-                    <div className="flex items-center gap-1">
-                      <span>Share</span>
-                      {sortKey === 'share' && (
-                        <img
-                          src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
-                          className="w-3 h-3 text-[#4D87F7]"
-                          alt="sort"
-                        />
-                      )}
-                    </div>
+                    <Tooltip content="Click to sort by market share percentage">
+                      <div className="flex items-center gap-1">
+                        <span>Share</span>
+                        {sortKey === 'share' && (
+                          <img
+                            src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                            className="w-3 h-3 text-[#4D87F7]"
+                            alt="sort"
+                          />
+                        )}
+                      </div>
+                    </Tooltip>
                   </th>
                   <th
                     className="text-left p-4 cursor-pointer text-[#3A5166]"
@@ -264,18 +298,24 @@ const DataTable: React.FC = () => {
                       setSortAsc(sortKey === 'change' ? !sortAsc : true);
                     }}
                   >
-                    <div className="flex items-center gap-1">
-                      <span>Change</span>
-                      {sortKey === 'change' && (
-                        <img
-                          src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
-                          className="w-3 h-3 text-[#4D87F7]"
-                          alt="sort"
-                        />
-                      )}
-                    </div>
+                    <Tooltip content="Click to sort by change in performance">
+                      <div className="flex items-center gap-1">
+                        <span>Change</span>
+                        {sortKey === 'change' && (
+                          <img
+                            src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                            className="w-3 h-3 text-[#4D87F7]"
+                            alt="sort"
+                          />
+                        )}
+                      </div>
+                    </Tooltip>
                   </th>
-                  <th className="text-left p-4 border-r border-gray-200">Share over time</th>
+                                      <th className="text-left p-4 border-r border-gray-200">
+                      <Tooltip content="Visual representation of share trends over time">
+                        Share over time
+                      </Tooltip>
+                    </th>
                   <th className="text-left p-4 w-0">Actions</th>
                 </tr>
               </thead>
@@ -287,7 +327,6 @@ const DataTable: React.FC = () => {
                       onMouseEnter={() => setHoveredRow(idx)}
                       onMouseLeave={() => setHoveredRow(null)}
                     >
-                    {/* Brand */}
                     <td className="p-4 border-r border-gray-200">
                       <div className="flex items-center gap-2">
                         <span className={'text-sm text-[#195afe] cursor-pointer'}>
@@ -301,11 +340,7 @@ const DataTable: React.FC = () => {
                         )}
                       </div>
                     </td>
-
-                    {/* Metric value */}
                     <td className="p-4 text-sm text-gray-600 border-r border-gray-200">{(row as any)[metricKeys[metricIdx]]}</td>
-
-                    {/* Share with inline bar */}
                     <td className="p-4">
                       <div className="flex items-center gap-2 w-40">
                         <span className="text-sm text-gray-600 min-w-[40px]">{row.share}</span>
@@ -317,8 +352,6 @@ const DataTable: React.FC = () => {
                         </div>
                       </div>
                     </td>
-
-                    {/* Change */}
                     <td className="p-4">
                       <div
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
@@ -328,8 +361,6 @@ const DataTable: React.FC = () => {
                         {row.change}
                       </div>
                     </td>
-
-                    {/* Sparkline */}
                     <td className="p-4 border-r border-gray-200">
                       <svg width="100" height="20" viewBox="0 0 100 20" className="text-blue-600">
                         <polyline
@@ -340,18 +371,20 @@ const DataTable: React.FC = () => {
                         />
                       </svg>
                     </td>
-
-                    {/* Actions */}
                     <td className="p-4 w-0">
                       <div className="flex items-center gap-2">
-                        <Button 
-                          variant={(hoveredRow === idx && row.brand !== 'Nike') ? 'primary' : 'ghost'}
-                          disabled={row.brand === 'Nike'}
-                          onClick={() => handleCompareClick(row.brand)}
-                        >
-                          Compare
-                        </Button>
-                        <Button>Analyze</Button>
+                        <Tooltip content={row.brand === 'Nike' ? 'Cannot compare your brand to itself' : 'Switch to graph view and compare this brand with Nike'}>
+                          <Button 
+                            variant={(hoveredRow === idx && row.brand !== 'Nike') ? 'primary' : 'ghost'}
+                            disabled={row.brand === 'Nike'}
+                            onClick={() => handleCompareClick(row.brand)}
+                          >
+                            Compare
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Get detailed insights and trend analysis for this brand across all metrics">
+                          <Button onClick={() => onAnalyzeBrand(row.brand, metricLabels)}>Analyze</Button>
+                        </Tooltip>
                       </div>
                     </td>
                   </tr>
@@ -360,9 +393,7 @@ const DataTable: React.FC = () => {
             </table>
           </div>
 
-          {/* Pagination */}
           <div className="flex items-center justify-end gap-4 p-4 border-t border-gray-200 select-none">
-            {/* First / Prev */}
             <div className="flex items-center gap-2">
               <button
                 className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
@@ -383,7 +414,6 @@ const DataTable: React.FC = () => {
               </button>
             </div>
 
-            {/* Page input */}
             <div className="flex items-center gap-2 text-xs text-gray-600">
               <input
                 type="text"
@@ -401,7 +431,6 @@ const DataTable: React.FC = () => {
               <span>{totalPages}</span>
             </div>
 
-            {/* Next / Last */}
             <div className="flex items-center gap-2">
               <button
                 className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
@@ -430,6 +459,8 @@ const DataTable: React.FC = () => {
           onBrandSelectionChange={setSelectedBrands}
           brandColorMap={brandColorMap}
           metricIdx={metricIdx}
+          chartData={currentChartData}
+          metricKeys={metricKeys}
         />
       )}
     </div>

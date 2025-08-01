@@ -1,48 +1,24 @@
-/* Tabs styling based on Figma spec */
-
-.tabs-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* 2 in tailwind */
-}
-
-.tabs-label {
+.analysis-tab-button {
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  color: #092540; /* Text-1 */
-}
-
-.tab-chip {
-  padding: 8px 12px; /* px-3 py-2 */
-  border-radius: 30px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
+  line-height: 20px;
+  border: none;
   cursor: pointer;
-  user-select: none;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-/* ON (selected) */
-.tab-on {
-  background-color: rgba(25, 90, 254, 0.1);
-  color: #195afe;
-}
-.tab-on:hover {
-  background-color: rgba(25, 90, 254, 0.2); /* hover darker */
-}
-.tab-on:active {
-  background-color: rgba(25, 90, 254, 0.2);
-}
-
-/* OFF */
-.tab-off {
+.analysis-tab-button:not(.active) {
   background-color: #f7f7f8;
   color: #092540;
 }
-.tab-off:hover {
-  background-color: #eaedf4;
-}
-.tab-off:active {
+
+.analysis-tab-button.active {
   background-color: rgba(25, 90, 254, 0.1);
   color: #195afe;
+}
+
+.analysis-tab-button:hover:not(.active) {
+  background-color: #e2e8f0;
 }

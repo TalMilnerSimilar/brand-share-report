@@ -8,25 +8,19 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { chartData } from '../data/chartData';
-import CustomTooltip from './CustomTooltip';
+import { brandTrendData, metricColorMap } from '../data/brandTrendData';
+import MetricTooltip from './MetricTooltip';
 
-interface InteractiveLineChartProps {
-  selectedBrands: Set<string>;
-  brandColorMap: Record<string, string>;
-  metricIdx: number;
-  chartData: any;
-  metricKeys: readonly string[];
+interface BrandTrendChartProps {
+    selectedBrand: string;
+    selectedMetrics: Set<string>;
 }
 
-const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
-  selectedBrands,
-  brandColorMap,
-  metricIdx,
-  chartData,
-  metricKeys,
+const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
+  selectedBrand,
+  selectedMetrics,
 }) => {
-  const data = chartData[metricKeys[metricIdx]];
+  const data = brandTrendData[selectedBrand] || [];
 
   return (
     <div className="flex-1 bg-white p-4 rounded-lg h-[400px]">
@@ -43,15 +37,16 @@ const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
-          <Tooltip content={<CustomTooltip brandColorMap={brandColorMap} />} />
-          {Array.from(selectedBrands).map((brand) => (
+          <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
+          {Array.from(selectedMetrics).map((metric) => (
             <Line
-              key={brand}
+              key={metric}
               type="monotone"
-              dataKey={brand}
-              stroke={brandColorMap[brand]}
+              dataKey={metric}
+              stroke={metricColorMap[metric]}
               strokeWidth={2}
               activeDot={{ r: 8 }}
+              yAxisId={0}
             />
           ))}
         </LineChart>
@@ -60,4 +55,4 @@ const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
   );
 };
 
-export default InteractiveLineChart;
+export default BrandTrendChart;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Tooltip from './Tooltip';
 
 interface BrandLegendListboxProps {
   brands: string[];
@@ -34,6 +35,17 @@ const BrandLegendListbox: React.FC<BrandLegendListboxProps> = ({
     onBrandSelectionChange(new Set(topCompetitors));
   };
 
+  // Check if only Nike and competitors are selected
+  const isOnlyTopCompetitorsSelected = () => {
+    const topCompetitors = new Set(['Nike', 'Adidas', 'New Balance', 'Hoka', 'Asics']);
+    if (selectedBrands.size !== 5) return false;
+    
+    for (const brand of Array.from(selectedBrands)) {
+      if (!topCompetitors.has(brand)) return false;
+    }
+    return true;
+  };
+
   const legendItems = brands.map((brand) => ({
     name: brand,
     color: brandColorMap[brand] || '#000000', // Default to black if no color found
@@ -46,7 +58,7 @@ const BrandLegendListbox: React.FC<BrandLegendListboxProps> = ({
 
   return (
     <div className="flex flex-col bg-white p-4 rounded-lg border border-border-gray w-64 h-[400px]">
-      <div className="flex-grow overflow-y-auto space-y-2">
+      <div className="flex-grow overflow-y-auto space-y-2 mb-4" style={{ marginBottom: '0px' }}>
         {/* My Brand */}
         {myBrand.map((item, index) => (
           <div key={index} className="flex items-center gap-2 text-sm">
@@ -104,13 +116,16 @@ const BrandLegendListbox: React.FC<BrandLegendListboxProps> = ({
           </div>
         ))}
       </div>
-      <div className="mt-4 pt-2 border-t border-border-gray flex justify-between items-center text-xs">
-        <button
-          className="text-primary-blue font-bold"
-          onClick={handleSelectTopCompetitors}
-        >
-          Select Top Competitors
-        </button>
+      <div className="pt-2 border-t border-border-gray flex justify-between items-center text-xs -mx-4 -mb-4 px-4 pb-4" style={{ paddingBottom: '8px' }}>
+        <Tooltip content="Quickly select Nike and top competitors for comparison">
+          <button
+            className={`font-bold ${isOnlyTopCompetitorsSelected() ? 'text-gray-400 cursor-not-allowed' : 'text-primary-blue'}`}
+            onClick={handleSelectTopCompetitors}
+            disabled={isOnlyTopCompetitorsSelected()}
+          >
+            Select Top Competitors
+          </button>
+        </Tooltip>
         <span className="text-text-secondary">{selectedBrands.size}/{maxSelections}</span>
       </div>
     </div>

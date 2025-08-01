@@ -1,38 +1,43 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './AnalysisTabs.css';
+import Tooltip from './Tooltip';
 
-const TAB_LABELS = [
-  'Brand Share Overview',
-  'Funnel Analysis',
-  'Brand Trend Analysis',
-];
+interface AnalysisTabsProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
 
-const AnalysisTabs: React.FC = () => {
-  const [activeIdx, setActiveIdx] = useState(0);
+const TABS = ['Brand Share Overview', 'Funnel Analysis', 'Brand Trend Analysis'];
 
+const AnalysisTabs: React.FC<AnalysisTabsProps> = ({ activeTab, setActiveTab }) => {
   return (
-    <div className="tabs-wrapper">
-      <span className="tabs-label">Analysis View:</span>
-      {TAB_LABELS.map((label, idx) => {
-        const isActive = idx === activeIdx;
-        const baseClass = isActive ? 'tab-chip tab-on' : 'tab-chip tab-off';
-        return (
-          <div
-            key={label}
-            className={baseClass}
-            onClick={() => setActiveIdx(idx)}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') setActiveIdx(idx);
-            }}
-          >
-            {label}
-          </div>
-        );
-      })}
+    <div className="flex items-center gap-2">
+      <span className="text-sm font-medium text-[#092540]">Analysis View:</span>
+      <div className="flex gap-1">
+        {TABS.map(tab => {
+          const getTabTooltip = (tabName: string) => {
+            const tooltips: Record<string, string> = {
+              'Brand Share Overview': 'View overall brand performance and market share',
+              'Funnel Analysis': 'Analyze customer journey and conversion metrics',
+              'Brand Trend Analysis': 'Track brand performance trends over time'
+            };
+            return tooltips[tabName] || 'Analysis view';
+          };
+
+          return (
+            <Tooltip key={tab} content={getTabTooltip(tab)}>
+              <button
+                onClick={() => setActiveTab(tab)}
+                className={`analysis-tab-button ${activeTab === tab ? 'active' : ''}`}
+              >
+                {tab}
+              </button>
+            </Tooltip>
+          );
+        })}
+      </div>
     </div>
   );
 };
 
-export default AnalysisTabs; 
+export default AnalysisTabs;

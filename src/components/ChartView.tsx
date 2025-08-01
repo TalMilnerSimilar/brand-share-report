@@ -9,6 +9,8 @@ interface ChartViewProps {
   onBrandSelectionChange: (selected: Set<string>) => void;
   brandColorMap: Record<string, string>;
   metricIdx: number;
+  chartData: any;
+  metricKeys: readonly string[];
 }
 
 const ChartView: React.FC<ChartViewProps> = ({
@@ -17,6 +19,8 @@ const ChartView: React.FC<ChartViewProps> = ({
   onBrandSelectionChange,
   brandColorMap,
   metricIdx,
+  chartData,
+  metricKeys,
 }) => {
   return (
     <div className="flex gap-4 p-6">
@@ -24,6 +28,8 @@ const ChartView: React.FC<ChartViewProps> = ({
         selectedBrands={selectedBrands}
         brandColorMap={brandColorMap}
         metricIdx={metricIdx}
+        chartData={chartData}
+        metricKeys={metricKeys}
       />
       <BrandLegendListbox
         brands={brands}

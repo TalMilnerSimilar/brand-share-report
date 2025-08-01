@@ -1,5 +1,6 @@
 import React from 'react';
 import './HeroTile.css';
+import Tooltip from './Tooltip';
 
 interface HeroTileProps {
   reportRange: string;
@@ -94,9 +95,11 @@ const HeroTile: React.FC<HeroTileProps> = ({ reportRange }) => {
             </div>
           </div>
           <div className="edit-button-container">
-            <button className="edit-button">
-              Edit List
-            </button>
+            <Tooltip content="Customize which competitors to compare against">
+              <button className="edit-button">
+                Edit List
+              </button>
+            </Tooltip>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './BrandHeader.css';
 
 interface BrandHeaderProps {
@@ -10,6 +10,8 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
   const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false);
   const [isCompareDropdownOpen, setIsCompareDropdownOpen] = useState(false);
   const [selectedCompareTo, setSelectedCompareTo] = useState('Year over Year');
+  const dateDropdownRef = useRef<HTMLDivElement>(null);
+  const compareDropdownRef = useRef<HTMLDivElement>(null);
 
   const dateRangeOptions = [
     'Dec 2024 - Dec 2024',
@@ -37,6 +39,22 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
     setIsCompareDropdownOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dateDropdownRef.current && !dateDropdownRef.current.contains(event.target as Node)) {
+        setIsDateDropdownOpen(false);
+      }
+      if (compareDropdownRef.current && !compareDropdownRef.current.contains(event.target as Node)) {
+        setIsCompareDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="shi-header">
       <div className="header-container">
@@ -52,7 +70,7 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
           <div className="filters-container">
             <div className="filter-group">
               <span className="filter-label">For</span>
-              <div className="dropdown-container">
+              <div className="dropdown-container" ref={dateDropdownRef}>
                 <div 
                   className="dropdown-header"
                   onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
@@ -80,7 +98,7 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
             
             <div className="filter-group">
               <span className="filter-label">Compared to</span>
-              <div className="dropdown-container">
+              <div className="dropdown-container" ref={compareDropdownRef}>
                 <div 
                   className="dropdown-header"
                   onClick={() => setIsCompareDropdownOpen(!isCompareDropdownOpen)}
