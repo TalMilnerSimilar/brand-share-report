@@ -3,8 +3,6 @@ import Button from './Button';
 import ViewSwitcher from './ViewSwitcher';
 import ChartView from './ChartView';
 import unifiedBrands from '../data/unifiedBrands.json';
-// competitor brands (Nike + 4 comps) kept as UX constant
-const competitorBrands = ['Adidas', 'New Balance', 'Hoka', 'Asics'];
 import {
   funnelMetricKeys,
   overviewMetricKeys,
@@ -12,6 +10,9 @@ import {
   type MetricKey,
 } from '../data/unifiedBrandData';
 import Tooltip from './Tooltip';
+
+// competitor brands (Nike + 4 comps) kept as UX constant
+const competitorBrands = ['Adidas', 'New Balance', 'Hoka', 'Asics'];
 
 // Function to calculate current values from unified JSON
 const calculateCurrentValues = (metricIdx: number, metricKeys: readonly MetricKey[]) => {
