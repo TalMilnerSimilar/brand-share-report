@@ -14,12 +14,7 @@ const AnalyzeRootCauseLink: React.FC<AnalyzeRootCauseLinkProps> = ({ onNavigateT
         <div className="flex-1 h-px bg-[#e6e9ec]"></div>
         
         {/* Button */}
-        <div className="flex items-center gap-1 px-1 py-1 mx-2">
-          <div className="flex items-center gap-1">
-                      <div className="w-[18px] h-[18px] flex items-center justify-center">
-            <img src="/compare.svg" alt="Compare" className="w-[18px] h-[18px]" />
-          </div>
-          </div>
+        <div className="flex items-center px-1 py-1 mx-2">
           <Tooltip content="Jump into Funnel Analysis to identify what's driving this performance and where to act">
             <button
               onClick={onNavigateToFunnel}
