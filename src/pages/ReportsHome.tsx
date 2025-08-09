@@ -45,11 +45,11 @@ const ReportsHome: React.FC = () => {
             <div className="py-4">
               <div className="mb-2">
                 <h1 className="text-[20px] leading-[28px] font-bold text-[#092540]">
-                  Select a report to analyze
+                  Select a report to analyze or create a new one
                 </h1>
               </div>
               <p className="text-[14px] leading-4 text-[#6b7c8c]">
-                Monitor your brand performance across categories and competitors
+                Choose an existing report from the list below or click “Create a New Report” to set up brand, category, and competitors
               </p>
             </div>
             <div>
