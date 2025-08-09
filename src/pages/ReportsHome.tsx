@@ -34,9 +34,8 @@ const ReportsHome: React.FC = () => {
     <div>
       <ReportsHeader />
       <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
-        {/* Hero Section (Figma-spec) */}
+        {/* Hero Section (Figma-spec) - title moved to ReportsHeader */}
         <div className="mb-6">
-        {/* Top header row without domain dropdown - moved to ReportsHeader */}
         <div
           className="border border-gray-200 rounded-t-[6px] px-6 py-2"
           style={{
@@ -46,11 +45,6 @@ const ReportsHome: React.FC = () => {
         >
           <div className="flex items-center justify-between overflow-clip w-full">
             <div className="py-4">
-              <div className="mb-2">
-                <h1 className="text-[20px] leading-[28px] font-bold text-[#092540]">
-                  Brand Share Reports Overview
-                </h1>
-              </div>
               <p className="text-[14px] leading-4 text-[#6b7c8c]">
                 Monitor your brand performance across categories and competitors
               </p>
