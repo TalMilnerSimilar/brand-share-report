@@ -25,7 +25,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
   const selectedList = Array.from(selectedMetrics);
 
   const renderHorizontalRefs = () => [0, 20, 40, 60, 80, 100].map((v) => (
-    <ReferenceLine key={`h-${v}`} y={v} stroke="#E6E9EC" strokeWidth={1} />
+    <ReferenceLine key={`h-${v}`} yAxisId="grid" y={v} stroke="#E6E9EC" strokeWidth={1} />
   ));
 
   const renderYAxes = () => {
@@ -49,7 +49,8 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             axisLine={false}
             tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
             tickMargin={14}
-            tickCount={6}
+            domain={[0, 100]}
+            ticks={[0, 20, 40, 60, 80, 100]}
           />
           <YAxis
             yAxisId="right"
@@ -57,23 +58,15 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             axisLine={false}
             tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
             tickMargin={14}
-            tickCount={6}
+            domain={[0, 100]}
+            ticks={[0, 20, 40, 60, 80, 100]}
           />
         </>
       );
     }
-    // > 2 metrics: give each series its own hidden axis, but keep a baseline invisible axis
-    // (no ticks/labels/line) to drive horizontal grid lines
+    // > 2 metrics: give each series its own hidden axis
     return (
       <>
-        <YAxis
-          yAxisId="grid"
-          axisLine={false}
-          tickLine={false}
-          tick={false}
-          domain={[0, 100]}
-          ticks={[0, 20, 40, 60, 80, 100]}
-        />
         {selectedList.map((metric) => (
           <YAxis key={metric} yAxisId={metric} hide />
         ))}
@@ -93,6 +86,13 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             bottom: 5,
           }}
         >
+          {/* Always-on baseline axis to anchor horizontals */}
+          <YAxis
+            yAxisId="grid"
+            hide
+            domain={[0, 100]}
+            ticks={[0, 20, 40, 60, 80, 100]}
+          />
           <CartesianGrid vertical={false} horizontal={true} stroke="#E6E9EC" />
           {renderHorizontalRefs()}
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
