@@ -46,9 +46,11 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     const min = Math.min(...allValues);
     const max = Math.max(...allValues);
     
-    // Calculate 10% buffer below minimum, but never go below 0
+    // Calculate 10% buffer below minimum, then round to nearest 5pp increment
     const buffer = (max - min) * 0.1;
-    const domainMin = Math.max(0, min - buffer);
+    const rawMin = min - buffer;
+    // Round down to nearest 5pp increment, but never go below 0
+    const domainMin = Math.max(0, Math.floor(rawMin / 5) * 5);
     
     return [domainMin, max];
   };
