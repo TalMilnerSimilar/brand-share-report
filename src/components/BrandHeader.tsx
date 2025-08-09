@@ -60,40 +60,71 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
   return (
     <div className="shi-header">
       <div className="header-container">
-        {/* Left side - Brand share title + domain dropdown per Figma */}
-        <div className="header-left" style={{ gap: 16, display: 'flex', alignItems: 'center' }}>
+        {/* Left side - Brand share title */}
+        <div className="header-left">
           <div className="brand-share-title">My Brand Share</div>
-          <div className="dropdown-container" ref={domainDropdownRef} onClick={() => setIsDomainDropdownOpen(!isDomainDropdownOpen)}>
-            <div className="dropdown-header">
-              <span className="dropdown-text" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <img src="/icons/us-flag.svg" alt="US" style={{ width: 16, height: 16 }} />
-                {selectedDomain}
-              </span>
-              <div className={`dropdown-icon ${isDomainDropdownOpen ? 'rotated' : ''}`}>
-                <img src="/icons/chevron-down.svg" alt="Expand" />
-              </div>
-            </div>
-            {isDomainDropdownOpen && (
-              <div className="dropdown-menu">
-                {domainOptions.map((opt) => (
-                  <div
-                    key={opt.label}
-                    className={`dropdown-item ${opt.label === selectedDomain ? 'selected' : ''}`}
-                    onClick={() => handleDomainSelect(opt.label)}
-                  >
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                      <img src={opt.flag} alt="flag" style={{ width: 16, height: 16 }} />
-                      {opt.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
 
-        {/* Right side - Filters removed on selection screen; keep empty to align layout */}
-        <div className="header-right" />
+        {/* Right side - Filters */}
+        <div className="header-right">
+          <div className="filters-container">
+            <div className="filter-group">
+              <span className="filter-label">For</span>
+              <div className="dropdown-container" ref={dateDropdownRef}>
+                <div
+                  className="dropdown-header"
+                  onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
+                >
+                  <span className="dropdown-text">{selectedDateRange}</span>
+                  <div className={`dropdown-icon ${isDateDropdownOpen ? 'rotated' : ''}`}>
+                    <img src="/icons/chevron-down.svg" alt="Expand" />
+                  </div>
+                </div>
+                {isDateDropdownOpen && (
+                  <div className="dropdown-menu">
+                    {dateRangeOptions.map((option) => (
+                      <div
+                        key={option}
+                        className={`dropdown-item ${option === selectedDateRange ? 'selected' : ''}`}
+                        onClick={() => handleDateRangeSelect(option)}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="filter-group">
+              <span className="filter-label">Compared to</span>
+              <div className="dropdown-container" ref={compareDropdownRef}>
+                <div
+                  className="dropdown-header"
+                  onClick={() => setIsCompareDropdownOpen(!isCompareDropdownOpen)}
+                >
+                  <span className="dropdown-text">{selectedCompareTo}</span>
+                  <div className={`dropdown-icon ${isCompareDropdownOpen ? 'rotated' : ''}`}>
+                    <img src="/icons/chevron-down.svg" alt="Expand" />
+                  </div>
+                </div>
+                {isCompareDropdownOpen && (
+                  <div className="dropdown-menu">
+                    {compareToOptions.map((option) => (
+                      <div
+                        key={option}
+                        className={`dropdown-item ${option === selectedCompareTo ? 'selected' : ''}`}
+                        onClick={() => handleCompareToSelect(option)}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
