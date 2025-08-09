@@ -56,19 +56,20 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
         </>
       );
     }
-    // Visible axis bound to first metric to drive tick generation, but hide labels
-    const primaryId = metricsArray[0];
+    // Keep a dedicated visible axis for grid ticks, but make labels white (invisible)
+    const gridTickStyle = { fill: '#FFFFFF', fontSize: 11 as const, cursor: 'default' as const };
     return (
       <>
         <YAxis
-          yAxisId={primaryId}
+          yAxisId="grid"
           orientation="left"
           axisLine={false}
-          tick={false}
+          tick={gridTickStyle}
+          tickMargin={14}
           tickLine={false}
-          width={0}
         />
-        {metricsArray.slice(1).map((m) => (
+        {/* Hidden per-metric axes for independent scales */}
+        {metricsArray.map((m) => (
           <YAxis key={m} yAxisId={m} hide axisLine={false} />
         ))}
       </>
