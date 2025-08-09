@@ -50,6 +50,7 @@ const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
               dataKey={brand}
               stroke={brandColorMap[brand]}
               strokeWidth={2}
+              dot={false}
               activeDot={{ r: 8 }}
             />
           ))}

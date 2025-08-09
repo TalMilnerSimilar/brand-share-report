@@ -45,6 +45,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
               dataKey={metric}
               stroke={metricColorMap[metric]}
               strokeWidth={2}
+              dot={false}
               activeDot={{ r: 8 }}
               yAxisId={0}
             />
