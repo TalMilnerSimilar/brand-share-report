@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import BrandShareReport from './pages/BrandShareReport';
 import ReportsHome from './pages/ReportsHome';
 import ReportRouter from './pages/ReportRouter';
+const NewReportLazy = React.lazy(() => import('./pages/NewReport'));
 import NavBar from './components/NavBar';
 import BrandHeader from './components/BrandHeader';
 import './App.css';
