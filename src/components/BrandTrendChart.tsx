@@ -7,7 +7,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  ReferenceLine,
+  Customized,
 } from 'recharts';
 import { brandTrendData, metricColorMap } from '../data/brandTrendData';
 import MetricTooltip from './MetricTooltip';
@@ -90,7 +90,36 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     return metric; // bind to hidden per-metric axis; grid uses visible axis id=0
   };
 
-  // No overlay; use ReferenceLine bound to the dedicated grid axis (id=0)
+  // Overlay: always draw 5 horizontal lines equally spaced across the plotting area
+  const CustomHorizontalGridLines: React.FC<any> = ({ offset }) => {
+    if (!offset) return null;
+    const { left, top, width, height } = offset;
+    const lineCount = 5;
+    const ys = Array.from({ length: lineCount }, (_, i) => top + (height * i) / (lineCount - 1));
+    const x1 = left;
+    const x2 = left + width;
+    return (
+      <g className="recharts-cartesian-grid-horizontal" pointerEvents="none">
+        {ys.map((yVal) => (
+          <line
+            key={yVal}
+            stroke="#ccc"
+            strokeWidth={1}
+            fill="none"
+            x={left}
+            y={top}
+            width={width}
+            height={height}
+            x1={x1}
+            y1={yVal}
+            x2={x2}
+            y2={yVal}
+            shapeRendering="crispEdges"
+          />
+        ))}
+      </g>
+    );
+  };
 
   return (
     <div className="flex-1 bg-white p-4 rounded-lg h-[400px]">
@@ -104,16 +133,10 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             bottom: 5,
           }}
         >
-          {/* Use built-in vertical grid only; draw horizontal using ReferenceLine on yAxisId=0 */}
-          <CartesianGrid vertical={false} />
+          {/* Disable built-in horizontal grid to avoid duplicates; draw our own overlay lines */}
+          <CartesianGrid vertical={false} horizontal={false} />
           {renderYAxes()}
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
-          {/* Five fixed horizontal lines across domain [0,100] on the grid axis */}
-          <ReferenceLine yAxisId={0 as any} y={0} stroke="#ccc" />
-          <ReferenceLine yAxisId={0 as any} y={25} stroke="#ccc" />
-          <ReferenceLine yAxisId={0 as any} y={50} stroke="#ccc" />
-          <ReferenceLine yAxisId={0 as any} y={75} stroke="#ccc" />
-          <ReferenceLine yAxisId={0 as any} y={100} stroke="#ccc" />
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
           {metricsArray.map((metric, idx) => (
             <Line
@@ -127,6 +150,8 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
               yAxisId={getAxisIdForMetric(metric, idx)}
             />
           ))}
+          {/* Draw overlay lines last so they are definitely visible */}
+          <Customized component={<CustomHorizontalGridLines />} />
         </LineChart>
       </ResponsiveContainer>
     </div>
