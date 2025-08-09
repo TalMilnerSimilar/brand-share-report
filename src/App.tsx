@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import BrandShareReport from './pages/BrandShareReport';
+import ReportsHome from './pages/ReportsHome';
 import NavBar from './components/NavBar';
 import BrandHeader from './components/BrandHeader';
 import './App.css';
@@ -15,7 +16,8 @@ function App() {
           <BrandHeader selectedDateRange={selectedDateRange} setSelectedDateRange={setSelectedDateRange} />
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<BrandShareReport selectedDateRange={selectedDateRange} />} />
+              <Route path="/" element={<ReportsHome />} />
+              <Route path="/brand-share" element={<BrandShareReport selectedDateRange={selectedDateRange} />} />
             </Routes>
           </main>
         </div>
