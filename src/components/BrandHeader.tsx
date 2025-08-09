@@ -62,20 +62,16 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
     <div className="shi-header">
       <div className="header-container">
         {/* Left side - Back control (icon + text) per Figma */}
-        <div className="header-left" style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
             type="button"
-            className="flex items-center gap-2"
+            className="back-icon-button"
             onClick={() => navigate('/reports')}
             aria-label="Back to all reports"
           >
-            <span className="back-icon-button">
-              <span className="relative inline-block w-6 h-6">
-                <span className="absolute left-1 top-1 w-4 h-4 bg-[#092540]" />
-              </span>
-            </span>
-            <span className="text-[20px] font-medium leading-[28px] text-[#092540]">Back To All Reports</span>
+            <img src="/icons/back icon.svg" alt="Back" className="w-6 h-6" />
           </button>
+          <span className="text-[20px] font-medium leading-[28px] text-[#092540] select-none">Back To All Reports</span>
         </div>
 
         {/* Right side - Filters */}
