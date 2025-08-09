@@ -52,7 +52,10 @@ const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
     const rawMin = min - buffer;
     const domainMin = Math.max(0, Math.floor(rawMin * 2) / 2);
     
-    return [domainMin, max];
+    // Round maximum to nearest 0.5 for consistency
+    const domainMax = Math.ceil(max * 2) / 2;
+    
+    return [domainMin, domainMax];
   };
 
   const domain = calculateDomain();
