@@ -79,21 +79,22 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
           {renderYAxes()}
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
-          {selectedList.map((metric, idx) => (
-            let axisId: string | number = 'left';
-            if (selectedList.length === 2) axisId = idx === 0 ? 'left' : 'right';
-            else if (selectedList.length > 2) axisId = metric;
-            <Line
-              key={metric}
-              type="linear"
-              dataKey={metric}
-              stroke={metricColorMap[metric]}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 8 }}
-              yAxisId={axisId}
-            />
-          ))}
+          {selectedList.map((metric, idx) => {
+            const axisId: string | number =
+              selectedList.length === 2 ? (idx === 0 ? 'left' : 'right') : (selectedList.length > 2 ? metric : 'left');
+            return (
+              <Line
+                key={metric}
+                type="linear"
+                dataKey={metric}
+                stroke={metricColorMap[metric]}
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 8 }}
+                yAxisId={axisId}
+              />
+            );
+          })}
         </LineChart>
       </ResponsiveContainer>
     </div>
