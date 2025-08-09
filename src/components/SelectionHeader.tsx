@@ -7,9 +7,17 @@ const SelectionHeader: React.FC = () => {
   const domainDropdownRef = useRef<HTMLDivElement>(null);
 
   const domainOptions = [
-    { label: 'amazon.com', flag: '/icons/us-flag.svg' },
-    { label: 'walmart.com', flag: '/icons/us-flag.svg' },
-    { label: 'bestbuy.com', flag: '/icons/us-flag.svg' },
+    { label: 'amazon.com', flag: '/icons/us-flag.svg' }, // US
+    { label: 'amazon.co.uk', flag: '/icons/us-flag.svg' }, // UK (placeholder flag)
+    { label: 'amazon.de', flag: '/icons/us-flag.svg' }, // DE (placeholder flag)
+    { label: 'amazon.fr', flag: '/icons/us-flag.svg' }, // FR (placeholder flag)
+    { label: 'amazon.it', flag: '/icons/us-flag.svg' }, // IT (placeholder flag)
+    { label: 'amazon.es', flag: '/icons/us-flag.svg' }, // ES (placeholder flag)
+    { label: 'amazon.ca', flag: '/icons/us-flag.svg' }, // CA (placeholder flag)
+    { label: 'amazon.com.mx', flag: '/icons/us-flag.svg' }, // MX (placeholder flag)
+    { label: 'amazon.co.jp', flag: '/icons/us-flag.svg' }, // JP (placeholder flag)
+    { label: 'amazon.com.au', flag: '/icons/us-flag.svg' }, // AU (placeholder flag)
+    { label: 'amazon.in', flag: '/icons/us-flag.svg' }, // IN (placeholder flag)
   ];
 
   const handleDomainSelect = (value: string) => {
@@ -43,8 +51,12 @@ const SelectionHeader: React.FC = () => {
               <div className="dropdown-container" ref={domainDropdownRef}>
                 <div className="dropdown-header" onClick={() => setIsDomainDropdownOpen(!isDomainDropdownOpen)}>
                   <span className="dropdown-text" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <img src="/icons/us-flag.svg" alt="US" style={{ width: 16, height: 16 }} />
-                    {selectedDomain}
+                    <img
+                      src={(domainOptions.find(o => o.label === selectedDomain) || domainOptions[0]).flag}
+                      alt="flag"
+                      style={{ width: 16, height: 16 }}
+                    />
+                    {(domainOptions.find(o => o.label === selectedDomain) || domainOptions[0]).label}
                   </span>
                   <div className={`dropdown-icon ${isDomainDropdownOpen ? 'rotated' : ''}`}>
                     <img src="/icons/chevron-down.svg" alt="Expand" />
