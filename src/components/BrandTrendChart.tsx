@@ -31,6 +31,8 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           axisLine={false}
           tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
           tickMargin={14}
+          domain={[0, 100]}
+          ticks={[0, 20, 40, 60, 80, 100]}
         />
       );
     }
@@ -42,6 +44,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             axisLine={false}
             tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
             tickMargin={14}
+            tickCount={6}
           />
           <YAxis
             yAxisId="right"
@@ -49,6 +52,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             axisLine={false}
             tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
             tickMargin={14}
+            tickCount={6}
           />
         </>
       );
