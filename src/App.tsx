@@ -1,7 +1,7 @@
 import React, { useState, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import BrandShareReport from './pages/BrandShareReport';
-import ReportsHome from './pages/ReportsHome';
+import { ReportsHome } from './pages';
 import ReportRouter from './pages/ReportRouter';
 import NavBar from './components/NavBar';
 import BrandHeader from './components/BrandHeader';
