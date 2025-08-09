@@ -31,19 +31,92 @@ const ReportsHome: React.FC = () => {
 
   return (
     <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-[#6B39F4]">Brand Share Reports Overview</h1>
-          <p className="text-sm text-[#6b7c8c] mt-1">Select a report to analyze or create a new one.</p>
-        </div>
-        <button
-          className="px-4 py-2 text-sm font-medium rounded-[18px] transition-all duration-150 text-white bg-[#6B39F4] hover:bg-[#5A2FE3] flex items-center gap-2"
-          onClick={() => navigate('/reports/new')}
+      {/* Enhanced Hero Section */}
+      <div className="mb-8">
+        {/* Hero Container */}
+        <div 
+          className="relative overflow-hidden rounded-lg border border-gray-200"
+          style={{ 
+            background: 'linear-gradient(250deg, rgba(165, 31, 227, 0.08) 9.5%, rgba(25, 90, 254, 0.08) 26%, rgba(255, 255, 255, 0.08) 52%), #ffffff',
+            minHeight: '200px'
+          }}
         >
-          <span className="text-lg">+</span>
-          New Report
-        </button>
+          <div className="flex items-center justify-between p-8">
+            {/* Left Content */}
+            <div className="flex-1">
+              <div className="mb-6">
+                <h1 className="text-3xl font-bold text-[#092540] mb-2">
+                  Brand Share Reports Overview
+                </h1>
+                <p className="text-lg text-[#6b7c8c] mb-4">
+                  Monitor your brand performance across categories and competitors
+                </p>
+                <div className="flex items-center gap-6 text-sm text-[#6b7c8c]">
+                  <div className="flex items-center gap-2">
+                    <img src="/icons/us-flag.svg" alt="US Flag" className="w-4 h-4" />
+                    <span>amazon.com</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img src="/icons/analytics-icon.svg" alt="Analytics" className="w-4 h-4" />
+                    <span>Live Data</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span>Updated Daily</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="flex items-center gap-6">
+                <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-white border-opacity-30">
+                  <div className="text-sm text-[#6b7c8c] mb-1">Active Reports</div>
+                  <div className="text-2xl font-bold text-[#092540]">{mockReports.length}</div>
+                </div>
+                <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-white border-opacity-30">
+                  <div className="text-sm text-[#6b7c8c] mb-1">Brands Tracked</div>
+                  <div className="text-2xl font-bold text-[#092540]">{new Set(mockReports.map(r => r.brand)).size}</div>
+                </div>
+                <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-white border-opacity-30">
+                  <div className="text-sm text-[#6b7c8c] mb-1">Categories</div>
+                  <div className="text-2xl font-bold text-[#092540]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Content */}
+            <div className="flex flex-col items-end gap-4">
+              <button
+                className="px-6 py-3 text-sm font-medium rounded-[18px] transition-all duration-150 text-white bg-[#6B39F4] hover:bg-[#5A2FE3] shadow-lg hover:shadow-xl flex items-center gap-2"
+                onClick={() => navigate('/reports/new')}
+              >
+                <span className="text-lg">+</span>
+                New Report
+              </button>
+
+              {/* Decorative Elements */}
+              <div className="relative">
+                <div className="grid grid-cols-2 gap-2 opacity-30">
+                  <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
+                    <img src="/icons/images/shoe-1.png" alt="Product" className="w-8 h-8 object-contain" />
+                  </div>
+                  <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
+                    <img src="/icons/images/shoe-2.png" alt="Product" className="w-8 h-8 object-contain" />
+                  </div>
+                  <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
+                    <img src="/icons/images/shoe-3.png" alt="Product" className="w-8 h-8 object-contain" />
+                  </div>
+                  <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
+                    <img src="/icons/analytics-icon.svg" alt="Analytics" className="w-6 h-6" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom gradient line */}
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#6B39F4] via-[#195AFE] to-[#6B39F4]"></div>
+        </div>
       </div>
 
       {/* Reports Table */}
