@@ -41,6 +41,14 @@ const pickMagnitude = () => {
   return 0.15 + Math.random() * (MAX_CHANGE - 0.15);
 };
 
+type CategoryTotals = {
+  total: number; // latest category total (last month)
+  change: number; // last - first (absolute units)
+  overTime: Record<string, number>; // month → absolute total
+};
+
+export const categoryTotalsByMetric: Record<MetricKey, CategoryTotals> = {} as any;
+
 const buildUnified = (): UnifiedBrandJSON => {
   const out: UnifiedBrandJSON = {} as any;
   for (const b of brands) out[b] = {} as any;
@@ -99,6 +107,24 @@ const buildUnified = (): UnifiedBrandJSON => {
     // Assign residual to last brand to make sums match total
     const lastB = brands[brands.length - 1];
     latestValueByBrand[lastB] = Math.max(0, newTotal - assigned);
+
+    // Category totals over time and change (randomized sign/magnitude)
+    const minTotChange = 0.0001; // 0.01%
+    const maxTotChange = 0.30;   // 30%
+    const sign = Math.random() < 0.5 ? 1 : -1;
+    const r = Math.random();
+    const mag = r < 0.4 ? minTotChange + Math.random() * (0.03 - minTotChange)
+              : r < 0.8 ? 0.03 + Math.random() * (0.15 - 0.03)
+                         : 0.15 + Math.random() * (maxTotChange - 0.15);
+    const changeAbs = Math.round(newTotal * (sign * mag));
+    const firstTotal = Math.max(1, newTotal - changeAbs);
+    const totOverTime: Record<string, number> = {};
+    const Mtot = monthsOrder.length;
+    for (let t = 0; t < Mtot; t++) {
+      const frac = Mtot === 1 ? 1 : t / (Mtot - 1);
+      totOverTime[monthsOrder[t]] = Math.max(1, Math.round(firstTotal + changeAbs * frac));
+    }
+    categoryTotalsByMetric[metric] = { total: newTotal, change: changeAbs, overTime: totOverTime };
 
     const changes: Record<string, number> = {};
     const maxPos: Record<string, number> = {};

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import unifiedBrands from '../data/unifiedBrands';
+import unifiedBrands, { categoryTotalsByMetric } from '../data/unifiedBrands';
 import Tooltip from './Tooltip';
 
 const IconInfo16Px: React.FC = () => (
@@ -117,14 +117,20 @@ const KPICards: React.FC<KPICardsProps> = ({ activeAnalysisTab }) => {
       const myBlock = (unifiedBrands as any)[myBrand]?.[key] || { share: 0, change: 0 };
       const mySharePct = (myBlock.share ?? 0) * 100;
       const myChangePP = (myBlock.change ?? 0) * 100;
+      const isRevenueMetric = key === ('revenue' as MetricKey);
+      const fmt = (val: number) => {
+        const prefix = isRevenueMetric ? '$' : '';
+        if (Math.abs(val) >= 1_000_000) return `${prefix}${(val / 1_000_000).toFixed(1)}M`;
+        if (Math.abs(val) >= 1_000) return `${prefix}${(val / 1_000).toFixed(1)}K`;
+        return `${prefix}${Math.round(val)}`;
+      };
 
-      // Category total = sum of latest values across all brands
-      const latestTotalValue = brandNames.reduce((sum, b) => sum + (((unifiedBrands as any)[b]?.[key]?.value) ?? 0), 0);
-      const categoryTotal = latestTotalValue >= 1_000_000
-        ? `${(latestTotalValue / 1_000_000).toFixed(1)}M`
-        : latestTotalValue >= 1_000
-          ? `${(latestTotalValue / 1_000).toFixed(1)}K`
-          : `${latestTotalValue}`;
+      // Category total and change from generator metadata
+      const totalsMeta = (categoryTotalsByMetric as any)[key] || { total: 0, change: 0 };
+      const categoryTotal = fmt(totalsMeta.total ?? 0);
+      const catChangeVal = Number(totalsMeta.change ?? 0);
+      const categoryTotalChange = `${catChangeVal >= 0 ? '+' : ''}${fmt(catChangeVal)}`;
+      const categoryIsPositive = catChangeVal >= 0;
 
       // Comp AVG = average share among all non-myBrand brands
       const others = brandNames.filter((b) => b !== myBrand);
@@ -138,8 +144,8 @@ const KPICards: React.FC<KPICardsProps> = ({ activeAnalysisTab }) => {
         myBrandShareChange: `${myChangePP >= 0 ? '+' : ''}${myChangePP.toFixed(1)}PP`,
         isPositive: myChangePP >= 0,
         categoryTotal,
-        categoryTotalChange: '—',
-        categoryIsPositive: false,
+        categoryTotalChange,
+        categoryIsPositive,
         compAvg: `${(compAvgShare * 100).toFixed(1)}%`,
         compAvgChange: `${(compAvgChange * 100 >= 0 ? '+' : '')}${(compAvgChange * 100).toFixed(1)}PP`,
         compAvgIsPositive: compAvgChange >= 0,
