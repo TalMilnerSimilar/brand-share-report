@@ -89,13 +89,14 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     return metric; // bind to hidden per-metric axis; grid uses visible axis id=0
   };
 
-  // Calculate fixed horizontal line positions (5 lines equally spaced)
-  // Assuming chart height is ~328px based on container minus margins
+  // Calculate fixed horizontal line positions (5 lines equally spaced) - only for >2 metrics
   const chartHeight = 328;
   const lineCount = 5;
   const horizontalLinePositions = Array.from({ length: lineCount }, (_, i) => 
     (chartHeight * i) / (lineCount - 1)
   );
+
+  const shouldUseFixedLines = metricsArray.length > 2;
 
   return (
     <div className="flex-1 bg-white p-4 rounded-lg h-[400px]">
@@ -109,13 +110,17 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             bottom: 5,
           }}
         >
-          {/* Use CartesianGrid with horizontalPoints for fixed lines */}
-          <CartesianGrid 
-            vertical={false} 
-            horizontal={true}
-            horizontalPoints={horizontalLinePositions}
-            stroke="#ccc"
-          />
+          {/* Use fixed lines for >2 metrics, default grid for 1-2 metrics */}
+          {shouldUseFixedLines ? (
+            <CartesianGrid 
+              vertical={false} 
+              horizontal={true}
+              horizontalPoints={horizontalLinePositions}
+              stroke="#ccc"
+            />
+          ) : (
+            <CartesianGrid vertical={false} stroke="#ccc" />
+          )}
           {renderYAxes()}
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
