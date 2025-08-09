@@ -46,7 +46,7 @@ const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
           {Array.from(selectedBrands).map((brand) => (
             <Line
               key={brand}
-              type="monotone"
+              type="linear"
               dataKey={brand}
               stroke={brandColorMap[brand]}
               strokeWidth={2}

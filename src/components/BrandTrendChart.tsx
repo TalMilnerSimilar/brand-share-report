@@ -41,7 +41,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           {Array.from(selectedMetrics).map((metric) => (
             <Line
               key={metric}
-              type="monotone"
+              type="linear"
               dataKey={metric}
               stroke={metricColorMap[metric]}
               strokeWidth={2}
