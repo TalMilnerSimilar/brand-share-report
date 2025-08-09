@@ -7,7 +7,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  ReferenceLine,
 } from 'recharts';
 import { brandTrendData, metricColorMap } from '../data/brandTrendData';
 import MetricTooltip from './MetricTooltip';
@@ -22,56 +21,57 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
   selectedMetrics,
 }) => {
   const data = brandTrendData[selectedBrand] || [];
-  const selectedList = Array.from(selectedMetrics);
+  const metricsArray = Array.from(selectedMetrics);
 
-  const renderHorizontalRefs = () => [0, 20, 40, 60, 80, 100].map((v) => (
-    <ReferenceLine key={`h-${v}`} yAxisId="grid" y={v} stroke="#E6E9EC" strokeWidth={1} />
-  ));
+  const tickStyle = { fill: '#B6BEC6', fontSize: 11 as const, cursor: 'default' as const };
 
   const renderYAxes = () => {
-    if (selectedList.length <= 1) {
+    const count = metricsArray.length;
+    if (count === 1) {
       return (
         <YAxis
           yAxisId="left"
+          orientation="left"
           axisLine={false}
-          tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
+          tick={tickStyle}
           tickMargin={14}
-          domain={[0, 100]}
-          ticks={[0, 20, 40, 60, 80, 100]}
         />
       );
     }
-    if (selectedList.length === 2) {
+    if (count === 2) {
       return (
         <>
           <YAxis
             yAxisId="left"
+            orientation="left"
             axisLine={false}
-            tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
+            tick={tickStyle}
             tickMargin={14}
-            domain={[0, 100]}
-            ticks={[0, 20, 40, 60, 80, 100]}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
             axisLine={false}
-            tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
+            tick={tickStyle}
             tickMargin={14}
-            domain={[0, 100]}
-            ticks={[0, 20, 40, 60, 80, 100]}
           />
         </>
       );
     }
-    // > 2 metrics: give each series its own hidden axis
     return (
       <>
-        {selectedList.map((metric) => (
-          <YAxis key={metric} yAxisId={metric} hide />
+        {metricsArray.map((m) => (
+          <YAxis key={m} yAxisId={m} hide axisLine={false} />
         ))}
       </>
     );
+  };
+
+  const getAxisIdForMetric = (metric: string, index: number) => {
+    const count = metricsArray.length;
+    if (count === 1) return 'left';
+    if (count === 2) return index === 0 ? 'left' : 'right';
+    return metric;
   };
 
   return (
@@ -86,38 +86,22 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             bottom: 5,
           }}
         >
-          {/* Always-on baseline axis to anchor horizontals */}
-          <YAxis
-            yAxisId="grid"
-            hide
-            domain={[0, 100]}
-            ticks={[0, 20, 40, 60, 80, 100]}
-          />
-          <CartesianGrid vertical={false} horizontal={true} stroke="#E6E9EC" />
-          {renderHorizontalRefs()}
+          <CartesianGrid vertical={false} />
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
           {renderYAxes()}
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
-          {selectedList.map((metric, idx) => {
-            const axisId: string | number =
-              selectedList.length === 2
-                ? (idx === 0 ? 'left' : 'right')
-                : (selectedList.length > 2 ? metric : 'left');
-            const strokeOpacity = selectedList.length > 2 ? 0.9 : 1;
-            return (
-              <Line
-                key={metric}
-                type="linear"
-                dataKey={metric}
-                stroke={metricColorMap[metric]}
-                strokeWidth={2}
-                strokeOpacity={strokeOpacity}
-                dot={false}
-                activeDot={{ r: 8 }}
-                yAxisId={axisId}
-              />
-            );
-          })}
+          {metricsArray.map((metric, idx) => (
+            <Line
+              key={metric}
+              type="linear"
+              dataKey={metric}
+              stroke={metricColorMap[metric]}
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 8 }}
+              yAxisId={getAxisIdForMetric(metric, idx)}
+            />
+          ))}
         </LineChart>
       </ResponsiveContainer>
     </div>
