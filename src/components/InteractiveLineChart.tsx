@@ -8,7 +8,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { chartData } from '../data/chartData';
 import CustomTooltip from './CustomTooltip';
 
 interface InteractiveLineChartProps {

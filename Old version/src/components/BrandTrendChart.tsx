@@ -38,8 +38,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           <XAxis dataKey="name" />
           <YAxis 
             tickFormatter={(value) => {
-              // Convert values to percentages for display
-              return `${value.toFixed(1)}%`;
+              return `${Number(value).toFixed(1)}%`;
             }}
             label={{ value: 'Market Share (%)', angle: -90, position: 'insideLeft' }}
           />

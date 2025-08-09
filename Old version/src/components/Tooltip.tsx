@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface TooltipProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ const Tooltip: React.FC<TooltipProps> = ({ children, content, position = 'top', 
   const tooltipRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const updatePosition = useCallback(() => {
+  const updatePosition = () => {
     if (!triggerRef.current || !tooltipRef.current) return;
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
@@ -55,7 +55,7 @@ const Tooltip: React.FC<TooltipProps> = ({ children, content, position = 'top', 
     }
 
     setTooltipPosition({ x, y });
-  }, [position]);
+  };
 
   useEffect(() => {
     if (isVisible) {
@@ -67,7 +67,7 @@ const Tooltip: React.FC<TooltipProps> = ({ children, content, position = 'top', 
         window.removeEventListener('resize', updatePosition);
       };
     }
-  }, [isVisible, position, updatePosition]);
+  }, [isVisible, position]);
 
   // Cleanup timeout on unmount
   useEffect(() => {

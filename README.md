@@ -1,69 +1,64 @@
-# Brand Share Report
+# Brand Share Report - Dynamic Competitive Analytics Dashboard
 
-A React-based analytics dashboard for brand share reporting, built with TypeScript and Tailwind CSS. This project integrates components and design patterns from the "My Assets Page" repository to create a cohesive user experience.
+A comprehensive React-based analytics dashboard for tracking brand performance across multiple metrics with dynamic competitive insights and market share analysis.
 
 ## 🚀 Features
 
-### **Integrated Components from My Assets Page:**
-- **Navigation Sidebar** - Collapsible sidebar with pin functionality
-- **Country Dropdown** - Multi-region Amazon marketplace selector
-- **Progress Tracker** - Visual completion indicator
-- **Design System** - Consistent colors, typography, and spacing
+### **📊 Multi-Dimensional Analytics**
+- **Brand Share Overview**: Product views, units sold, and revenue analysis
+- **Funnel Analysis**: Search visibility, branded search volume, and click-through metrics
+- **Brand Trend Analysis**: Individual brand performance across all metrics over time
 
-### **Brand Share Analytics:**
-- **Brand Header** - Nike brand information with competitor comparison
-- **Analysis Tabs** - Switch between different analysis views
-- **KPI Cards** - Key performance indicators with trend indicators
-- **Chart Section** - Interactive data visualization
-- **Promotion Section** - Call-to-action for deeper analysis
+### **🎯 Strategic Narrative Engine**
+- **Nike Strategic Story**: Demonstrates paid strategy compensating for organic decline
+- **Competitive Dynamics**: Each brand shows unique performance patterns
+- **YoY Comparisons**: All metrics display year-over-year changes
+- **Market Share Constraints**: Data maintains realistic 100% total market share
 
-## 🛠 Tech Stack
+### **⚡ Advanced Data Visualization**
+- **Interactive Line Charts**: Hover tooltips with detailed breakdowns
+- **Dynamic Overtime Views**: Month-to-month competitive volatility
+- **Percentage-Based Y-Axis**: Proper market share representation
+- **Brand-Specific Trends**: Each brand has unique performance patterns
 
-- **React 18** with TypeScript
-- **Tailwind CSS** for styling
-- **DM Sans** font family
-- **Component-based architecture**
-- **Responsive design**
+### **🔧 Technical Excellence**
+- **Centralized Data Management**: Single source of truth via `masterData.ts`
+- **Consistent Calculations**: All components use the same data source
+- **Real-time Updates**: Changes propagate across all views instantly
+- **TypeScript**: Full type safety and IntelliSense support
 
-## 🎨 Design System
+## 📈 Key Insights Demonstrated
 
-### Colors (from My Assets Page):
-- Primary Blue: `#195afe`
-- Dark Navy: `#092540`
-- Light Gray: `#e6e9ec`
-- Background Gray: `#f7f7f8`
-- Text Secondary: `#6b7c8c`
+### **Nike's Strategic Performance (YoY)**
+- 📉 **Product Views**: -8.2% (losing organic discovery)
+- 📈 **Units Sold**: +12.5% (paid strategy success)
+- 📈 **Revenue**: +15.8% (higher conversion value)
+- 📉 **Search Visibility**: -12.6% (organic ranking decline)
+- 📈 **Paid Clicks**: +28.7% (heavy investment in paid search)
+- 📈 **Total Clicks**: +6.9% (net positive result)
 
-### Typography:
-- Font Family: DM Sans
-- Consistent spacing system (xs: 4px to 3xl: 64px)
-- Standardized border radius and transitions
+### **Competitive Landscape**
+- **Adidas**: Steady growth across most metrics (+4.3% YoY)
+- **New Balance**: Explosive growth trajectory (+19.2% YoY)
+- **Hoka**: Meteoric rise as emerging brand (+35.7% YoY)
+- **Others**: Varied performance with realistic market dynamics
 
-## 📁 Project Structure
+## 🛠 Technical Stack
 
-```
-src/
-├── components/
-│   ├── NavBar.tsx          # Navigation sidebar (from My Assets Page)
-│   ├── NavBar.css          # NavBar styles
-│   ├── BrandHeader.tsx     # Header with country dropdown
-│   ├── BrandHeader.css     # BrandHeader styles
-│   ├── AnalysisTabs.tsx    # Analysis view tabs
-│   ├── KPICards.tsx        # KPI metrics cards
-│   ├── ChartSection.tsx    # Data visualization
-│   └── PromotionSection.tsx # Call-to-action section
-├── pages/
-│   └── BrandShareReport.tsx # Main page component
-└── App.tsx                 # Root application component
-```
+- **Frontend**: React 18 with TypeScript
+- **Charts**: Recharts for interactive visualizations
+- **Styling**: Tailwind CSS for responsive design
+- **Data Management**: Centralized master data architecture
+- **Build Tool**: Create React App
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v16 or higher)
+- Node.js 16+ 
 - npm or yarn
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -74,70 +69,126 @@ npm install
 
 # Start development server
 npm start
-```
 
-### Build for Production
-```bash
+# Build for production
 npm run build
 ```
 
-## 🌐 Access the Application
+### Development
 
-- **Development**: http://localhost:3000
-- **Production Build**: http://localhost:3001 (served with `npx serve -s build -l 3001`)
+```bash
+# Run in development mode
+npm start
 
-## 🔧 Component Integration Details
+# Run tests
+npm test
 
-### **NavBar Component**
-- **Source**: Adapted from My Assets Page navigation
-- **Features**: 
-  - Collapsible sidebar with pin functionality
-  - Hover expansion for unpinned state
-  - Active state management
-  - Badge support (New, Beta)
+# Build production bundle
+npm run build
+```
 
-### **BrandHeader Component**
-- **Source**: Adapted from My Assets Page header
-- **Features**:
-  - Country dropdown with flag icons
-  - Progress tracker with circular indicator
-  - Brand information display
-  - Leading products section
+## 📁 Project Structure
 
-### **Design System Integration**
-- **Colors**: Exact color values from My Assets Page
-- **Typography**: DM Sans font family
-- **Spacing**: Consistent spacing scale
-- **Components**: Reusable patterns and interactions
+```
+src/
+├── components/           # React components
+│   ├── AnalysisTabs.tsx     # Tab navigation
+│   ├── BrandTrendChart.tsx  # Individual brand trends
+│   ├── CustomTooltip.tsx    # Chart hover tooltips
+│   ├── DataTable.tsx        # Main data table with charts
+│   ├── InteractiveLineChart.tsx # Multi-brand comparison
+│   ├── KPICards.tsx         # Metric summary cards
+│   └── ...
+├── data/                 # Data management
+│   ├── masterData.ts        # Centralized data source
+│   ├── brandTrendData.ts    # Brand-specific trend generation
+│   ├── chartData.ts         # Chart data transformations
+│   └── kpiCardData.ts       # KPI card data
+└── pages/
+    └── BrandShareReport.tsx # Main dashboard page
+```
 
-## 📱 Responsive Design
+## 🎨 Design System
 
-The application is fully responsive and works across:
-- Desktop (1200px+)
-- Tablet (768px - 1199px)
-- Mobile (320px - 767px)
+### **Color Palette**
+- Primary Blue: `#195afe`
+- Nike: `#3E74FE` 
+- Adidas: `#FF7A1A`
+- New Balance: `#00CA9A`
+- Hoka: `#FFB800`
+- Others: Consistent brand color mapping
 
-## 🎯 Key Features
+### **Typography**
+- Font Family: DM Sans
+- Weights: 300, 400, 500, 600, 700
+- Responsive scaling
 
-1. **Interactive Navigation** - Collapsible sidebar with smooth animations
-2. **Country Selection** - Multi-region Amazon marketplace support
-3. **Progress Tracking** - Visual completion indicators
-4. **Brand Analytics** - Comprehensive brand performance metrics
-5. **Modern UI/UX** - Clean, professional interface following design system
+## 📊 Data Architecture
 
-## 🔄 Future Enhancements
+### **Master Data System**
+All metrics flow from `masterData.ts`:
+- **Single Source of Truth**: Eliminates data inconsistencies
+- **Market Share Validation**: Ensures totals always equal 100%
+- **Brand-Specific Narratives**: Each brand has unique performance patterns
+- **Time Series Generation**: Dynamic month-to-month variations
 
-- [ ] Real data integration
-- [ ] Interactive charts with charting library
-- [ ] State management (Redux/Context)
-- [ ] Authentication system
-- [ ] API integration
-- [ ] Mobile app version
+### **Metric Coverage**
+- Product Views Share
+- Units Sold Share  
+- Revenue Share
+- Branded Search Share
+- Search Visibility Share
+- Paid Clicks Share
+- Total Clicks Share
 
-## 📄 License
+## 🧪 Key Features in Detail
 
-This project is part of the Shopper Intelligence platform by Similarweb.
+### **Dynamic Competitive Volatility**
+- Month-to-month market share changes
+- Brand-specific momentum patterns
+- Realistic competitive dynamics
+- Seasonal variation modeling
+
+### **Strategic Narrative Engine**
+- Nike: Paid strategy compensating organic decline
+- Growth brands: New Balance, Hoka meteoric rises
+- Established players: Adidas steady performance
+- Market dynamics: Realistic competitive pressure
+
+### **Consistent Data Flow**
+```
+masterData.ts → generateTimeSeriesData() → chartData.ts → Components
+                                        → funnelChartData.ts → Components
+                                        → brandTrendData.ts → Components
+                                        → kpiCardData.ts → Components
+```
+
+## 🎯 Use Cases
+
+- **Executive Dashboards**: High-level market share insights
+- **Marketing Strategy**: Understanding competitive dynamics  
+- **Performance Analysis**: Tracking YoY brand performance
+- **Competitive Intelligence**: Market share trend analysis
+- **Investment Decisions**: ROI analysis of marketing spend
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built with React and Recharts
+- Inspired by modern analytics dashboards
+- Designed for enterprise-grade market analysis
 
 ---
 
-**Built with ❤️ using React, TypeScript, and Tailwind CSS** 
+**Built with ❤️ for competitive market analysis** 

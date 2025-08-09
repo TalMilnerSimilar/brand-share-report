@@ -8,19 +8,11 @@ interface CustomTooltipProps {
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, brandColorMap }) => {
+  // Check if this is a revenue metric by looking at the payload values
+  const isRevenue = payload && payload.length > 0 && payload[0].value && payload[0].value < 10000;
   if (!active || !payload || !payload.length) {
     return null;
   }
-  
-  // For overtime charts, we want to show share percentages, not raw values
-  // Calculate total market volume from the complete data point (includes all brands, not just visible ones)
-  // The payload only contains selected brands, but we need the total market to calculate true market shares
-  const firstItem = payload[0];
-  const completeDataPoint = firstItem?.payload; // This contains data for all brands
-  const totalMarketValue = completeDataPoint ? 
-    Object.entries(completeDataPoint)
-      .filter(([key]) => key !== 'name')
-      .reduce((sum, [_, value]) => sum + Number(value || 0), 0) : 1;
 
   // Categorize brands
   const myBrand = payload.find(item => item.dataKey === 'Nike');
@@ -53,9 +45,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, b
                 <span> - {myBrand.dataKey}</span>
               </span>
             </div>
-                                        <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[41px]">
-              {totalMarketValue > 0 ? `${((myBrand.value / totalMarketValue) * 100).toFixed(1)}%` : '0.0%'}
-            </span>
+                            <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[41px]">
+                  {isRevenue ? `$${myBrand.value?.toLocaleString()}` : myBrand.value?.toLocaleString()}
+                </span>
           </div>
         </div>
       )}
@@ -75,7 +67,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, b
                   <span className="text-xs text-[#3a5166]">{item.dataKey}</span>
                 </div>
                 <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[41px]">
-                  {totalMarketValue > 0 ? `${((item.value / totalMarketValue) * 100).toFixed(1)}%` : '0.0%'}
+                  {isRevenue ? `$${item.value?.toLocaleString()}` : item.value?.toLocaleString()}
                 </span>
               </div>
             ))}
@@ -98,7 +90,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, b
                   <span className="text-xs text-[#3a5166]">{item.dataKey}</span>
                 </div>
                 <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[41px]">
-                  {totalMarketValue > 0 ? `${((item.value / totalMarketValue) * 100).toFixed(1)}%` : '0.0%'}
+                  {isRevenue ? `$${item.value?.toLocaleString()}` : item.value?.toLocaleString()}
                 </span>
               </div>
             ))}

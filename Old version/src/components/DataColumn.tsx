@@ -54,7 +54,7 @@ export const DataColumn: React.FC = () => {
                 <div className="bg-[#ffe6e6] mix-blend-multiply rounded w-full">
                   <div className="flex items-center justify-center px-2 py-0.5">
                     <span className="text-[10px] font-bold text-[#bb3f3f] font-['DM_Sans'] tracking-[0.3px] leading-[12px]">
-                      -0.1% YoY
+                      -0.1PP YoY
                     </span>
                   </div>
                 </div>

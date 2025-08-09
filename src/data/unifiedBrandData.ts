@@ -1,3 +1,8 @@
+// Centralized, brand-centric data module
+// Builds a unified structure combining all 7 metrics across time, and provides
+// helpers for latest value, share, change, and per-month series.
+
+// Canonical time-series live here (single source of truth)
 // Product Views data
 export const productViewsData = [
   { name: 'Mar 20', Nike: 22000, Adidas: 18000, 'New Balance': 14000, Hoka: 9000, Asics: 7000, Brooks: 4000, Saucony: 3000, 'Under Armour': 2000, Puma: 2000, Reebok: 1000, Fila: 1000, Mizuno: 1000, Skechers: 1000, Converse: 1000, Jordan: 1000, Vans: 1000, 'DC Shoes': 1000, Columbia: 1000, Salomon: 1000, Merrell: 1000, Timberland: 1000, 'La Sportiva': 1000, 'The North Face': 1000, Anta: 1000 },
@@ -40,8 +45,137 @@ export const revenueData = [
   { name: 'Dec 20', Nike: 3328, Adidas: 2752, 'New Balance': 2432, Hoka: 1856, Asics: 1344, Brooks: 1088, Saucony: 1024, 'Under Armour': 896, Puma: 736, Reebok: 704, Fila: 640, Mizuno: 576, Skechers: 512, Converse: 448, Jordan: 448, Vans: 448, 'DC Shoes': 448, Columbia: 448, Salomon: 448, Merrell: 448, Timberland: 448, 'La Sportiva': 448, 'The North Face': 448, Anta: 448 },
 ];
 
-export const chartData = {
+export type MetricKey =
+  | 'productViews'
+  | 'unitsSold'
+  | 'revenue'
+  | 'brandedSearchVolume'
+  | 'searchVisibility'
+  | 'shareOfPaidClicks'
+  | 'shareOfTotalClicks';
+
+export const metricLabelMap: Record<MetricKey, string> = {
+  productViews: 'Product Views',
+  unitsSold: 'Units Sold',
+  revenue: 'Revenue',
+  brandedSearchVolume: 'Branded Search Volume',
+  searchVisibility: 'Search Visibility',
+  shareOfPaidClicks: 'Share of Paid Clicks',
+  shareOfTotalClicks: 'Share of Total Clicks',
+};
+
+export const overviewMetricKeys: readonly MetricKey[] = [
+  'productViews',
+  'unitsSold',
+  'revenue',
+] as const;
+
+export const funnelMetricKeys: readonly MetricKey[] = [
+  'brandedSearchVolume',
+  'searchVisibility',
+  'shareOfPaidClicks',
+  'shareOfTotalClicks',
+] as const;
+
+// Keep a metric→time-series map that matches components expecting
+// [{ name, BrandA, BrandB, ...}] arrays per metric.
+// Funnel metrics (start from Jan 20, then generate volatile months)
+export const brandedSearchVolumeData: Array<Record<string, number | string>> = [
+  { name: 'Jan 20', Nike: 4000, Adidas: 2400, 'New Balance': 2000, Hoka: 2780, Asics: 1890, Brooks: 1200, Saucony: 800, Puma: 2390, Reebok: 3490, Vans: 2000, Converse: 2100, Skechers: 2200, Fila: 2300, 'Under Armour': 2400, 'The North Face': 2500, Columbia: 2600, Mizuno: 2700, Merrell: 2800, Timberland: 2900, 'La Sportiva': 3000, Anta: 3100, 'DC Shoes': 3200, Jordan: 3300 },
+];
+export const searchVisibilityData: Array<Record<string, number | string>> = [
+  { name: 'Jan 20', Nike: 2400, Adidas: 1398, 'New Balance': 9800, Hoka: 3908, Asics: 4800, Brooks: 2400, Saucony: 1600, Puma: 3800, Reebok: 4300, Vans: 2000, Converse: 2100, Skechers: 2200, Fila: 2300, 'Under Armour': 2400, 'The North Face': 2500, Columbia: 2600, Mizuno: 2700, Merrell: 2800, Timberland: 2900, 'La Sportiva': 3000, Anta: 3100, 'DC Shoes': 3200, Jordan: 3300 },
+];
+export const shareOfPaidClicksData: Array<Record<string, number | string>> = [
+  { name: 'Jan 20', Nike: 1400, Adidas: 4398, 'New Balance': 2800, Hoka: 1908, Asics: 2800, Brooks: 1400, Saucony: 900, Puma: 1800, Reebok: 2300, Vans: 3000, Converse: 3100, Skechers: 3200, Fila: 3300, 'Under Armour': 3400, 'The North Face': 3500, Columbia: 3600, Mizuno: 3700, Merrell: 3800, Timberland: 3900, 'La Sportiva': 4000, Anta: 4100, 'DC Shoes': 4200, Jordan: 4300 },
+];
+export const shareOfTotalClicksData: Array<Record<string, number | string>> = [
+  { name: 'Jan 20', Nike: 3400, Adidas: 2398, 'New Balance': 5800, Hoka: 2908, Asics: 3800, Brooks: 3200, Saucony: 2100, Puma: 2800, Reebok: 3300, Vans: 4000, Converse: 4100, Skechers: 4200, Fila: 4300, 'Under Armour': 4400, 'The North Face': 4500, Columbia: 4600, Mizuno: 4700, Merrell: 4800, Timberland: 4900, 'La Sportiva': 5000, Anta: 5100, 'DC Shoes': 5200, Jordan: 5300 },
+];
+
+// a function to generate more volatile data for the rest of the months
+const generateNextMonthData = (previousData: any) => {
+  const newData = { ...previousData };
+  Object.keys(newData).forEach((key) => {
+    if (key !== 'name') {
+      const value = newData[key];
+      // Much more volatile changes - between -50% and +100% of current value
+      const volatilityFactor = Math.random() * 1.5 - 0.5;
+      const change = value * volatilityFactor;
+      newData[key] = Math.max(0, Math.round(value + change));
+    }
+  });
+  return newData;
+};
+
+const monthsFunnel = ['Feb 20', 'Mar 20', 'Apr 20', 'May 20', 'Jun 20', 'Jul 20', 'Aug 20', 'Sep 20', 'Oct 20', 'Nov 20', 'Dec 20'];
+
+[brandedSearchVolumeData, searchVisibilityData, shareOfPaidClicksData, shareOfTotalClicksData].forEach(
+  (arr) => {
+    let lastMonthData = arr[0];
+    for (const month of monthsFunnel) {
+      const nextMonthData = generateNextMonthData(lastMonthData);
+      (nextMonthData as any).name = month;
+      arr.push(nextMonthData);
+      lastMonthData = nextMonthData;
+    }
+  }
+);
+
+export const timeSeriesByMetric: Record<MetricKey, Array<Record<string, number | string>>> = {
   productViews: productViewsData,
   unitsSold: unitsSoldData,
   revenue: revenueData,
+  brandedSearchVolume: brandedSearchVolumeData,
+  searchVisibility: searchVisibilityData,
+  shareOfPaidClicks: shareOfPaidClicksData,
+  shareOfTotalClicks: shareOfTotalClicksData,
 };
+
+// Derive brand list from any metric's first month
+const firstMonth = timeSeriesByMetric.productViews[0] || {};
+export const brands: string[] = Object.keys(firstMonth).filter((k) => k !== 'name');
+
+// Prefer productViews months as the canonical month labels
+export const months: string[] = timeSeriesByMetric.productViews.map((d) => String(d.name));
+
+export interface SeriesPoint {
+  name: string;
+  value: number;
+  share: number; // percentage 0..100
+}
+
+export interface BrandMetricSnapshot {
+  value: number; // latest absolute value
+  share: number; // latest share percentage 0..100
+  change: number; // delta vs previous absolute value
+}
+
+export function getBrandMetricSeries(brand: string, metric: MetricKey): SeriesPoint[] {
+  const series = timeSeriesByMetric[metric] || [];
+  return series.map((row) => {
+    // Sum across brands for this month
+    const total = brands.reduce((sum, b) => {
+      const v = Number(row[b as keyof typeof row]);
+      return sum + (isNaN(v) ? 0 : v);
+    }, 0);
+    const value = Number(row[brand as keyof typeof row]) || 0;
+    const share = total > 0 ? (value / total) * 100 : 0;
+    return { name: String(row.name), value, share };
+  });
+}
+
+export function getBrandMetricSnapshot(brand: string, metric: MetricKey): BrandMetricSnapshot {
+  const series = getBrandMetricSeries(brand, metric);
+  const n = series.length;
+  if (n === 0) return { value: 0, share: 0, change: 0 };
+  const latest = series[n - 1];
+  const prev = series[n - 2] || { value: latest.value, share: latest.share };
+  return {
+    value: latest.value,
+    share: latest.share,
+    change: latest.value - prev.value,
+  };
+}
+
+

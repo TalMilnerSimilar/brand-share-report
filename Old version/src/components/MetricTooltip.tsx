@@ -8,6 +8,8 @@ interface MetricTooltipProps {
 }
 
 const MetricTooltip: React.FC<MetricTooltipProps> = ({ active, payload, label, metricColorMap }) => {
+  // In trend charts we display market share lines, so display percentages
+  
   if (!active || !payload || !payload.length) {
     return null;
   }

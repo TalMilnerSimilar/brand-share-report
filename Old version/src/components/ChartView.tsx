@@ -1,6 +1,7 @@
 import React from 'react';
 import BrandLegendListbox from './BrandLegendListbox';
 import InteractiveLineChart from './InteractiveLineChart';
+import { chartData } from '../data/chartData';
 
 interface ChartViewProps {
   brands: string[];

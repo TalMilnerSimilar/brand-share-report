@@ -2,62 +2,69 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Button from './Button';
 import ViewSwitcher from './ViewSwitcher';
 import ChartView from './ChartView';
-import unifiedBrands from '../data/unifiedBrands.json';
-import { competitorBrands } from '../data/brandData';
-import {
-  funnelMetricKeys,
-  overviewMetricKeys,
-  metricLabelMap,
-  type MetricKey,
-} from '../data/unifiedBrandData';
+import { rawData, competitorBrands, RowData } from '../data/brandData';
+import { chartData } from '../data/chartData';
+import { funnelChartData } from '../data/funnelChartData';
 import Tooltip from './Tooltip';
 
-// Function to calculate current values from unified JSON
-const calculateCurrentValues = (metricIdx: number, metricKeys: readonly MetricKey[]) => {
+// Function to calculate current values from chart data
+const calculateCurrentValues = (metricIdx: number, metricKeys: readonly string[], chartDataSource: any) => {
   const currentMetricKey = metricKeys[metricIdx];
-  const brandNames = Object.keys(unifiedBrands) as string[];
+  const data = chartDataSource[currentMetricKey];
+  const latestData = data[data.length - 1];
+  const previousData = data[data.length - 2];
 
-  return brandNames.map((brandName) => {
-    const metric = (unifiedBrands as any)[brandName]?.[currentMetricKey] || {};
-    const numericValue: number = metric.value ?? 0;
-    const shareDecimal: number = metric.share ?? 0; // 0..1
-    const changeDecimal: number = metric.change ?? 0; // 0..1 delta
+  const totalValue = Object.entries(latestData)
+    .filter(([key]) => key !== 'name')
+    .reduce((sum, [_, val]) => {
+      const numVal = Number(val);
+      return sum + (isNaN(numVal) ? 0 : numVal);
+    }, 0);
 
-    // Format value with K/M and add $ for revenue
+  return rawData.map(brand => {
+    const brandValue = latestData[brand.brand as keyof typeof latestData];
+    const previousBrandValue = previousData[brand.brand as keyof typeof previousData];
+    const numericValue = Number(brandValue) || 0;
+    const previousNumericValue = Number(previousBrandValue) || 0;
+
+    let formattedValue: string;
     const isRevenue = currentMetricKey === 'revenue';
     const prefix = isRevenue ? '$' : '';
-    let formattedValue: string;
-    if (numericValue >= 1_000_000) {
-      formattedValue = `${prefix}${(numericValue / 1_000_000).toFixed(1)}M`;
-    } else if (numericValue >= 1_000) {
-      formattedValue = `${prefix}${(numericValue / 1_000).toFixed(1)}K`;
+    
+    if (numericValue >= 1000000) {
+      formattedValue = `${prefix}${(numericValue / 1000000).toFixed(1)}M`;
+    } else if (numericValue >= 1000) {
+      formattedValue = `${prefix}${(numericValue / 1000).toFixed(1)}K`;
     } else {
       formattedValue = `${prefix}${numericValue}`;
     }
 
-    const shareFormatted = `${(shareDecimal * 100).toFixed(1)}%`;
-    const changePP = changeDecimal * 100; // percentage points
-    const changeFormatted = `${changePP >= 0 ? '+' : ''}${changePP.toFixed(1)} PP`;
-    const isPositive = changeDecimal >= 0;
+    const sharePercentage = totalValue > 0 ? (numericValue / totalValue) * 100 : 0;
+    const shareFormatted = `${sharePercentage.toFixed(1)}%`;
+
+    const changeValue = numericValue - previousNumericValue;
+    const changeFormatted = changeValue >= 0 ? `+${changeValue.toFixed(1)}` : `${changeValue.toFixed(1)}`;
+    const isPositive = changeValue >= 0;
 
     return {
-      brand: brandName,
+      ...brand,
       [currentMetricKey]: formattedValue,
       share: shareFormatted,
       change: changeFormatted,
       isPositive,
-    } as any;
+    };
   });
 };
 
+type MetricKey = 'productViews' | 'unitsSold' | 'totalRevenue' | 'brandedSearchVolume' | 'searchVisibility' | 'shareOfPaidClicks' | 'shareOfTotalClicks';
 type SortKey = MetricKey | 'share' | 'brand' | 'change';
 
 const brandColors = [
   '#3E74FE', '#FF7A1A', '#00CA9A', '#FFB800', '#A020F0', '#FF69B4', '#008080', '#DC143C',
 ];
 
-const brandColorMap = (Object.keys(unifiedBrands) as string[]).reduce((acc, brand, index) => {
-  acc[brand] = brandColors[index % brandColors.length];
+const brandColorMap = rawData.reduce((acc, brand, index) => {
+  acc[brand.brand] = brandColors[index % brandColors.length];
   return acc;
 }, {} as Record<string, string>);
 
@@ -70,10 +77,10 @@ const parseNumber = (val: string) => {
   return parseFloat(cleanVal) || 0;
 };
 
-const monthOrder = ['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const generateSparkline = (brandName: string, currentMetricKey: MetricKey) => {
-  const series = (unifiedBrands as any)[brandName]?.[currentMetricKey]?.shareOverTime || {};
-  const values: number[] = monthOrder.map((m) => ((series[m] ?? 0) * 100));
+const generateSparkline = (brandName: string, metricIdx: number, chartDataSource: any, metricKeys: readonly string[]) => {
+  const currentMetricKey = metricKeys[metricIdx];
+  const data = chartDataSource[currentMetricKey];
+  const values = data.map((d: any) => Number(d[brandName as keyof typeof d])).filter((val: number) => !isNaN(val));
   const max = Math.max(...values);
   const min = Math.min(...values);
 
@@ -84,23 +91,6 @@ const generateSparkline = (brandName: string, currentMetricKey: MetricKey) => {
   }).join(' ');
 
   return points;
-};
-
-// Build chart series map (metric -> [{ name, BrandA, BrandB, ... }]) from JSON shareOverTime
-const buildCrossBrandSeriesMap = (keys: readonly MetricKey[]) => {
-  const brandNames = Object.keys(unifiedBrands) as string[];
-  const chartData: Record<string, Array<Record<string, number | string>>> = {};
-  for (const k of keys) {
-    chartData[k] = monthOrder.map((m) => {
-      const row: Record<string, number | string> = { name: m };
-      for (const b of brandNames) {
-        const share = (unifiedBrands as any)[b]?.[k]?.shareOverTime?.[m] ?? 0;
-        row[b] = Number(share) * 100;
-      }
-      return row;
-    });
-  }
-  return chartData;
 };
 
 interface DataTableProps {
@@ -135,15 +125,15 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
   const { metricKeys, metricLabels, chartData: currentChartData } = useMemo(() => {
     if (isFunnelAnalysis) {
       return {
-        metricKeys: funnelMetricKeys,
-        metricLabels: funnelMetricKeys.map((k) => metricLabelMap[k]),
-        chartData: buildCrossBrandSeriesMap(funnelMetricKeys),
+        metricKeys: ['brandedSearchVolume', 'searchVisibility', 'shareOfPaidClicks', 'shareOfTotalClicks'] as const,
+        metricLabels: ['Branded Search Volume', 'Search Visibility', 'Share of Paid Clicks', 'Share of Total Clicks'],
+        chartData: funnelChartData,
       };
     }
     return {
-      metricKeys: overviewMetricKeys,
-      metricLabels: overviewMetricKeys.map((k) => metricLabelMap[k]),
-      chartData: buildCrossBrandSeriesMap(overviewMetricKeys),
+      metricKeys: ['productViews', 'unitsSold', 'revenue'] as const,
+      metricLabels: ['Product Views', 'Units Sold', 'Revenue'],
+      chartData: chartData,
     };
   }, [isFunnelAnalysis]);
 
@@ -155,11 +145,11 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInput, setPageInput] = useState('1');
 
-  const dynamicData = useMemo(() => calculateCurrentValues(metricIdx, metricKeys), [metricIdx, metricKeys]);
+  const dynamicData = useMemo(() => calculateCurrentValues(metricIdx, metricKeys, currentChartData), [metricIdx, metricKeys, currentChartData]);
   
-  const sortedData = useMemo(() => {
-    const myBrand = (dynamicData as any[]).find((r) => r.brand === 'Nike');
-    const others = (dynamicData as any[]).filter((r) => r.brand !== 'Nike');
+  const sortedData: RowData[] = useMemo(() => {
+    const myBrand = dynamicData.find((r) => r.brand === 'Nike');
+    const others = dynamicData.filter((r) => r.brand !== 'Nike');
 
     const sortedOthers = sortKey
       ? [...others].sort((a, b) => {
@@ -168,8 +158,8 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
               ? a.brand.localeCompare(b.brand)
               : b.brand.localeCompare(a.brand);
           }
-           const aVal = parseNumber((a as any)[sortKey]);
-           const bVal = parseNumber((b as any)[sortKey]);
+          const aVal = parseNumber((a as any)[sortKey]);
+          const bVal = parseNumber((b as any)[sortKey]);
           return sortAsc ? aVal - bVal : bVal - aVal;
         })
       : others;
@@ -192,7 +182,7 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
     return sortedData.slice(start, start + rowsPerPage);
   }, [sortedData, currentPage]);
 
-  const sparkPointsArr = useMemo(() => (sortedData as any[]).map(row => generateSparkline(row.brand, metricKeys[metricIdx])), [sortedData, metricIdx, metricKeys]);
+  const sparkPointsArr = useMemo(() => sortedData.map(row => generateSparkline(row.brand, metricIdx, currentChartData, metricKeys)), [sortedData, metricIdx, currentChartData, metricKeys]);
 
   const handleCompareClick = (brandName: string) => {
     setIsTableView(false);
@@ -468,13 +458,13 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
         </>
       ) : (
         <ChartView 
-          brands={Object.keys(unifiedBrands) as string[]} 
+          brands={rawData.map(r => r.brand)} 
           selectedBrands={selectedBrands}
           onBrandSelectionChange={setSelectedBrands}
           brandColorMap={brandColorMap}
           metricIdx={metricIdx}
           chartData={currentChartData}
-          metricKeys={metricKeys as readonly string[]}
+          metricKeys={metricKeys}
         />
       )}
     </div>

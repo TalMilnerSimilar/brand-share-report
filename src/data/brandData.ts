@@ -1,5 +1,3 @@
-import { masterBrandData, categoryTotals } from './masterData';
-
 export interface RowData {
   brand: string;
   totalRevenue: string;
@@ -9,40 +7,249 @@ export interface RowData {
   change: string;
   isPositive: boolean;
   isHighlighted: boolean;
-  // Funnel analysis fields
-  brandedSearchVolume?: string;
-  searchVisibility?: string;
-  shareOfPaidClicks?: string;
-  shareOfTotalClicks?: string;
 }
 
 export const competitorBrands = ['Adidas', 'New Balance', 'Hoka', 'Asics'];
 
-// Convert master data to the format expected by the UI
-export const rawData: RowData[] = masterBrandData.map(brand => ({
-  brand: brand.brand,
-  totalRevenue: formatCurrency(brand.revenueShare, categoryTotals.revenue),
-  unitsSold: formatNumber(brand.unitsSoldShare, categoryTotals.unitsSold),
-  productViews: formatNumber(brand.productViewsShare, categoryTotals.productViews),
-  share: `${brand.productViewsShare.toFixed(1)}%`, // Default to product views share
-  change: brand.change,
-  isPositive: brand.isPositive,
-  isHighlighted: brand.isHighlighted,
-}));
-
-// Helper functions to format values
-function formatCurrency(sharePercent: number, total: number): string {
-  const value = (sharePercent / 100) * total;
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(1)}K`;
-  }
-  return `$${Math.round(value)}`;
-}
-
-function formatNumber(sharePercent: number, total: number): string {
-  const value = (sharePercent / 100) * total;
-  if (value >= 1000) {
-    return `${(value / 1000).toFixed(0)}K`;
-  }
-  return `${Math.round(value)}`;
-}
+export const rawData: RowData[] = [
+  {
+    brand: 'Nike',
+    totalRevenue: '$7.5K',
+    unitsSold: '25K',
+    productViews: '120K',
+    share: '75.5%',
+    change: '-0.9 PP',
+    isPositive: false,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Adidas',
+    totalRevenue: '$2.5K',
+    unitsSold: '8K',
+    productViews: '45K',
+    share: '24.8%',
+    change: '+1.6 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'New Balance',
+    totalRevenue: '$0.8K',
+    unitsSold: '3K',
+    productViews: '18K',
+    share: '8.3%',
+    change: '+0.8 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Hoka',
+    totalRevenue: '$0.4K',
+    unitsSold: '1.5K',
+    productViews: '10K',
+    share: '3.5%',
+    change: '-0.2 PP',
+    isPositive: false,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Asics',
+    totalRevenue: '$0.1K',
+    unitsSold: '0.3K',
+    productViews: '2K',
+    share: '1.2%',
+    change: '-15.6 PP',
+    isPositive: false,
+    isHighlighted: true,
+  },
+  {
+    brand: 'Brooks',
+    totalRevenue: '$0.06K',
+    unitsSold: '0.15K',
+    productViews: '1K',
+    share: '0.6%',
+    change: '+0.8 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Saucony',
+    totalRevenue: '$0.05K',
+    unitsSold: '0.12K',
+    productViews: '0.8K',
+    share: '0.5%',
+    change: '+9.5 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Under Armour',
+    totalRevenue: '$0.03K',
+    unitsSold: '0.08K',
+    productViews: '0.5K',
+    share: '0.3%',
+    change: '+2.5 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Puma',
+    totalRevenue: '$0.02K',
+    unitsSold: '0.06K',
+    productViews: '0.4K',
+    share: '0.2%',
+    change: '+0.3 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Reebok',
+    totalRevenue: '$0.04K',
+    unitsSold: '0.1K',
+    productViews: '0.6K',
+    share: '0.4%',
+    change: '-0.1 PP',
+    isPositive: false,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Fila',
+    totalRevenue: '$0.03K',
+    unitsSold: '0.09K',
+    productViews: '0.5K',
+    share: '0.35%',
+    change: '+0.05 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Mizuno',
+    totalRevenue: '$0.025K',
+    unitsSold: '0.07K',
+    productViews: '0.45K',
+    share: '0.28%',
+    change: '+0.2 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Skechers',
+    totalRevenue: '$0.035K',
+    unitsSold: '0.11K',
+    productViews: '0.7K',
+    share: '0.42%',
+    change: '-0.15 PP',
+    isPositive: false,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Converse',
+    totalRevenue: '$0.05K',
+    unitsSold: '0.15K',
+    productViews: '0.9K',
+    share: '0.6%',
+    change: '+0.4 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Jordan',
+    totalRevenue: '$0.06K',
+    unitsSold: '0.18K',
+    productViews: '1.0K',
+    share: '0.7%',
+    change: '+0.6 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Vans',
+    totalRevenue: '$0.045K',
+    unitsSold: '0.13K',
+    productViews: '0.8K',
+    share: '0.55%',
+    change: '+0.1 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'DC Shoes',
+    totalRevenue: '$0.015K',
+    unitsSold: '0.05K',
+    productViews: '0.3K',
+    share: '0.18%',
+    change: '-0.05 PP',
+    isPositive: false,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Columbia',
+    totalRevenue: '$0.025K',
+    unitsSold: '0.07K',
+    productViews: '0.4K',
+    share: '0.25%',
+    change: '+0.2 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Salomon',
+    totalRevenue: '$0.03K',
+    unitsSold: '0.09K',
+    productViews: '0.5K',
+    share: '0.3%',
+    change: '+0.05 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Merrell',
+    totalRevenue: '$0.02K',
+    unitsSold: '0.06K',
+    productViews: '0.35K',
+    share: '0.22%',
+    change: '-0.02 PP',
+    isPositive: false,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Timberland',
+    totalRevenue: '$0.055K',
+    unitsSold: '0.16K',
+    productViews: '0.95K',
+    share: '0.65%',
+    change: '+0.12 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'La Sportiva',
+    totalRevenue: '$0.012K',
+    unitsSold: '0.04K',
+    productViews: '0.25K',
+    share: '0.15%',
+    change: '+0.01 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'The North Face',
+    totalRevenue: '$0.05K',
+    unitsSold: '0.14K',
+    productViews: '0.85K',
+    share: '0.58%',
+    change: '+0.3 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+  {
+    brand: 'Anta',
+    totalRevenue: '$0.02K',
+    unitsSold: '0.07K',
+    productViews: '0.45K',
+    share: '0.27%',
+    change: '+0.04 PP',
+    isPositive: true,
+    isHighlighted: false,
+  },
+];

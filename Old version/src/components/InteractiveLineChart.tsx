@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { chartData } from '../data/chartData';
 import CustomTooltip from './CustomTooltip';
 
 interface InteractiveLineChartProps {
@@ -41,22 +42,7 @@ const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis 
-            tickFormatter={(value) => {
-              // Since our data already represents market share volumes that sum to 100%,
-              // we need to convert the raw volume values to percentage based on total market
-              // Find the total market volume from any complete data point
-              const sampleDataPoint = data.find((d: any) => d && typeof d === 'object');
-              const totalMarketVolume = sampleDataPoint ? 
-                Object.entries(sampleDataPoint)
-                  .filter(([key]) => key !== 'name')
-                  .reduce((sum, [_, val]) => sum + Number(val || 0), 0) : 1;
-              
-              const percentage = totalMarketVolume > 0 ? (value / totalMarketVolume) * 100 : 0;
-              return `${percentage.toFixed(0)}%`;
-            }}
-            label={{ value: 'Market Share (%)', angle: -90, position: 'insideLeft' }}
-          />
+          <YAxis />
           <Tooltip content={<CustomTooltip brandColorMap={brandColorMap} />} />
           {Array.from(selectedBrands).map((brand) => (
             <Line
