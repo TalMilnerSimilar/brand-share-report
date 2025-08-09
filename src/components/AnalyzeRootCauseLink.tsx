@@ -20,12 +20,12 @@ const AnalyzeRootCauseLink: React.FC<AnalyzeRootCauseLinkProps> = ({ onNavigateT
             <img src="/compare.svg" alt="Compare" className="w-[18px] h-[18px]" />
           </div>
           </div>
-          <Tooltip content="Identify the underlying factors affecting your performance and discover actionable insights to improve your market position">
+          <Tooltip content="Jump into Funnel Analysis to identify what's driving this performance and where to act">
             <button
               onClick={onNavigateToFunnel}
               className="font-bold text-[#195afe] text-[14px] leading-[20px] hover:opacity-80 transition-opacity"
             >
-              Analyze Root Cause
+              What’s driving this? Open Funnel Analysis
             </button>
           </Tooltip>
         </div>
