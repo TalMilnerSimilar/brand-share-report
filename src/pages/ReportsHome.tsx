@@ -31,59 +31,21 @@ const ReportsHome: React.FC = () => {
 
   return (
     <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
-      {/* Enhanced Hero Section */}
-      <div className="mb-8">
-        {/* Hero Container */}
-        <div 
-          className="relative overflow-hidden rounded-xl border border-gray-200 shadow-sm"
-          style={{ 
-            background: 'linear-gradient(250deg, rgba(165, 31, 227, 0.08) 9.5%, rgba(25, 90, 254, 0.08) 26%, rgba(255, 255, 255, 0.08) 52%), #ffffff',
-            minHeight: '220px'
-          }}
-        >
-          {/* Decorative gradient blobs */}
-          <div aria-hidden className="pointer-events-none absolute -top-16 -right-16 w-72 h-72 rounded-full bg-gradient-to-br from-[#6B39F4] to-[#195AFE] opacity-[0.10] blur-3xl" />
-          <div aria-hidden className="pointer-events-none absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-gradient-to-tr from-[#195AFE] to-[#6B39F4] opacity-[0.08] blur-3xl" />
-
-          <div className="relative flex items-center justify-between p-8">
-            {/* Left Content */}
-            <div className="flex-1 max-w-2xl">
-              <div className="mb-6">
-                <h1 className="text-3xl font-bold text-[#092540] mb-2">
-                  Brand Share Reports Overview
-                </h1>
-                <p className="text-lg text-[#6b7c8c]">
-                  Monitor your brand performance across categories and competitors
-                </p>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="flex items-stretch gap-4">
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm min-w-[160px]">
-                  <div className="text-xs font-medium text-[#6b7c8c] tracking-wide uppercase mb-1">Active Reports</div>
-                  <div className="text-2xl font-semibold text-[#092540]">{mockReports.length}</div>
-                </div>
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm min-w-[160px]">
-                  <div className="text-xs font-medium text-[#6b7c8c] tracking-wide uppercase mb-1">Brands Tracked</div>
-                  <div className="text-2xl font-semibold text-[#092540]">{new Set(mockReports.map(r => r.brand)).size}</div>
-                </div>
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm min-w-[160px]">
-                  <div className="text-xs font-medium text-[#6b7c8c] tracking-wide uppercase mb-1">Categories</div>
-                  <div className="text-2xl font-semibold text-[#092540]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Content */}
-            <div className="flex flex-col items-end gap-4">
-              <Button variant="primary" className="px-6 py-3 text-sm shadow-md hover:shadow-lg" onClick={() => navigate('/reports/new')}>
-                New Report
-              </Button>
-            </div>
+      {/* Hero Section (matches Figma style) */}
+      <div className="mb-6">
+        <div className="bg-white border border-gray-200 rounded-lg px-6 py-5 flex items-center justify-between">
+          <div>
+            <h1 className="text-[28px] leading-8 font-semibold text-[#6B39F4]">Brand Share Reports Overview</h1>
+            <p className="text-sm text-[#6b7c8c] mt-1">Select a report to analyze or create a new one.</p>
           </div>
-
-          {/* Bottom gradient line */}
-          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#6B39F4] via-[#195AFE] to-[#6B39F4]"></div>
+          <Button
+            variant="primary"
+            className="bg-[#6B39F4] hover:bg-[#5A2FE3] px-4 py-2 text-sm flex items-center gap-2"
+            onClick={() => navigate('/reports/new')}
+          >
+            <span className="w-6 h-6 rounded-full bg-white text-[#6B39F4] flex items-center justify-center text-base leading-none">+</span>
+            New Report
+          </Button>
         </div>
       </div>
 
