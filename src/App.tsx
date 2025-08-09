@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import BrandShareReport from './pages/BrandShareReport';
 import ReportsHome from './pages/ReportsHome';
@@ -16,12 +16,14 @@ function App() {
         <div className="content-wrapper">
           <BrandHeader selectedDateRange={selectedDateRange} setSelectedDateRange={setSelectedDateRange} />
           <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Navigate to="/reports" replace />} />
-              <Route path="/reports" element={<ReportsHome />} />
-              <Route path="/reports/new" element={<NewReportLazy />} />
-              <Route path="/reports/:reportId" element={<ReportRouter />} />
-            </Routes>
+            <Suspense fallback={null}>
+              <Routes>
+                <Route path="/" element={<Navigate to="/reports" replace />} />
+                <Route path="/reports" element={<ReportsHome />} />
+                <Route path="/reports/new" element={<NewReportLazy />} />
+                <Route path="/reports/:reportId" element={<ReportRouter />} />
+              </Routes>
+            </Suspense>
           </main>
         </div>
       </div>
