@@ -147,7 +147,7 @@ const KPICards: React.FC<KPICardsProps> = ({ activeAnalysisTab }) => {
         categoryTotalChange,
         categoryIsPositive,
         compAvg: `${(compAvgShare * 100).toFixed(1)}%`,
-        compAvgChange: `${(compAvgChange * 100 >= 0 ? '+' : '')}${(compAvgChange * 100).toFixed(1)}PP`,
+        compAvgChange: `${(compAvgChange * 100 >= 0 ? '+' : '')}${(compAvgChange * 100).toFixed(1)}%`,
         compAvgIsPositive: compAvgChange >= 0,
       };
     });
