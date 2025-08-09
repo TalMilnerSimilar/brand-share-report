@@ -29,28 +29,6 @@ const mockReports: SavedReport[] = [
 const ReportsHome: React.FC = () => {
   const navigate = useNavigate();
 
-  const getReportMetrics = (report: SavedReport) => {
-    const brandData = (unifiedBrands as any)[report.brand];
-    if (!brandData) return null;
-
-    const metrics = ['brandedClicks', 'productViews', 'paidClicks', 'revenue'] as const;
-    return metrics.map((metricKey) => {
-      const metric = brandData[metricKey];
-      if (!metric) return null;
-
-      const share = (metric.share * 100).toFixed(1);
-      const change = metric.change * 100;
-      const changeFormatted = `${change >= 0 ? '+' : ''}${change.toFixed(1)}pp`;
-
-      return {
-        key: metricKey,
-        value: share,
-        change: changeFormatted,
-        isPositive: change >= 0,
-      };
-    }).filter(Boolean);
-  };
-
   return (
     <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
       {/* Header */}
@@ -69,87 +47,185 @@ const ReportsHome: React.FC = () => {
       </div>
 
       {/* Reports Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-md">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-medium text-gray-900">All Reports</h2>
+            <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left p-4 font-medium text-[#6b7c8c] text-sm">
-                  REPORT NAME
-                </th>
-                <th className="text-center p-4 font-medium text-[#6b7c8c] text-sm">
-                  <div>SHARE OF BRANDED</div>
-                  <div>CLICKS</div>
-                  <div className="flex justify-center gap-4 text-xs mt-1">
-                    <span>Value</span>
-                    <span>WoW Change</span>
+              <tr className="border-b border-gray-200 text-xs font-medium text-gray-600">
+                <th className="text-left p-4 cursor-pointer text-[#3A5166] border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    <span>Report Name</span>
                   </div>
                 </th>
-                <th className="text-center p-4 font-medium text-[#6b7c8c] text-sm">
-                  <div>SHARE OF PRODUCT</div>
-                  <div>VIEWS</div>
-                  <div className="flex justify-center gap-4 text-xs mt-1">
-                    <span>Value</span>
-                    <span>WoW Change</span>
+                <th className="text-left p-4 cursor-pointer text-[#3A5166] border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    <span>Branded Clicks</span>
                   </div>
                 </th>
-                <th className="text-center p-4 font-medium text-[#6b7c8c] text-sm">
-                  <div>SHARE OF PAID</div>
-                  <div>CLICKS</div>
-                  <div className="flex justify-center gap-4 text-xs mt-1">
-                    <span>Value</span>
-                    <span>WoW Change</span>
+                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
+                  <div className="flex items-center gap-1">
+                    <span>Share</span>
                   </div>
                 </th>
-                <th className="text-center p-4 font-medium text-[#6b7c8c] text-sm">
-                  <div>SHARE OF</div>
-                  <div>REVENUE</div>
-                  <div className="flex justify-center gap-4 text-xs mt-1">
-                    <span>Value</span>
-                    <span>WoW Change</span>
+                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
+                  <div className="flex items-center gap-1">
+                    <span>Change</span>
                   </div>
                 </th>
-                <th className="text-center p-4 font-medium text-[#6b7c8c] text-sm">
-                  ACTION
+                <th className="text-left p-4 border-r border-gray-200">Product Views</th>
+                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
+                  <div className="flex items-center gap-1">
+                    <span>Share</span>
+                  </div>
                 </th>
+                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
+                  <div className="flex items-center gap-1">
+                    <span>Change</span>
+                  </div>
+                </th>
+                <th className="text-left p-4 border-r border-gray-200">Revenue</th>
+                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
+                  <div className="flex items-center gap-1">
+                    <span>Share</span>
+                  </div>
+                </th>
+                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
+                  <div className="flex items-center gap-1">
+                    <span>Change</span>
+                  </div>
+                </th>
+                <th className="text-left p-4 w-0">Actions</th>
               </tr>
             </thead>
             <tbody>
               {mockReports.map((report) => {
-                const metrics = getReportMetrics(report);
+                const brandData = (unifiedBrands as any)[report.brand];
+                const brandedClicks = brandData?.brandedClicks;
+                const productViews = brandData?.productViews;
+                const revenue = brandData?.revenue;
+                
                 return (
-                  <tr key={report.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="p-4">
-                      <div className="font-medium text-[#092540]">{report.brand}</div>
-                      <div className="text-sm text-[#6b7c8c]">{report.category}</div>
-                      <div className="flex items-center gap-1 mt-1 text-sm text-[#6b7c8c]">
+                  <tr key={report.id} className="border-b border-gray-200 transition-colors duration-150">
+                    <td className="p-4 border-r border-gray-200">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-[#195afe] cursor-pointer">
+                          {report.brand}
+                          {report.brand === 'Nike' && (
+                            <span className="ml-2 px-2 py-0.5 bg-[#b6bec6] text-[#ffffff] text-[10px] font-bold tracking-[0.3px] rounded-[26px]">My Brand</span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="text-xs text-[#6b7c8c] mt-1">{report.category}</div>
+                      <div className="flex items-center gap-1 mt-1 text-xs text-[#6b7c8c]">
                         <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
                         <span>vs.</span>
                         <span>{report.competitors.join('   ')}</span>
                       </div>
                     </td>
-                    {metrics?.map((metric, index) => (
-                      <td key={metric?.key || index} className="p-4 text-center">
-                        {metric ? (
-                          <div className="flex justify-center gap-4">
-                            <span className="font-medium text-[#092540]">{metric.value}%</span>
-                            <span className={`flex items-center gap-1 ${metric.isPositive ? 'text-[#009688]' : 'text-[#bb3f3f]'}`}>
-                              <span className="text-lg">{metric.isPositive ? '↑' : '↓'}</span>
-                              <span>{metric.change}</span>
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                    ))}
-                    <td className="p-4 text-center">
-                      <button
-                        className="px-4 py-2 text-sm font-medium rounded-[18px] transition-all duration-150 text-[#6B39F4] bg-white border border-[#6B39F4] hover:bg-[#6B39F4] hover:text-white"
-                        onClick={() => navigate(`/reports/${report.id}`)}
-                      >
-                        Analyze Report
-                      </button>
+                    
+                    {/* Branded Clicks */}
+                    <td className="p-4 text-sm text-gray-600 border-r border-gray-200">
+                      {brandedClicks ? `${(brandedClicks.value / 1000).toFixed(1)}K` : '-'}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2 w-40">
+                        <span className="text-sm text-gray-600 min-w-[40px]">
+                          {brandedClicks ? `${(brandedClicks.share * 100).toFixed(1)}%` : '-'}
+                        </span>
+                        <div className="flex-1 h-2 bg-gray-200 rounded">
+                          <div
+                            className="h-full bg-blue-600 rounded"
+                            style={{ width: brandedClicks ? `${brandedClicks.share * 100}%` : '0%' }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      {brandedClicks && (
+                        <div
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                            brandedClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                          }`}
+                        >
+                          {brandedClicks.change >= 0 ? '+' : ''}{(brandedClicks.change * 100).toFixed(1)} PP
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Product Views */}
+                    <td className="p-4 text-sm text-gray-600 border-r border-gray-200">
+                      {productViews ? `${(productViews.value / 1000).toFixed(1)}K` : '-'}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2 w-40">
+                        <span className="text-sm text-gray-600 min-w-[40px]">
+                          {productViews ? `${(productViews.share * 100).toFixed(1)}%` : '-'}
+                        </span>
+                        <div className="flex-1 h-2 bg-gray-200 rounded">
+                          <div
+                            className="h-full bg-blue-600 rounded"
+                            style={{ width: productViews ? `${productViews.share * 100}%` : '0%' }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      {productViews && (
+                        <div
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                            productViews.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                          }`}
+                        >
+                          {productViews.change >= 0 ? '+' : ''}{(productViews.change * 100).toFixed(1)} PP
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Revenue */}
+                    <td className="p-4 text-sm text-gray-600 border-r border-gray-200">
+                      {revenue ? `$${(revenue.value / 1000000).toFixed(1)}M` : '-'}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2 w-40">
+                        <span className="text-sm text-gray-600 min-w-[40px]">
+                          {revenue ? `${(revenue.share * 100).toFixed(1)}%` : '-'}
+                        </span>
+                        <div className="flex-1 h-2 bg-gray-200 rounded">
+                          <div
+                            className="h-full bg-blue-600 rounded"
+                            style={{ width: revenue ? `${revenue.share * 100}%` : '0%' }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      {revenue && (
+                        <div
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                            revenue.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                          }`}
+                        >
+                          {revenue.change >= 0 ? '+' : ''}{(revenue.change * 100).toFixed(1)} PP
+                        </div>
+                      )}
+                    </td>
+
+                    <td className="p-4 w-0">
+                      <div className="flex items-center gap-2">
+                        <button
+                          className="px-4 py-2 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active"
+                          onClick={() => navigate(`/reports/${report.id}`)}
+                        >
+                          Analyze
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
