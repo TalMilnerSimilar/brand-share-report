@@ -21,6 +21,47 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
   selectedMetrics,
 }) => {
   const data = brandTrendData[selectedBrand] || [];
+  const selectedList = Array.from(selectedMetrics);
+
+  const renderYAxes = () => {
+    if (selectedList.length <= 1) {
+      return (
+        <YAxis
+          yAxisId="left"
+          axisLine={false}
+          tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
+          tickMargin={14}
+        />
+      );
+    }
+    if (selectedList.length === 2) {
+      return (
+        <>
+          <YAxis
+            yAxisId="left"
+            axisLine={false}
+            tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
+            tickMargin={14}
+          />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            axisLine={false}
+            tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }}
+            tickMargin={14}
+          />
+        </>
+      );
+    }
+    // > 2 metrics: give each series its own hidden axis
+    return (
+      <>
+        {selectedList.map((metric) => (
+          <YAxis key={metric} yAxisId={metric} hide />
+        ))}
+      </>
+    );
+  };
 
   return (
     <div className="flex-1 bg-white p-4 rounded-lg h-[400px]">
@@ -36,9 +77,13 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
         >
           <CartesianGrid vertical={false} />
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
-          <YAxis axisLine={false} tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
+          {renderYAxes()}
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
-          {Array.from(selectedMetrics).map((metric) => (
+          {selectedList.map((metric, idx) => {
+            let axisId: string | number = 'left';
+            if (selectedList.length === 2) axisId = idx === 0 ? 'left' : 'right';
+            else if (selectedList.length > 2) axisId = metric;
+            return (
             <Line
               key={metric}
               type="linear"
@@ -47,9 +92,9 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
               strokeWidth={2}
               dot={false}
               activeDot={{ r: 8 }}
-              yAxisId={0}
+              yAxisId={axisId}
             />
-          ))}
+          })}
         </LineChart>
       </ResponsiveContainer>
     </div>
