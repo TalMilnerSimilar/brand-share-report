@@ -57,7 +57,14 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     // (no ticks/labels/line) to drive horizontal grid lines
     return (
       <>
-        <YAxis yAxisId="grid" axisLine={false} tickLine={false} tick={false} />
+        <YAxis
+          yAxisId="grid"
+          axisLine={false}
+          tickLine={false}
+          tick={false}
+          domain={[0, 100]}
+          ticks={[0, 20, 40, 60, 80, 100]}
+        />
         {selectedList.map((metric) => (
           <YAxis key={metric} yAxisId={metric} hide />
         ))}
@@ -86,6 +93,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
               selectedList.length === 2
                 ? (idx === 0 ? 'left' : 'right')
                 : (selectedList.length > 2 ? metric : 'left');
+            const strokeOpacity = selectedList.length > 2 ? 0.9 : 1;
             return (
               <Line
                 key={metric}
@@ -93,6 +101,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
                 dataKey={metric}
                 stroke={metricColorMap[metric]}
                 strokeWidth={2}
+                strokeOpacity={strokeOpacity}
                 dot={false}
                 activeDot={{ r: 8 }}
                 yAxisId={axisId}
