@@ -39,7 +39,7 @@ const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip content={<CustomTooltip brandColorMap={brandColorMap} />} />
