@@ -23,7 +23,6 @@ export type UnifiedBrandJSON = Record<string, Record<MetricKey, UnifiedMetric>>;
 
 const allMetricKeys: MetricKey[] = [...overviewMetricKeys, ...funnelMetricKeys];
 
-const monthAbbrev = (name: string): string => String(name).split(' ')[0];
 
 // Reuse the robust generator logic from the JSON builder to ensure
 // - shares per month sum to 1

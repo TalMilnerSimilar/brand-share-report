@@ -94,7 +94,6 @@ interface KPICardsProps {
 const KPICards: React.FC<KPICardsProps> = ({ activeAnalysisTab }) => {
   const isFunnelAnalysis = activeAnalysisTab === 'Funnel Analysis';
 
-  const monthOrder = ['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const brandNames = Object.keys(unifiedBrands) as string[];
   const myBrand = 'Nike';
 
