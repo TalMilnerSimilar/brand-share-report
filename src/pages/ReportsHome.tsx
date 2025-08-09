@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
 import { metricLabelMap } from '../data/unifiedBrandData';
+import Button from '../components/Button';
 
 type SavedReport = {
   id: string;
@@ -48,23 +49,9 @@ const ReportsHome: React.FC = () => {
                 <h1 className="text-3xl font-bold text-[#092540] mb-2">
                   Brand Share Reports Overview
                 </h1>
-                <p className="text-lg text-[#6b7c8c] mb-4">
+                <p className="text-lg text-[#6b7c8c]">
                   Monitor your brand performance across categories and competitors
                 </p>
-                <div className="flex items-center gap-6 text-sm text-[#6b7c8c]">
-                  <div className="flex items-center gap-2">
-                    <img src="/icons/us-flag.svg" alt="US Flag" className="w-4 h-4" />
-                    <span>amazon.com</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <img src="/icons/analytics-icon.svg" alt="Analytics" className="w-4 h-4" />
-                    <span>Live Data</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span>Updated Daily</span>
-                  </div>
-                </div>
               </div>
 
               {/* Quick Stats */}
@@ -86,13 +73,9 @@ const ReportsHome: React.FC = () => {
 
             {/* Right Content */}
             <div className="flex flex-col items-end gap-4">
-              <button
-                className="px-6 py-3 text-sm font-medium rounded-[18px] transition-all duration-150 text-white bg-[#6B39F4] hover:bg-[#5A2FE3] shadow-lg hover:shadow-xl flex items-center gap-2"
-                onClick={() => navigate('/reports/new')}
-              >
-                <span className="text-lg">+</span>
+              <Button variant="primary" className="px-6 py-3 text-sm" onClick={() => navigate('/reports/new')}>
                 New Report
-              </button>
+              </Button>
             </div>
           </div>
 
