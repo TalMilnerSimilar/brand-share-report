@@ -8,8 +8,7 @@ interface CustomTooltipProps {
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, brandColorMap }) => {
-  // Check if this is a revenue metric by looking at the payload values
-  const isRevenue = payload && payload.length > 0 && payload[0].value && payload[0].value < 10000;
+  // Share-over-time charts always pass percentage values (0..100)
   if (!active || !payload || !payload.length) {
     return null;
   }
@@ -45,9 +44,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, b
                 <span> - {myBrand.dataKey}</span>
               </span>
             </div>
-                            <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[41px]">
-                  {isRevenue ? `$${myBrand.value?.toLocaleString()}` : myBrand.value?.toLocaleString()}
-                </span>
+            <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[48px]">
+              {`${Number(myBrand.value ?? 0).toFixed(1)}%`}
+            </span>
           </div>
         </div>
       )}
@@ -66,8 +65,8 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, b
                   />
                   <span className="text-xs text-[#3a5166]">{item.dataKey}</span>
                 </div>
-                <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[41px]">
-                  {isRevenue ? `$${item.value?.toLocaleString()}` : item.value?.toLocaleString()}
+                <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[48px]">
+                  {`${Number(item.value ?? 0).toFixed(1)}%`}
                 </span>
               </div>
             ))}
@@ -89,8 +88,8 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, b
                   />
                   <span className="text-xs text-[#3a5166]">{item.dataKey}</span>
                 </div>
-                <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[41px]">
-                  {isRevenue ? `$${item.value?.toLocaleString()}` : item.value?.toLocaleString()}
+                <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[48px]">
+                  {`${Number(item.value ?? 0).toFixed(1)}%`}
                 </span>
               </div>
             ))}
