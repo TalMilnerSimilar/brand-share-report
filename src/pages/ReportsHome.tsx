@@ -72,21 +72,24 @@ const ReportsHome: React.FC = () => {
         {/* Bottom KPI row */}
         <div className="bg-white border border-gray-200 border-t-0 rounded-b-[8px] px-6 py-2">
           <div className="flex items-center justify-between">
-            <div className="flex-1 flex items-center justify-center gap-1">
+            <div className="flex-1 flex items-center justify-center gap-2">
+              <img src="/figma-assets/151a2b754aed65991450cf2d3590d439dbbe3c68.svg" alt="Reports Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Total Reports:</span>
               <span className="text-[14px] leading-5 text-[#6b7c8c]">{mockReports.length}</span>
             </div>
             <div className="w-5 self-stretch flex items-center justify-center">
               <div className="w-[1px] h-full bg-[#e6e9ec]" />
             </div>
-            <div className="flex-1 flex items-center justify-center gap-1">
+            <div className="flex-1 flex items-center justify-center gap-2">
+              <img src="/figma-assets/c3c60bd99f7bd07058c2800151529355f31f9320.svg" alt="Brands Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Brands Tracked:</span>
               <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.brand)).size}</span>
             </div>
             <div className="w-5 self-stretch flex items-center justify-center">
               <div className="w-[1px] h-full bg-[#e6e9ec]" />
             </div>
-            <div className="flex-1 flex items-center justify-center gap-1">
+            <div className="flex-1 flex items-center justify-center gap-2">
+              <img src="/figma-assets/bd9e44671980500a57e4924b9ce6f8fa5ebea818.svg" alt="Categories Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Categories:</span>
               <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</span>
             </div>
