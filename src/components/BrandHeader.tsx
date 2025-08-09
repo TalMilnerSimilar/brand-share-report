@@ -30,7 +30,6 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
     'Custom Range'
   ];
 
-
   const handleDateRangeSelect = (option: string) => {
     setSelectedDateRange(option);
     setIsDateDropdownOpen(false);
@@ -40,7 +39,6 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
     setSelectedCompareTo(option);
     setIsCompareDropdownOpen(false);
   };
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -131,4 +129,4 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
   );
 };
 
-export default BrandHeader; 
+export default BrandHeader;
