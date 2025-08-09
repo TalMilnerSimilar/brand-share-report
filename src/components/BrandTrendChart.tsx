@@ -53,9 +53,11 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
         </>
       );
     }
-    // > 2 metrics: give each series its own hidden axis
+    // > 2 metrics: give each series its own hidden axis, but keep a baseline invisible axis
+    // (no ticks/labels/line) to drive horizontal grid lines
     return (
       <>
+        <YAxis yAxisId="grid" axisLine={false} tickLine={false} tick={false} />
         {selectedList.map((metric) => (
           <YAxis key={metric} yAxisId={metric} hide />
         ))}
@@ -81,7 +83,9 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
           {selectedList.map((metric, idx) => {
             const axisId: string | number =
-              selectedList.length === 2 ? (idx === 0 ? 'left' : 'right') : (selectedList.length > 2 ? metric : 'left');
+              selectedList.length === 2
+                ? (idx === 0 ? 'left' : 'right')
+                : (selectedList.length > 2 ? metric : 'left');
             return (
               <Line
                 key={metric}
