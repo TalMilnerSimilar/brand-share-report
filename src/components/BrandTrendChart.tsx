@@ -7,6 +7,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  ReferenceLine,
 } from 'recharts';
 import { brandTrendData, metricColorMap } from '../data/brandTrendData';
 import MetricTooltip from './MetricTooltip';
@@ -22,6 +23,10 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
 }) => {
   const data = brandTrendData[selectedBrand] || [];
   const selectedList = Array.from(selectedMetrics);
+
+  const renderHorizontalRefs = () => [0, 20, 40, 60, 80, 100].map((v) => (
+    <ReferenceLine key={`h-${v}`} y={v} stroke="#E6E9EC" strokeWidth={1} />
+  ));
 
   const renderYAxes = () => {
     if (selectedList.length <= 1) {
@@ -89,6 +94,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           }}
         >
           <CartesianGrid vertical={false} horizontal={true} stroke="#E6E9EC" />
+          {renderHorizontalRefs()}
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
           {renderYAxes()}
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
