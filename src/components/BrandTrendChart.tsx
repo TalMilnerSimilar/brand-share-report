@@ -56,7 +56,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
         </>
       );
     }
-    // Visible axis bound to first metric to drive tick generation
+    // Visible axis bound to first metric to drive tick generation, but hide labels
     const primaryId = metricsArray[0];
     return (
       <>
@@ -64,8 +64,9 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           yAxisId={primaryId}
           orientation="left"
           axisLine={false}
-          tick={tickStyle}
-          tickMargin={14}
+          tick={false}
+          tickLine={false}
+          width={0}
         />
         {metricsArray.slice(1).map((m) => (
           <YAxis key={m} yAxisId={m} hide axisLine={false} />
