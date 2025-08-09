@@ -90,7 +90,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     return metric; // bind to hidden per-metric axis; grid uses visible axis id=0
   };
 
-  // Overlay component: create exactly five horizontal lines across plot area
+  // Overlay: always draw 5 horizontal lines equally spaced across the plotting area
   const CustomHorizontalGridLines: React.FC<any> = ({ offset }) => {
     if (!offset) return null;
     const { left, top, width, height } = offset;
@@ -104,6 +104,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           <line
             key={yVal}
             stroke="#ccc"
+            strokeWidth={1}
             fill="none"
             x={left}
             y={top}
@@ -113,6 +114,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             y1={yVal}
             x2={x2}
             y2={yVal}
+            shapeRendering="crispEdges"
           />
         ))}
       </g>
@@ -131,11 +133,11 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             bottom: 5,
           }}
         >
-          {/* Disable built-in horizontal grid and draw our own fixed 5 lines */}
+          {/* Disable built-in horizontal grid to avoid duplicates; draw our own overlay lines */}
           <CartesianGrid vertical={false} horizontal={false} />
+          {renderYAxes()}
           <Customized component={<CustomHorizontalGridLines />} />
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
-          {renderYAxes()}
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
           {metricsArray.map((metric, idx) => (
             <Line
