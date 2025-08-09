@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
-import { metricLabelMap } from '../data/unifiedBrandData';
 import Button from '../components/Button';
 
 type SavedReport = {
@@ -36,15 +35,19 @@ const ReportsHome: React.FC = () => {
       <div className="mb-8">
         {/* Hero Container */}
         <div 
-          className="relative overflow-hidden rounded-lg border border-gray-200"
+          className="relative overflow-hidden rounded-xl border border-gray-200 shadow-sm"
           style={{ 
             background: 'linear-gradient(250deg, rgba(165, 31, 227, 0.08) 9.5%, rgba(25, 90, 254, 0.08) 26%, rgba(255, 255, 255, 0.08) 52%), #ffffff',
-            minHeight: '200px'
+            minHeight: '220px'
           }}
         >
-          <div className="flex items-center justify-between p-8">
+          {/* Decorative gradient blobs */}
+          <div aria-hidden className="pointer-events-none absolute -top-16 -right-16 w-72 h-72 rounded-full bg-gradient-to-br from-[#6B39F4] to-[#195AFE] opacity-[0.10] blur-3xl" />
+          <div aria-hidden className="pointer-events-none absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-gradient-to-tr from-[#195AFE] to-[#6B39F4] opacity-[0.08] blur-3xl" />
+
+          <div className="relative flex items-center justify-between p-8">
             {/* Left Content */}
-            <div className="flex-1">
+            <div className="flex-1 max-w-2xl">
               <div className="mb-6">
                 <h1 className="text-3xl font-bold text-[#092540] mb-2">
                   Brand Share Reports Overview
@@ -55,32 +58,32 @@ const ReportsHome: React.FC = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="flex items-center gap-6">
-                <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-white border-opacity-30">
-                  <div className="text-sm text-[#6b7c8c] mb-1">Active Reports</div>
-                  <div className="text-2xl font-bold text-[#092540]">{mockReports.length}</div>
+              <div className="flex items-stretch gap-4">
+                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm min-w-[160px]">
+                  <div className="text-xs font-medium text-[#6b7c8c] tracking-wide uppercase mb-1">Active Reports</div>
+                  <div className="text-2xl font-semibold text-[#092540]">{mockReports.length}</div>
                 </div>
-                <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-white border-opacity-30">
-                  <div className="text-sm text-[#6b7c8c] mb-1">Brands Tracked</div>
-                  <div className="text-2xl font-bold text-[#092540]">{new Set(mockReports.map(r => r.brand)).size}</div>
+                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm min-w-[160px]">
+                  <div className="text-xs font-medium text-[#6b7c8c] tracking-wide uppercase mb-1">Brands Tracked</div>
+                  <div className="text-2xl font-semibold text-[#092540]">{new Set(mockReports.map(r => r.brand)).size}</div>
                 </div>
-                <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-white border-opacity-30">
-                  <div className="text-sm text-[#6b7c8c] mb-1">Categories</div>
-                  <div className="text-2xl font-bold text-[#092540]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</div>
+                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm min-w-[160px]">
+                  <div className="text-xs font-medium text-[#6b7c8c] tracking-wide uppercase mb-1">Categories</div>
+                  <div className="text-2xl font-semibold text-[#092540]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</div>
                 </div>
               </div>
             </div>
 
             {/* Right Content */}
             <div className="flex flex-col items-end gap-4">
-              <Button variant="primary" className="px-6 py-3 text-sm" onClick={() => navigate('/reports/new')}>
+              <Button variant="primary" className="px-6 py-3 text-sm shadow-md hover:shadow-lg" onClick={() => navigate('/reports/new')}>
                 New Report
               </Button>
             </div>
           </div>
 
           {/* Bottom gradient line */}
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#6B39F4] via-[#195AFE] to-[#6B39F4]"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#6B39F4] via-[#195AFE] to-[#6B39F4]"></div>
         </div>
       </div>
 
