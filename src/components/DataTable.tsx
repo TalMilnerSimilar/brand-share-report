@@ -194,14 +194,14 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
     if (p > totalPages) return totalPages;
     return p;
   };
-  
+
   return (
     <div className="bg-white border border-gray-200 rounded-md" style={{ marginTop: activeAnalysisTab === 'Brand Share Overview' ? '0px' : undefined }}>
       <div className="flex items-center justify-between p-6 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-medium text-gray-900">Overtime View</h2>
           <Tooltip content="View your brand performance over time with detailed metrics and trends">
-            <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
+          <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
           </Tooltip>
         </div>
         <ViewSwitcher isTableView={isTableView} setIsTableView={setIsTableView} />
@@ -221,7 +221,7 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
             >
               <span className="text-base">{label}</span>
               <Tooltip content={getMetricTooltip(label)}>
-                <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
+              <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
               </Tooltip>
             </div>
           );
@@ -230,101 +230,101 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
 
       {isTableView ? (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200 text-xs font-medium text-gray-600">
-                  <th
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-200 text-xs font-medium text-gray-600">
+              <th
                     className="text-left p-4 cursor-pointer text-[#3A5166] border-r border-gray-200"
-                    onClick={() => {
-                      setSortKey('brand');
-                      setSortAsc(sortKey === 'brand' ? !sortAsc : true);
-                    }}
-                  >
+                onClick={() => {
+                  setSortKey('brand');
+                  setSortAsc(sortKey === 'brand' ? !sortAsc : true);
+                }}
+              >
                     <Tooltip content="Click to sort by brand name">
-                      <div className="flex items-center gap-1">
-                        <span>Brand</span>
-                        {sortKey === 'brand' && (
-                          <img
-                            src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
-                            className="w-3 h-3 text-[#4D87F7]"
-                            alt="sort"
-                          />
-                        )}
-                      </div>
+                <div className="flex items-center gap-1">
+                  <span>Brand</span>
+                  {sortKey === 'brand' && (
+                    <img
+                      src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                      className="w-3 h-3 text-[#4D87F7]"
+                      alt="sort"
+                    />
+                  )}
+                </div>
                     </Tooltip>
-                  </th>
-                  <th
+              </th>
+              <th
                     className="text-left p-4 cursor-pointer text-[#3A5166] border-r border-gray-200"
-                    onClick={() => {
-                      const key = metricKeys[metricIdx] as SortKey;
-                      setSortKey(key);
-                      setSortAsc(sortKey === key ? !sortAsc : true);
-                    }}
-                  >
+                onClick={() => {
+                  const key = metricKeys[metricIdx] as SortKey;
+                  setSortKey(key);
+                  setSortAsc(sortKey === key ? !sortAsc : true);
+                }}
+              >
                     <Tooltip content={`Click to sort by ${metricLabels[metricIdx].toLowerCase()}`}>
-                      <div className="flex items-center gap-1">
-                        <span>{metricLabels[metricIdx]}</span>
-                        {sortKey === metricKeys[metricIdx] && (
-                          <img
-                            src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
-                            className="w-3 h-3 text-[#4D87F7]"
-                            alt="sort"
-                          />
-                        )}
-                      </div>
+                <div className="flex items-center gap-1">
+                  <span>{metricLabels[metricIdx]}</span>
+                  {sortKey === metricKeys[metricIdx] && (
+                    <img
+                      src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                      className="w-3 h-3 text-[#4D87F7]"
+                      alt="sort"
+                    />
+                  )}
+                </div>
                     </Tooltip>
-                  </th>
-                  <th
-                    className="text-left p-4 cursor-pointer text-[#3A5166]"
-                    onClick={() => {
-                      setSortKey('share');
-                      setSortAsc(sortKey === 'share' ? !sortAsc : true);
-                    }}
-                  >
+              </th>
+              <th
+                className="text-left p-4 cursor-pointer text-[#3A5166]"
+                onClick={() => {
+                  setSortKey('share');
+                  setSortAsc(sortKey === 'share' ? !sortAsc : true);
+                }}
+              >
                     <Tooltip content="Click to sort by market share percentage">
-                      <div className="flex items-center gap-1">
-                        <span>Share</span>
-                        {sortKey === 'share' && (
-                          <img
-                            src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
-                            className="w-3 h-3 text-[#4D87F7]"
-                            alt="sort"
-                          />
-                        )}
-                      </div>
+                <div className="flex items-center gap-1">
+                  <span>Share</span>
+                  {sortKey === 'share' && (
+                    <img
+                      src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                      className="w-3 h-3 text-[#4D87F7]"
+                      alt="sort"
+                    />
+                  )}
+                </div>
                     </Tooltip>
-                  </th>
-                  <th
-                    className="text-left p-4 cursor-pointer text-[#3A5166]"
-                    onClick={() => {
-                      setSortKey('change');
-                      setSortAsc(sortKey === 'change' ? !sortAsc : true);
-                    }}
-                  >
+              </th>
+              <th
+                className="text-left p-4 cursor-pointer text-[#3A5166]"
+                onClick={() => {
+                  setSortKey('change');
+                  setSortAsc(sortKey === 'change' ? !sortAsc : true);
+                }}
+              >
                     <Tooltip content="Click to sort by change in performance">
-                      <div className="flex items-center gap-1">
-                        <span>Change</span>
-                        {sortKey === 'change' && (
-                          <img
-                            src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
-                            className="w-3 h-3 text-[#4D87F7]"
-                            alt="sort"
-                          />
-                        )}
-                      </div>
+                <div className="flex items-center gap-1">
+                  <span>Change</span>
+                  {sortKey === 'change' && (
+                    <img
+                      src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                      className="w-3 h-3 text-[#4D87F7]"
+                      alt="sort"
+                    />
+                  )}
+                </div>
                     </Tooltip>
                   </th>
                                       <th className="text-left p-4 border-r border-gray-200">
                       <Tooltip content="Visual representation of share trends over time">
                         Share over time
                       </Tooltip>
-                    </th>
+              </th>
                   <th className="text-left p-4 w-0">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pagedData.map((row, idx) => (
+            </tr>
+          </thead>
+          <tbody>
+            {pagedData.map((row, idx) => (
                   <tr 
                       key={idx} 
                       className={`border-b border-gray-200 transition-colors duration-150 ${hoveredRow === idx ? 'bg-primary-blue-light-hover' : ''}`}
@@ -332,49 +332,49 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
                       onMouseLeave={() => setHoveredRow(null)}
                     >
                     <td className="p-4 border-r border-gray-200">
-                      <div className="flex items-center gap-2">
-                        <span className={'text-sm text-[#195afe] cursor-pointer'}>
-                          {row.brand}
+                  <div className="flex items-center gap-2">
+                    <span className={'text-sm text-[#195afe] cursor-pointer'}>
+                      {row.brand}
                         {row.brand === 'Nike' && (
-                          <span className="ml-2 px-2 py-0.5 bg-[#b6bec6] text-[#ffffff] text-[10px] font-bold tracking-[0.3px] rounded-[26px]">My Brand</span>
-                        )}
-                        </span>
-                        {competitorBrands.includes(row.brand) && (
-                          <span className="px-2 py-0.5 bg-[#e8eeff] text-[#6b7c8c] text-[10px] font-bold tracking-[0.3px] rounded-[26px] leading-[12px]">Competitor</span>
-                        )}
-                      </div>
-                    </td>
+                      <span className="ml-2 px-2 py-0.5 bg-[#b6bec6] text-[#ffffff] text-[10px] font-bold tracking-[0.3px] rounded-[26px]">My Brand</span>
+                    )}
+                    </span>
+                    {competitorBrands.includes(row.brand) && (
+                      <span className="px-2 py-0.5 bg-[#e8eeff] text-[#6b7c8c] text-[10px] font-bold tracking-[0.3px] rounded-[26px] leading-[12px]">Competitor</span>
+                    )}
+                  </div>
+                </td>
                     <td className="p-4 text-sm text-gray-600 border-r border-gray-200">{(row as any)[metricKeys[metricIdx]]}</td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2 w-40">
-                        <span className="text-sm text-gray-600 min-w-[40px]">{row.share}</span>
-                        <div className="flex-1 h-2 bg-gray-200 rounded">
-                          <div
-                            className="h-full bg-blue-600 rounded"
-                            style={{ width: row.share }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
+                <td className="p-4">
+                  <div className="flex items-center gap-2 w-40">
+                    <span className="text-sm text-gray-600 min-w-[40px]">{row.share}</span>
+                    <div className="flex-1 h-2 bg-gray-200 rounded">
                       <div
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                          row.isPositive ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
-                        }`}
-                      >
-                        {row.change}
-                      </div>
-                    </td>
+                        className="h-full bg-blue-600 rounded"
+                        style={{ width: row.share }}
+                      />
+                    </div>
+                  </div>
+                </td>
+                <td className="p-4">
+                  <div
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                      row.isPositive ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                    }`}
+                  >
+                    {row.change}
+                  </div>
+                </td>
                     <td className="p-4 border-r border-gray-200">
-                      <svg width="100" height="20" viewBox="0 0 100 20" className="text-blue-600">
-                        <polyline
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          points={sparkPointsArr[sortedData.indexOf(row)]}
-                        />
-                      </svg>
-                    </td>
+                  <svg width="100" height="20" viewBox="0 0 100 20" className="text-blue-600">
+                    <polyline
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      points={sparkPointsArr[sortedData.indexOf(row)]}
+                    />
+                  </svg>
+                </td>
                     <td className="p-4 w-0">
                       <div className="flex items-center gap-2">
                         <Tooltip content={row.brand === 'Nike' ? 'Cannot compare your brand to itself' : 'Switch to graph view and compare this brand with Nike'}>
@@ -382,79 +382,79 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
                             variant={(hoveredRow === idx && row.brand !== 'Nike') ? 'primary' : 'ghost'}
                             disabled={row.brand === 'Nike'}
                             onClick={() => handleCompareClick(row.brand)}
-                          >
-                            Compare
+                      >
+                        Compare
                           </Button>
                         </Tooltip>
                         <Tooltip content="Get detailed insights and trend analysis for this brand across all metrics">
                           <Button onClick={() => onAnalyzeBrand(row.brand, metricLabels)}>Analyze</Button>
                         </Tooltip>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="flex items-center justify-end gap-4 p-4 border-t border-gray-200 select-none">
+        <div className="flex items-center gap-2">
+          <button
+            className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+          >
+            <div className="flex -space-x-1">
+            <img src="/icons/chevron-left.svg" alt="First" className="w-4 h-4" />
+            <img src="/icons/chevron-left.svg" alt="First" className="w-4 h-4 -ml-1" />
           </div>
+          </button>
+          <button
+            className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+          >
+            <img src="/icons/chevron-left.svg" alt="Prev" className="w-4 h-4" />
+          </button>
+        </div>
 
-          <div className="flex items-center justify-end gap-4 p-4 border-t border-gray-200 select-none">
-            <div className="flex items-center gap-2">
-              <button
-                className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-              >
-                <div className="flex -space-x-1">
-                <img src="/icons/chevron-left.svg" alt="First" className="w-4 h-4" />
-                <img src="/icons/chevron-left.svg" alt="First" className="w-4 h-4 -ml-1" />
-              </div>
-              </button>
-              <button
-                className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-              >
-                <img src="/icons/chevron-left.svg" alt="Prev" className="w-4 h-4" />
-              </button>
-            </div>
+        <div className="flex items-center gap-2 text-xs text-gray-600">
+          <input
+            type="text"
+            value={pageInput}
+            onChange={(e) => setPageInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setCurrentPage(clampPage(parseInt(pageInput, 10)));
+              }
+            }}
+            className="px-1.5 py-0.5 border border-gray-200 rounded text-center"
+            style={{ width: '30px' }}
+          />
+          <span>out of</span>
+          <span>{totalPages}</span>
+        </div>
 
-            <div className="flex items-center gap-2 text-xs text-gray-600">
-              <input
-                type="text"
-                value={pageInput}
-                onChange={(e) => setPageInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    setCurrentPage(clampPage(parseInt(pageInput, 10)));
-                  }
-                }}
-                className="px-1.5 py-0.5 border border-gray-200 rounded text-center"
-                style={{ width: '30px' }}
-              />
-              <span>out of</span>
-              <span>{totalPages}</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-              >
-                <img src="/icons/chevron-right.svg" alt="Next" className="w-4 h-4" />
-              </button>
-              <button
-                className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages}
-              >
-                <div className="flex -space-x-1">
-                <img src="/icons/chevron-right.svg" alt="Last" className="w-4 h-4" />
-                <img src="/icons/chevron-right.svg" alt="Last" className="w-4 h-4 -ml-1" />
-              </div>
-              </button>
-            </div>
+        <div className="flex items-center gap-2">
+          <button
+            className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+          >
+            <img src="/icons/chevron-right.svg" alt="Next" className="w-4 h-4" />
+          </button>
+          <button
+            className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+          >
+            <div className="flex -space-x-1">
+            <img src="/icons/chevron-right.svg" alt="Last" className="w-4 h-4" />
+            <img src="/icons/chevron-right.svg" alt="Last" className="w-4 h-4 -ml-1" />
           </div>
+          </button>
+        </div>
+      </div>
         </>
       ) : (
         <ChartView 

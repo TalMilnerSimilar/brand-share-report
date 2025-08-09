@@ -36,7 +36,12 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis 
+            tickFormatter={(value) => {
+              return `${Number(value).toFixed(1)}%`;
+            }}
+            label={{ value: 'Market Share (%)', angle: -90, position: 'insideLeft' }}
+          />
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
           {Array.from(selectedMetrics).map((metric) => (
             <Line

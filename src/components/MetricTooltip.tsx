@@ -8,8 +8,7 @@ interface MetricTooltipProps {
 }
 
 const MetricTooltip: React.FC<MetricTooltipProps> = ({ active, payload, label, metricColorMap }) => {
-  // Check if this is a revenue metric by looking at the payload values
-  const isRevenue = payload && payload.length > 0 && payload[0].value && payload[0].value < 10000;
+  // In trend charts we display market share lines, so display percentages
   
   if (!active || !payload || !payload.length) {
     return null;
@@ -33,8 +32,8 @@ const MetricTooltip: React.FC<MetricTooltipProps> = ({ active, payload, label, m
               />
               <span className="text-xs text-[#3a5166]">{item.dataKey}</span>
             </div>
-            <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[41px]">
-              {isRevenue ? `$${item.value?.toLocaleString()}` : item.value?.toLocaleString()}
+            <span className="text-xs font-bold text-[#092540] text-right tracking-[0.36px] w-[50px]">
+              {typeof item.value === 'number' ? `${item.value.toFixed(1)}%` : '0.0%'}
             </span>
           </div>
         ))}
