@@ -120,7 +120,7 @@ const buildUnified = (): UnifiedBrandJSON => {
     for (let i = 0; i < brands.length; i++) {
       if (i === anchorIdx) continue;
       const b = brands[i];
-      let sign = ((mIdx + i) % 2 === 0) ? 1 : -1;
+      let sign = Math.random() < 0.5 ? 1 : -1;
       if (sign > 0 && maxPos[b] < MIN_CHANGE) sign = -1;
       if (sign < 0 && maxNeg[b] < MIN_CHANGE) sign = 1;
       if ((sign > 0 && maxPos[b] < MIN_CHANGE) || (sign < 0 && maxNeg[b] < MIN_CHANGE)) { changes[b] = 0; continue; }
