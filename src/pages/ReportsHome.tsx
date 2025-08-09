@@ -45,7 +45,7 @@ const ReportsHome: React.FC = () => {
             <div className="py-4">
               <div className="mb-2">
                 <h1 className="text-[20px] leading-[28px] font-bold text-[#092540]">
-                  Brand Share Reports Overview
+                  Select a report to analyze
                 </h1>
               </div>
               <p className="text-[14px] leading-4 text-[#6b7c8c]">
