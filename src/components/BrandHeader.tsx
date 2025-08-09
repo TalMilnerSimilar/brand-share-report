@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './BrandHeader.css';
 
 interface BrandHeaderProps {
@@ -7,6 +8,7 @@ interface BrandHeaderProps {
 }
 
 const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelectedDateRange }) => {
+  const navigate = useNavigate();
   const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false);
   const [isCompareDropdownOpen, setIsCompareDropdownOpen] = useState(false);
   const [selectedCompareTo, setSelectedCompareTo] = useState('Year over Year');
@@ -59,9 +61,26 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
   return (
     <div className="shi-header">
       <div className="header-container">
-        {/* Left side - Brand share title */}
-        <div className="header-left">
-          <div className="brand-share-title">My Brand Share</div>
+        {/* Left side - Back control (icon + text) per Figma */}
+        <div className="header-left" style={{ display: 'flex', alignItems: 'center' }}>
+          <button
+            type="button"
+            className="flex items-center gap-2"
+            onClick={() => navigate('/reports')}
+            aria-label="Back to all reports"
+          >
+            <span
+              className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white"
+              style={{ boxShadow: 'inset 0 0 0 1px #e6e9ec' }}
+            >
+              <img
+                src="/figma-assets/a4717ca10af3c9843071ce4c00d1061c66658808.svg"
+                alt=""
+                className="w-6 h-6"
+              />
+            </span>
+            <span className="text-[20px] font-medium leading-[28px] text-[#092540]">Back To All Reports</span>
+          </button>
         </div>
 
         {/* Right side - Filters */}
