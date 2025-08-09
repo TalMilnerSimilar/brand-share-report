@@ -56,17 +56,18 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
         </>
       );
     }
+    // Visible axis bound to first metric to drive tick generation
+    const primaryId = metricsArray[0];
     return (
       <>
-        {/* Visible default axis (id=0) to drive horizontal grid lines */}
         <YAxis
+          yAxisId={primaryId}
           orientation="left"
           axisLine={false}
           tick={tickStyle}
           tickMargin={14}
         />
-        {/* Hidden per-metric axes for independent scales */}
-        {metricsArray.map((m) => (
+        {metricsArray.slice(1).map((m) => (
           <YAxis key={m} yAxisId={m} hide axisLine={false} />
         ))}
       </>
