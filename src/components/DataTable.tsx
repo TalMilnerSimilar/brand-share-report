@@ -3,7 +3,8 @@ import Button from './Button';
 import ViewSwitcher from './ViewSwitcher';
 import ChartView from './ChartView';
 import unifiedBrands from '../data/unifiedBrands.json';
-import { competitorBrands } from '../data/brandData';
+// competitor brands (Nike + 4 comps) kept as UX constant
+const competitorBrands = ['Adidas', 'New Balance', 'Hoka', 'Asics'];
 import {
   funnelMetricKeys,
   overviewMetricKeys,
