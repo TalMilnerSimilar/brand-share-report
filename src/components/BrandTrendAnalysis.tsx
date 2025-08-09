@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { rawData } from '../data/brandData';
+import unifiedBrands from '../data/unifiedBrands.json';
 import BrandTrendChart from './BrandTrendChart';
 import MetricLegendListbox from './MetricLegendListbox';
 import { metrics } from '../data/brandTrendData';
@@ -91,19 +91,19 @@ const BrandTrendAnalysis: React.FC<BrandTrendAnalysisProps> = ({ selectedBrandPr
                                 {/* Other Brands Section */}
                                 <div className="dropdown-section">
                                     <div className="dropdown-section-header">Other Brands</div>
-                                    {rawData
+                                    {(Object.keys(unifiedBrands) as string[])
                                         .filter(brand => 
-                                            brand.brand !== 'Nike' && 
-                                            !['Adidas', 'New Balance', 'Hoka', 'Asics'].includes(brand.brand)
+                                            brand !== 'Nike' && 
+                                            !['Adidas', 'New Balance', 'Hoka', 'Asics'].includes(brand)
                                         )
-                                        .sort((a, b) => a.brand.localeCompare(b.brand))
+                                        .sort((a, b) => a.localeCompare(b))
                                         .map((brand) => (
                                             <div
-                                                key={brand.brand}
-                                                className={`dropdown-item ${brand.brand === selectedBrand ? 'selected' : ''}`}
-                                                onClick={() => handleBrandSelect(brand.brand)}
+                                                key={brand}
+                                                className={`dropdown-item ${brand === selectedBrand ? 'selected' : ''}`}
+                                                onClick={() => handleBrandSelect(brand)}
                                             >
-                                                {brand.brand}
+                                                {brand}
                                             </div>
                                         ))}
                                 </div>

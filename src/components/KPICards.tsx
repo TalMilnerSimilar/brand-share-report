@@ -1,5 +1,5 @@
-import React from 'react';
-import { kpiCardData } from '../data/kpiCardData';
+import React, { useMemo } from 'react';
+import unifiedBrands from '../data/unifiedBrands.json';
 import Tooltip from './Tooltip';
 
 const IconInfo16Px: React.FC = () => (
@@ -93,7 +93,61 @@ interface KPICardsProps {
 
 const KPICards: React.FC<KPICardsProps> = ({ activeAnalysisTab }) => {
   const isFunnelAnalysis = activeAnalysisTab === 'Funnel Analysis';
-  const cards = isFunnelAnalysis ? kpiCardData.funnelAnalysis : kpiCardData.brandShare;
+
+  const monthOrder = ['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const brandNames = Object.keys(unifiedBrands) as string[];
+  const myBrand = 'Nike';
+
+  type MetricKey = keyof typeof unifiedBrands[typeof myBrand];
+
+  const configs = isFunnelAnalysis
+    ? [
+        { title: 'Branded Search Volume', key: 'brandedSearchVolume' as MetricKey, subtitle: 'Searches mentioning your brand' },
+        { title: 'Search Visibility', key: 'searchVisibility' as MetricKey, subtitle: 'Appearances in first two SERPs' },
+        { title: 'Share of Paid Clicks', key: 'shareOfPaidClicks' as MetricKey, subtitle: 'Your share of sponsored clicks' },
+        { title: 'Share of Total Clicks', key: 'shareOfTotalClicks' as MetricKey, subtitle: 'Your share of all search clicks' },
+      ]
+    : [
+        { title: 'Product Views', key: 'productViews' as MetricKey, subtitle: 'Searches mentioning your brand' },
+        { title: 'Units Sold', key: 'unitsSold' as MetricKey, subtitle: 'Total units sold across retailers' },
+        { title: 'Revenue', key: 'revenue' as MetricKey, subtitle: 'Revenue generated from sales' },
+      ];
+
+  const cards = useMemo(() => {
+    return configs.map(({ title, key, subtitle }) => {
+      const myBlock = (unifiedBrands as any)[myBrand]?.[key] || { share: 0, change: 0 };
+      const mySharePct = (myBlock.share ?? 0) * 100;
+      const myChangePP = (myBlock.change ?? 0) * 100;
+
+      // Category total = sum of latest values across all brands
+      const latestTotalValue = brandNames.reduce((sum, b) => sum + (((unifiedBrands as any)[b]?.[key]?.value) ?? 0), 0);
+      const categoryTotal = latestTotalValue >= 1_000_000
+        ? `${(latestTotalValue / 1_000_000).toFixed(1)}M`
+        : latestTotalValue >= 1_000
+          ? `${(latestTotalValue / 1_000).toFixed(1)}K`
+          : `${latestTotalValue}`;
+
+      // Comp AVG = average share among all non-myBrand brands
+      const others = brandNames.filter((b) => b !== myBrand);
+      const compAvgShare = others.reduce((s, b) => s + (((unifiedBrands as any)[b]?.[key]?.share) ?? 0), 0) / Math.max(1, others.length);
+      const compAvgChange = others.reduce((s, b) => s + (((unifiedBrands as any)[b]?.[key]?.change) ?? 0), 0) / Math.max(1, others.length);
+
+      return {
+        title,
+        subtitle,
+        myBrandShare: `${mySharePct.toFixed(1)}%`,
+        myBrandShareChange: `${myChangePP >= 0 ? '+' : ''}${myChangePP.toFixed(1)}PP`,
+        isPositive: myChangePP >= 0,
+        categoryTotal,
+        categoryTotalChange: '—',
+        categoryIsPositive: false,
+        compAvg: `${(compAvgShare * 100).toFixed(1)}%`,
+        compAvgChange: `${(compAvgChange * 100 >= 0 ? '+' : '')}${(compAvgChange * 100).toFixed(1)}PP`,
+        compAvgIsPositive: compAvgChange >= 0,
+      };
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFunnelAnalysis]);
 
   return (
     <div className={isFunnelAnalysis ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" : "flex gap-4"}>

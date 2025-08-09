@@ -1,9 +1,5 @@
-import { rawData } from './brandData';
-import {
-  timeSeriesByMetric,
-  metricLabelMap,
-  brands as allBrands,
-} from './unifiedBrandData';
+import unifiedBrands from './unifiedBrands.json';
+import { metricLabelMap } from './unifiedBrandData';
 
 const metricLabels = {
   productViews: metricLabelMap.productViews,
@@ -15,28 +11,28 @@ const metricLabels = {
   shareOfTotalClicks: metricLabelMap.shareOfTotalClicks,
 };
 
+const monthOrder = ['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
 const transformDataForBrand = (brandName: string) => {
-  // Get the actual month names from the unified module (use product views as canonical)
-  const firstMetricData = timeSeriesByMetric.productViews;
-  const monthNames = firstMetricData.map((item: any) => item.name);
-  
-  return monthNames.map((monthName, index) => {
-    const dataPoint: { [key: string]: any } = { name: monthName };
-    for (const metricKey in timeSeriesByMetric) {
-      const metricData = timeSeriesByMetric[metricKey as keyof typeof timeSeriesByMetric];
-      if (metricData && metricData[index]) {
-        const brandValue = metricData[index][brandName as keyof typeof metricData[0]];
-        dataPoint[metricLabels[metricKey as keyof typeof metricLabels]] = brandValue;
-      }
+  const brandBlock = (unifiedBrands as any)[brandName] || {};
+  return monthOrder.map((m) => {
+    const dataPoint: Record<string, number | string> = { name: m };
+    for (const k of Object.keys(metricLabels) as Array<keyof typeof metricLabels>) {
+      const label = metricLabels[k];
+      const share = brandBlock[k]?.shareOverTime?.[m] ?? 0; // decimal
+      dataPoint[label] = Number(share) * 100; // percent for charting
     }
     return dataPoint;
   });
 };
 
-export const brandTrendData: Record<string, any[]> = allBrands.reduce((acc, brandName) => {
-  acc[brandName] = transformDataForBrand(brandName);
-  return acc;
-}, {} as Record<string, any[]>);
+export const brandTrendData: Record<string, any[]> = (Object.keys(unifiedBrands) as string[]).reduce(
+  (acc, brandName) => {
+    acc[brandName] = transformDataForBrand(brandName);
+    return acc;
+  },
+  {} as Record<string, any[]>
+);
 
 
 export const metrics = Object.values(metricLabels);

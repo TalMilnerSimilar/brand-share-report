@@ -67,7 +67,7 @@ const Tooltip: React.FC<TooltipProps> = ({ children, content, position = 'top', 
         window.removeEventListener('resize', updatePosition);
       };
     }
-  }, [isVisible, position]);
+  }, [isVisible, position, updatePosition]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
