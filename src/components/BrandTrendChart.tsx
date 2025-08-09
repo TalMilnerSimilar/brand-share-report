@@ -7,7 +7,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Customized,
 } from 'recharts';
 import { brandTrendData, metricColorMap } from '../data/brandTrendData';
 import MetricTooltip from './MetricTooltip';
@@ -90,36 +89,13 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     return metric; // bind to hidden per-metric axis; grid uses visible axis id=0
   };
 
-  // Overlay: always draw 5 horizontal lines equally spaced across the plotting area
-  const CustomHorizontalGridLines: React.FC<any> = ({ offset }) => {
-    if (!offset) return null;
-    const { left, top, width, height } = offset;
-    const lineCount = 5;
-    const ys = Array.from({ length: lineCount }, (_, i) => top + (height * i) / (lineCount - 1));
-    const x1 = left;
-    const x2 = left + width;
-    return (
-      <g className="recharts-cartesian-grid-horizontal" pointerEvents="none">
-        {ys.map((yVal) => (
-          <line
-            key={yVal}
-            stroke="#ccc"
-            strokeWidth={1}
-            fill="none"
-            x={left}
-            y={top}
-            width={width}
-            height={height}
-            x1={x1}
-            y1={yVal}
-            x2={x2}
-            y2={yVal}
-            shapeRendering="crispEdges"
-          />
-        ))}
-      </g>
-    );
-  };
+  // Calculate fixed horizontal line positions (5 lines equally spaced)
+  // Assuming chart height is ~328px based on container minus margins
+  const chartHeight = 328;
+  const lineCount = 5;
+  const horizontalLinePositions = Array.from({ length: lineCount }, (_, i) => 
+    (chartHeight * i) / (lineCount - 1)
+  );
 
   return (
     <div className="flex-1 bg-white p-4 rounded-lg h-[400px]">
@@ -133,8 +109,13 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             bottom: 5,
           }}
         >
-          {/* Disable built-in horizontal grid to avoid duplicates; draw our own overlay lines */}
-          <CartesianGrid vertical={false} horizontal={false} />
+          {/* Use CartesianGrid with horizontalPoints for fixed lines */}
+          <CartesianGrid 
+            vertical={false} 
+            horizontal={true}
+            horizontalPoints={horizontalLinePositions}
+            stroke="#ccc"
+          />
           {renderYAxes()}
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
@@ -150,8 +131,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
               yAxisId={getAxisIdForMetric(metric, idx)}
             />
           ))}
-          {/* Draw overlay lines last so they are definitely visible */}
-          <Customized component={<CustomHorizontalGridLines />} />
+
         </LineChart>
       </ResponsiveContainer>
     </div>
