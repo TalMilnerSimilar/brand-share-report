@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import unifiedBrands from '../data/unifiedBrands.json';
+import unifiedBrands from '../data/unifiedBrands';
 import Tooltip from './Tooltip';
 
 const IconInfo16Px: React.FC = () => (

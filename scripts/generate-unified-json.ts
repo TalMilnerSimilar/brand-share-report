@@ -148,27 +148,153 @@ function build(): UnifiedBrandJSON {
     // Finally set anchor within its cap
     changes[anchorBrand] = clamp(desiredAnchor, -maxNeg[anchorBrand], maxPos[anchorBrand]);
 
-    // Compose shareOverTime per brand (linear ramp from first to last)
+    // Compose shareOverTime per brand with realistic wiggles but preserving constraints
+    const M = monthsOrder.length;
+    const firstShareByBrand: Record<string, number> = {};
+    const baseSeries: Record<string, number[]> = {};
     for (const b of brands) {
       const lastShare = lastShareByBrand[b];
       const change = changes[b];
       const firstShare = clamp(lastShare - change, 0 + EPS, 1 - EPS);
-
-      const shareOverTime: ShareOverTime = {};
-      const M = monthsOrder.length;
+      firstShareByBrand[b] = firstShare;
+      baseSeries[b] = [];
       for (let t = 0; t < M; t++) {
         const frac = M === 1 ? 1 : t / (M - 1);
-        const s = firstShare + change * frac;
-        shareOverTime[monthsOrder[t]] = s;
+        baseSeries[b][t] = firstShare + change * frac;
       }
-      // Force last month to equal current share exactly
-      shareOverTime[monthsOrder[M - 1]] = lastShare;
+    }
 
-      // Write into brand bucket
+    // Generate wiggles per brand/time (zero at endpoints), then enforce per-month zero-sum and bounds
+    const sharesByMonth: Array<Record<string, number>> = Array.from({ length: M }, () => ({}));
+    // Deterministic-ish randomness per metric index for variety
+    const rng = (seed: number) => () => {
+      // simple LCG
+      seed = (seed * 1664525 + 1013904223) % 0xffffffff;
+      return (seed >>> 0) / 0xffffffff;
+    };
+    const rand = rng(mIdx + 1337);
+
+    // Precompute multi-frequency wiggle parameters per brand
+    const ampByBrand: Record<string, number> = {};
+    const freqListByBrand: Record<string, number[]> = {};
+    const phaseListByBrand: Record<string, number[]> = {};
+    const weightListByBrand: Record<string, number[]> = {};
+    for (let i = 0; i < brands.length; i++) {
+      const b = brands[i];
+      const changeAbs = Math.abs(changes[b]);
+      // Overall amplitude cap per brand
+      ampByBrand[b] = clamp(0.25 * changeAbs + 0.02 * rand(), 0, 0.08 + 0.4 * changeAbs);
+      // Random number of components (2..5)
+      const K = 2 + Math.floor(rand() * 4);
+      const freqs: number[] = [];
+      const phases: number[] = [];
+      const weightsRaw: number[] = [];
+      for (let k = 0; k < K; k++) {
+        const f = 1 + Math.floor(rand() * 4); // 1..4 cycles across period
+        freqs.push(f);
+        phases.push(rand() * Math.PI * 2);
+        // Random positive weight
+        weightsRaw.push(0.2 + rand());
+      }
+      const sumW = weightsRaw.reduce((s, x) => s + x, 0) || 1;
+      const weights = weightsRaw.map((x) => x / sumW);
+      freqListByBrand[b] = freqs;
+      phaseListByBrand[b] = phases;
+      weightListByBrand[b] = weights;
+    }
+
+    // Build shares for t=0 and t=M-1 exactly equal to base (first/last)
+    for (const b of brands) {
+      sharesByMonth[0][b] = baseSeries[b][0];
+      sharesByMonth[M - 1][b] = baseSeries[b][M - 1];
+    }
+
+    // Internal months: add wiggles, keep monthly sum at 1, respect bounds
+    for (let t = 1; t < M - 1; t++) {
+      const frac = t / (M - 1);
+      const envelope = Math.pow(Math.sin(Math.PI * frac), 1); // 0 at ends, 1 mid
+      const proposed: Record<string, number> = {};
+      const wigg: Record<string, number> = {};
+      let wiggleSum = 0;
+      for (const b of brands) {
+        const base = baseSeries[b][t];
+        const A = ampByBrand[b] * envelope;
+        const freqs = freqListByBrand[b];
+        const phases = phaseListByBrand[b];
+        const weights = weightListByBrand[b];
+        let w = 0;
+        for (let k = 0; k < freqs.length; k++) {
+          w += weights[k] * Math.sin(2 * Math.PI * freqs[k] * frac + phases[k]);
+        }
+        w = A * w; // scale combined wave to brand amplitude
+        wigg[b] = w;
+        wiggleSum += w;
+      }
+      // zero-mean the wiggles so monthly sum remains 1 after adding to base
+      const meanWiggle = wiggleSum / brands.length;
+      for (const b of brands) {
+        proposed[b] = baseSeries[b][t] + (wigg[b] - meanWiggle);
+      }
+
+      // Clamp to bounds and compute residual to bring sum back to 1
+      const lower = EPS, upper = 1 - EPS;
+      let sumS = 0;
+      const sNow: Record<string, number> = {};
+      const capGrow: Record<string, number> = {};
+      const capShrink: Record<string, number> = {};
+      for (const b of brands) {
+        const s = clamp(proposed[b], lower, upper);
+        sNow[b] = s;
+        capGrow[b] = upper - s;   // how much we can add
+        capShrink[b] = s - lower; // how much we can subtract
+        sumS += s;
+      }
+      let residual = 1 - sumS;
+      let guard = 0;
+      while (Math.abs(residual) > 1e-9 && guard++ < 5) {
+        if (residual > 0) {
+          // distribute to growth capacities
+          let totalCap = 0;
+          for (const b of brands) totalCap += capGrow[b];
+          if (totalCap <= 0) break;
+          for (const b of brands) {
+            if (capGrow[b] <= 0) continue;
+            const add = residual * (capGrow[b] / totalCap);
+            const actual = Math.min(add, capGrow[b]);
+            sNow[b] += actual;
+            capGrow[b] -= actual;
+            capShrink[b] += actual;
+            residual -= actual;
+          }
+        } else {
+          // remove using shrink capacities
+          let totalCap = 0;
+          for (const b of brands) totalCap += capShrink[b];
+          if (totalCap <= 0) break;
+          for (const b of brands) {
+            if (capShrink[b] <= 0) continue;
+            const rem = (-residual) * (capShrink[b] / totalCap);
+            const actual = Math.min(rem, capShrink[b]);
+            sNow[b] -= actual;
+            capShrink[b] -= actual;
+            capGrow[b] += actual;
+            residual += actual;
+          }
+        }
+      }
+      for (const b of brands) sharesByMonth[t][b] = sNow[b];
+    }
+
+    // Persist to out
+    for (const b of brands) {
+      const shareOverTime: ShareOverTime = {};
+      for (let t = 0; t < M; t++) {
+        shareOverTime[monthsOrder[t]] = sharesByMonth[t][b];
+      }
       (out[b] as any)[metric] = {
         value: latestValueByBrand[b] || 0,
-        share: lastShare,
-        change: change,
+        share: lastShareByBrand[b],
+        change: changes[b],
         shareOverTime,
       };
     }

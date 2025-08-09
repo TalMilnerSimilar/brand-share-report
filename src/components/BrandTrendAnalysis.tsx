@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import unifiedBrands from '../data/unifiedBrands.json';
+import unifiedBrands from '../data/unifiedBrands';
 import BrandTrendChart from './BrandTrendChart';
 import MetricLegendListbox from './MetricLegendListbox';
 import { metrics } from '../data/brandTrendData';

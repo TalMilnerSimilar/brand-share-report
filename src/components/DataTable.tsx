@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Button from './Button';
 import ViewSwitcher from './ViewSwitcher';
 import ChartView from './ChartView';
-import unifiedBrands from '../data/unifiedBrands.json';
+import unifiedBrands from '../data/unifiedBrands';
 import {
   funnelMetricKeys,
   overviewMetricKeys,

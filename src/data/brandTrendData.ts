@@ -1,4 +1,4 @@
-import unifiedBrands from './unifiedBrands.json';
+import unifiedBrands from './unifiedBrands';
 import { metricLabelMap } from './unifiedBrandData';
 
 const metricLabels = {
