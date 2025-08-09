@@ -39,9 +39,9 @@ const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
             bottom: 5,
           }}
         >
-          <CartesianGrid vertical={false} />
+          <CartesianGrid vertical={false} horizontal={true} stroke="#E6E9EC" />
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
-          <YAxis axisLine={false} tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
+          <YAxis axisLine={false} tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} tickCount={5} />
           <Tooltip content={<CustomTooltip brandColorMap={brandColorMap} />} />
           {Array.from(selectedBrands).map((brand) => (
             <Line
