@@ -7,17 +7,17 @@ const SelectionHeader: React.FC = () => {
   const domainDropdownRef = useRef<HTMLDivElement>(null);
 
   const domainOptions = [
-    { label: 'amazon.com', flag: '/icons/us-flag.svg' }, // US
-    { label: 'amazon.co.uk', flag: '/icons/us-flag.svg' }, // UK (placeholder flag)
-    { label: 'amazon.de', flag: '/icons/us-flag.svg' }, // DE (placeholder flag)
-    { label: 'amazon.fr', flag: '/icons/us-flag.svg' }, // FR (placeholder flag)
-    { label: 'amazon.it', flag: '/icons/us-flag.svg' }, // IT (placeholder flag)
-    { label: 'amazon.es', flag: '/icons/us-flag.svg' }, // ES (placeholder flag)
-    { label: 'amazon.ca', flag: '/icons/us-flag.svg' }, // CA (placeholder flag)
-    { label: 'amazon.com.mx', flag: '/icons/us-flag.svg' }, // MX (placeholder flag)
-    { label: 'amazon.co.jp', flag: '/icons/us-flag.svg' }, // JP (placeholder flag)
-    { label: 'amazon.com.au', flag: '/icons/us-flag.svg' }, // AU (placeholder flag)
-    { label: 'amazon.in', flag: '/icons/us-flag.svg' }, // IN (placeholder flag)
+    { label: 'amazon.com', flag: '/icons/us-flag.svg' },
+    { label: 'amazon.co.uk', flag: '/icons/uk-flag.svg' },
+    { label: 'amazon.de', flag: '/icons/de-flag.svg' },
+    { label: 'amazon.fr', flag: '/icons/fr-flag.svg' },
+    { label: 'amazon.it', flag: '/icons/it-flag.svg' },
+    { label: 'amazon.es', flag: '/icons/es-flag.svg' },
+    { label: 'amazon.ca', flag: '/icons/ca-flag.svg' },
+    { label: 'amazon.com.mx', flag: '/icons/mx-flag.svg' },
+    { label: 'amazon.co.jp', flag: '/icons/jp-flag.svg' },
+    { label: 'amazon.com.au', flag: '/icons/au-flag.svg' },
+    { label: 'amazon.in', flag: '/icons/in-flag.svg' },
   ];
 
   const handleDomainSelect = (value: string) => {
