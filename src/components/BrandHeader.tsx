@@ -10,7 +10,7 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
   const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false);
   const [isCompareDropdownOpen, setIsCompareDropdownOpen] = useState(false);
   const [selectedCompareTo, setSelectedCompareTo] = useState('Year over Year');
-  
+
   const dateDropdownRef = useRef<HTMLDivElement>(null);
   const compareDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -72,7 +72,7 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
             <div className="filter-group">
               <span className="filter-label">For</span>
               <div className="dropdown-container" ref={dateDropdownRef}>
-                <div 
+                <div
                   className="dropdown-header"
                   onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
                 >
@@ -96,11 +96,11 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
                 )}
               </div>
             </div>
-            
+
             <div className="filter-group">
               <span className="filter-label">Compared to</span>
               <div className="dropdown-container" ref={compareDropdownRef}>
-                <div 
+                <div
                   className="dropdown-header"
                   onClick={() => setIsCompareDropdownOpen(!isCompareDropdownOpen)}
                 >

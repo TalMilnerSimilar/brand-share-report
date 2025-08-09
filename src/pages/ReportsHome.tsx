@@ -1,8 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
-import Button from '../components/Button';
-import ReportsHeader from '../components/ReportsHeader';
+import ReportsSelectionHeader from '../components/ReportsSelectionHeader';
 
 type SavedReport = {
   id: string;
@@ -31,43 +30,12 @@ const ReportsHome: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <ReportsHeader />
-      <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
-        {/* Hero Section (Figma-spec) - title moved to ReportsHeader */}
-        <div className="mb-6">
-        <div
-          className="border border-gray-200 rounded-t-[6px] px-6 py-2"
-          style={{
-            background:
-              'linear-gradient(250deg, rgba(165, 31, 227, 0.15) 9.5%, rgba(25, 90, 254, 0.15) 26%, rgba(255, 255, 255, 0.15) 52%), #ffffff',
-          }}
-        >
-          <div className="flex items-center justify-between overflow-clip w-full">
-            <div className="py-4">
-              <p className="text-[14px] leading-4 text-[#6b7c8c]">
-                Monitor your brand performance across categories and competitors
-              </p>
-            </div>
-            <div>
-              <Button
-                variant="primary"
-                className="px-4 py-2 text-[14px] leading-5 flex items-center gap-2"
-                onClick={() => navigate('/reports/new')}
-              >
-                <img
-                  src="/figma-assets/469213f20b34f60691ed81fa0082aa5c4fa6599b.svg"
-                  alt=""
-                  className="w-4 h-4"
-                />
-                Create a New Report
-              </Button>
-            </div>
-          </div>
-        </div>
+    <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
+      {/* Header (selection page only) */}
+      <ReportsSelectionHeader onCreateNew={() => navigate('/reports/new')} />
 
-        {/* Bottom KPI row */}
-        <div className="bg-white border border-gray-200 border-t-0 rounded-b-[8px] px-6 py-2">
+      {/* Bottom KPI row */}
+      <div className="bg-white border border-gray-200 border-t-0 rounded-b-[8px] px-6 py-2 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/reports icon.svg" alt="Reports Icon" className="w-4 h-4" />
@@ -91,7 +59,6 @@ const ReportsHome: React.FC = () => {
               <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</span>
             </div>
           </div>
-        </div>
       </div>
 
       {/* Reports Table */}
@@ -282,7 +249,6 @@ const ReportsHome: React.FC = () => {
           </table>
         </div>
       </div>
-    </div>
     </div>
   );
 };
