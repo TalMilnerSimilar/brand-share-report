@@ -59,20 +59,46 @@ const buildUnified = (): UnifiedBrandJSON => {
     const lastMonthKey = [...monthsOrder].reverse().find((mo) => monthToRow[mo]) || monthsOrder[monthsOrder.length - 1];
     const lastRow = monthToRow[lastMonthKey] || {} as Record<string, number | string>;
 
+    // Start from empirical shares, then jitter to regenerate shares each load
     const totalLast = brands.reduce((s, b) => s + (Number(lastRow[b]) || 0), 0);
-    const lastShareByBrand: Record<string, number> = {};
-    const latestValueByBrand: Record<string, number> = {};
+    let lastShareByBrand: Record<string, number> = {} as Record<string, number>;
     for (const b of brands) {
       const v = Number(lastRow[b]) || 0;
+      const baseShare = totalLast > 0 ? v / totalLast : 0;
+      lastShareByBrand[b] = baseShare;
+    }
+    // Normalize
+    let sumShares0 = brands.reduce((s, b) => s + lastShareByBrand[b], 0) || 1;
+    for (const b of brands) lastShareByBrand[b] = lastShareByBrand[b] / sumShares0;
+    // Apply jitter (± up to 20% of base share, bounded)
+    const jittered: Record<string, number> = {} as any;
+    for (const b of brands) {
+      const s0 = lastShareByBrand[b];
+      const jitterFrac = (Math.random() * 0.4) - 0.2; // [-0.2, +0.2]
+      jittered[b] = clamp(s0 * (1 + jitterFrac), EPS, 1 - EPS);
+    }
+    // Renormalize and correct residual
+    let sumJ = brands.reduce((s, b) => s + jittered[b], 0) || 1;
+    for (const b of brands) jittered[b] = jittered[b] / sumJ;
+    const resid = 1 - brands.reduce((s, b) => s + jittered[b], 0);
+    jittered[brands[brands.length - 1]] = clamp(jittered[brands[brands.length - 1]] + resid, EPS, 1 - EPS);
+    lastShareByBrand = jittered;
+
+    // Generate a random category total around empirical total, then derive last values from shares
+    const baseTotal = totalLast || 100000; // fallback for safety
+    const totalFactor = 0.85 + Math.random() * 0.5; // [0.85, 1.35]
+    let newTotal = Math.max(1, Math.round(baseTotal * totalFactor));
+    const latestValueByBrand: Record<string, number> = {} as any;
+    let assigned = 0;
+    for (let i = 0; i < brands.length - 1; i++) {
+      const b = brands[i];
+      const v = Math.max(0, Math.round(newTotal * lastShareByBrand[b]));
       latestValueByBrand[b] = v;
-      lastShareByBrand[b] = totalLast > 0 ? v / totalLast : 0;
+      assigned += v;
     }
-    let sumShares = brands.reduce((s, b) => s + lastShareByBrand[b], 0);
-    if (sumShares > 0) {
-      for (const b of brands) lastShareByBrand[b] = lastShareByBrand[b] / sumShares;
-      sumShares = brands.reduce((s, b) => s + lastShareByBrand[b], 0);
-      lastShareByBrand[brands[brands.length - 1]] += 1 - sumShares;
-    }
+    // Assign residual to last brand to make sums match total
+    const lastB = brands[brands.length - 1];
+    latestValueByBrand[lastB] = Math.max(0, newTotal - assigned);
 
     const changes: Record<string, number> = {};
     const maxPos: Record<string, number> = {};
@@ -174,11 +200,14 @@ const buildUnified = (): UnifiedBrandJSON => {
       }
       for (const b of brands) sharesByMonth[t][b] = sNow[b];
     }
-    // write out
+    // write out (value/share/change all from regenerated series)
     for (const b of brands) {
       const shareOverTime: ShareOverTime = {};
       for (let t = 0; t < M; t++) shareOverTime[monthsOrder[t]] = sharesByMonth[t][b];
-      (out[b] as any)[metric] = { value: latestValueByBrand[b] || 0, share: lastShareByBrand[b], change: changes[b], shareOverTime };
+      const share = sharesByMonth[M - 1][b];
+      const first = sharesByMonth[0][b];
+      const change = share - first;
+      (out[b] as any)[metric] = { value: latestValueByBrand[b] || 0, share, change, shareOverTime };
     }
   }
 
