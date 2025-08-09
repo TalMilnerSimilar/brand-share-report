@@ -60,6 +60,15 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     }
     return (
       <>
+        {/* Visible axis to drive horizontal grid lines */}
+        <YAxis
+          yAxisId="grid"
+          orientation="left"
+          axisLine={false}
+          tick={tickStyle}
+          tickMargin={14}
+        />
+        {/* Hidden per-metric axes for independent scales */}
         {metricsArray.map((m) => (
           <YAxis key={m} yAxisId={m} hide axisLine={false} />
         ))}
@@ -71,7 +80,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     const count = metricsArray.length;
     if (count === 1) return 'left';
     if (count === 2) return index === 0 ? 'left' : 'right';
-    return metric;
+    return metric; // bind to hidden per-metric axis; grid uses visible 'grid' axis
   };
 
   return (
