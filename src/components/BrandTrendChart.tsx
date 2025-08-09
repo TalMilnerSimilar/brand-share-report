@@ -30,7 +30,6 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     if (count === 1) {
       return (
         <YAxis
-          yAxisId="left"
           orientation="left"
           axisLine={false}
           tick={tickStyle}
@@ -42,7 +41,6 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
       return (
         <>
           <YAxis
-            yAxisId="left"
             orientation="left"
             axisLine={false}
             tick={tickStyle}
@@ -60,9 +58,8 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     }
     return (
       <>
-        {/* Visible axis to drive horizontal grid lines */}
+        {/* Visible default axis (id=0) to drive horizontal grid lines */}
         <YAxis
-          yAxisId="grid"
           orientation="left"
           axisLine={false}
           tick={tickStyle}
@@ -78,8 +75,8 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
 
   const getAxisIdForMetric = (metric: string, index: number) => {
     const count = metricsArray.length;
-    if (count === 1) return 'left';
-    if (count === 2) return index === 0 ? 'left' : 'right';
+    if (count === 1) return 0 as any; // default axis id
+    if (count === 2) return index === 0 ? (0 as any) : 'right';
     return metric; // bind to hidden per-metric axis; grid uses visible 'grid' axis
   };
 
