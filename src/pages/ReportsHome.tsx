@@ -93,24 +93,6 @@ const ReportsHome: React.FC = () => {
                 <span className="text-lg">+</span>
                 New Report
               </button>
-
-              {/* Decorative Elements */}
-              <div className="relative">
-                <div className="grid grid-cols-2 gap-2 opacity-30">
-                  <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
-                    <img src="/icons/images/shoe-1.png" alt="Product" className="w-8 h-8 object-contain" />
-                  </div>
-                  <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
-                    <img src="/icons/images/shoe-2.png" alt="Product" className="w-8 h-8 object-contain" />
-                  </div>
-                  <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
-                    <img src="/icons/images/shoe-3.png" alt="Product" className="w-8 h-8 object-contain" />
-                  </div>
-                  <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center">
-                    <img src="/icons/analytics-icon.svg" alt="Analytics" className="w-6 h-6" />
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
