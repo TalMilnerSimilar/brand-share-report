@@ -69,10 +69,7 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
             onClick={() => navigate('/reports')}
             aria-label="Back to all reports"
           >
-            <span
-              className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white"
-              style={{ boxShadow: 'inset 0 0 0 1px #e6e9ec' }}
-            >
+            <span className="back-icon-button">
               <img
                 src="/figma-assets/a4717ca10af3c9843071ce4c00d1061c66658808.svg"
                 alt=""

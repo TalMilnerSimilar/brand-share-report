@@ -83,6 +83,24 @@
     align-items: center;
 }
 
+/* Back icon button states (from Figma) */
+.back-icon-button {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: inset 0 0 0 1px #e6e9ec;
+}
+.back-icon-button:hover {
+    background-color: #f3f7ff; /* hover */
+}
+.back-icon-button:active {
+    background-color: #e8eeff; /* active */
+}
+
 .dropdown-container:hover {
     border-color: #c1c7cd;
 }
