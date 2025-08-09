@@ -127,10 +127,13 @@ const KPICards: React.FC<KPICardsProps> = ({ activeAnalysisTab }) => {
 
       // Category total and change from generator metadata
       const totalsMeta = (categoryTotalsByMetric as any)[key] || { total: 0, change: 0 };
-      const categoryTotal = fmt(totalsMeta.total ?? 0);
+      const categoryTotalNum = Number(totalsMeta.total ?? 0);
       const catChangeVal = Number(totalsMeta.change ?? 0);
-      const categoryTotalChange = `${catChangeVal >= 0 ? '+' : ''}${fmt(catChangeVal)}`;
-      const categoryIsPositive = catChangeVal >= 0;
+      const categoryTotal = fmt(categoryTotalNum);
+      const firstTotalEst = categoryTotalNum - catChangeVal;
+      const pct = firstTotalEst !== 0 ? (catChangeVal / firstTotalEst) * 100 : 0;
+      const categoryTotalChange = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+      const categoryIsPositive = pct >= 0;
 
       // Comp AVG = average share among all non-myBrand brands
       const others = brandNames.filter((b) => b !== myBrand);
