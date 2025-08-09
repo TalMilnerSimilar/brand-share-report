@@ -10,11 +10,8 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
   const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false);
   const [isCompareDropdownOpen, setIsCompareDropdownOpen] = useState(false);
   const [selectedCompareTo, setSelectedCompareTo] = useState('Year over Year');
-  const [isDomainDropdownOpen, setIsDomainDropdownOpen] = useState(false);
-  const [selectedDomain, setSelectedDomain] = useState<'amazon.com' | 'walmart.com' | 'bestbuy.com'>('amazon.com');
   const dateDropdownRef = useRef<HTMLDivElement>(null);
   const compareDropdownRef = useRef<HTMLDivElement>(null);
-  const domainDropdownRef = useRef<HTMLDivElement>(null);
 
   const dateRangeOptions = [
     'Dec 2024 - Dec 2024',
@@ -32,12 +29,6 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
     'Custom Range'
   ];
 
-  const domainOptions: Array<{ label: 'amazon.com' | 'walmart.com' | 'bestbuy.com'; flag: string }>
-    = [
-      { label: 'amazon.com', flag: '/icons/us-flag.svg' },
-      { label: 'walmart.com', flag: '/icons/us-flag.svg' },
-      { label: 'bestbuy.com', flag: '/icons/us-flag.svg' },
-    ];
 
   const handleDateRangeSelect = (option: string) => {
     setSelectedDateRange(option);
@@ -49,10 +40,6 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
     setIsCompareDropdownOpen(false);
   };
 
-  const handleDomainSelect = (option: 'amazon.com' | 'walmart.com' | 'bestbuy.com') => {
-    setSelectedDomain(option);
-    setIsDomainDropdownOpen(false);
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,9 +48,6 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
       }
       if (compareDropdownRef.current && !compareDropdownRef.current.contains(event.target as Node)) {
         setIsCompareDropdownOpen(false);
-      }
-      if (domainDropdownRef.current && !domainDropdownRef.current.contains(event.target as Node)) {
-        setIsDomainDropdownOpen(false);
       }
     };
 
@@ -108,66 +92,8 @@ const BrandHeader: React.FC<BrandHeaderProps> = ({ selectedDateRange, setSelecte
           </div>
         </div>
 
-        {/* Right side - Filters */}
-        <div className="header-right">
-          <div className="filters-container">
-            <div className="filter-group">
-              <span className="filter-label">For</span>
-              <div className="dropdown-container" ref={dateDropdownRef}>
-                <div 
-                  className="dropdown-header"
-                  onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
-                >
-                  <span className="dropdown-text">{selectedDateRange}</span>
-                  <div className={`dropdown-icon ${isDateDropdownOpen ? 'rotated' : ''}`}>
-                    <img src="/icons/chevron-down.svg" alt="Expand" />
-                  </div>
-                </div>
-                {isDateDropdownOpen && (
-                  <div className="dropdown-menu">
-                    {dateRangeOptions.map((option) => (
-                      <div
-                        key={option}
-                        className={`dropdown-item ${option === selectedDateRange ? 'selected' : ''}`}
-                        onClick={() => handleDateRangeSelect(option)}
-                      >
-                        {option}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="filter-group">
-              <span className="filter-label">Compared to</span>
-              <div className="dropdown-container" ref={compareDropdownRef}>
-                <div 
-                  className="dropdown-header"
-                  onClick={() => setIsCompareDropdownOpen(!isCompareDropdownOpen)}
-                >
-                  <span className="dropdown-text">{selectedCompareTo}</span>
-                  <div className={`dropdown-icon ${isCompareDropdownOpen ? 'rotated' : ''}`}>
-                    <img src="/icons/chevron-down.svg" alt="Expand" />
-                  </div>
-                </div>
-                {isCompareDropdownOpen && (
-                  <div className="dropdown-menu">
-                    {compareToOptions.map((option) => (
-                      <div
-                        key={option}
-                        className={`dropdown-item ${option === selectedCompareTo ? 'selected' : ''}`}
-                        onClick={() => handleCompareToSelect(option)}
-                      >
-                        {option}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Right side - Filters removed on selection screen; keep empty to align layout */}
+        <div className="header-right" />
       </div>
     </div>
   );
