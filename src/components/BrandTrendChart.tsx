@@ -25,9 +25,38 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
 
   const tickStyle = { fill: '#B6BEC6', fontSize: 11 as const, cursor: 'default' as const };
 
+  // Calculate dynamic domain for Y-axes based on data
+  const calculateDomain = (metricKey?: string) => {
+    if (!data.length) return [0, 100];
+    
+    const metricsToCheck = metricKey ? [metricKey] : metricsArray;
+    let allValues: number[] = [];
+    
+    metricsToCheck.forEach(metric => {
+      data.forEach(point => {
+        const value = point[metric];
+        if (typeof value === 'number') {
+          allValues.push(value);
+        }
+      });
+    });
+    
+    if (allValues.length === 0) return [0, 100];
+    
+    const min = Math.min(...allValues);
+    const max = Math.max(...allValues);
+    
+    // Calculate 10% buffer below minimum, but never go below 0
+    const buffer = (max - min) * 0.1;
+    const domainMin = Math.max(0, min - buffer);
+    
+    return [domainMin, max];
+  };
+
   const renderYAxes = () => {
     const count = metricsArray.length;
     if (count === 1) {
+      const domain = calculateDomain(metricsArray[0]);
       return (
         <YAxis
           yAxisId={0 as any}
@@ -35,10 +64,13 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           axisLine={false}
           tick={tickStyle}
           tickMargin={14}
+          domain={domain}
         />
       );
     }
     if (count === 2) {
+      const leftDomain = calculateDomain(metricsArray[0]);
+      const rightDomain = calculateDomain(metricsArray[1]);
       return (
         <>
           <YAxis
@@ -47,6 +79,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             axisLine={false}
             tick={tickStyle}
             tickMargin={14}
+            domain={leftDomain}
           />
           <YAxis
             yAxisId="right"
@@ -54,6 +87,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             axisLine={false}
             tick={tickStyle}
             tickMargin={14}
+            domain={rightDomain}
           />
         </>
       );
@@ -74,10 +108,19 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
           ticks={gridTicks}
           allowDecimals={false}
         />
-        {/* Hidden per-metric axes for independent scales */}
-        {metricsArray.map((m) => (
-          <YAxis key={m} yAxisId={m} hide axisLine={false} />
-        ))}
+        {/* Hidden per-metric axes for independent scales with dynamic domains */}
+        {metricsArray.map((m) => {
+          const domain = calculateDomain(m);
+          return (
+            <YAxis 
+              key={m} 
+              yAxisId={m} 
+              hide 
+              axisLine={false} 
+              domain={domain}
+            />
+          );
+        })}
       </>
     );
   };
