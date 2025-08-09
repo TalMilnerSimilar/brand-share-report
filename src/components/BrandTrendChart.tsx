@@ -5,9 +5,9 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Customized,
   Tooltip,
   ResponsiveContainer,
+  Customized,
 } from 'recharts';
 import { brandTrendData, metricColorMap } from '../data/brandTrendData';
 import MetricTooltip from './MetricTooltip';
@@ -90,19 +90,30 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
     return metric; // bind to hidden per-metric axis; grid uses visible axis id=0
   };
 
-  // Custom background horizontal grid lines independent of axes
-  const CustomHorizontalGridLines: React.FC<any> = (props) => {
-    const { offset } = props || {};
+  // Overlay: always draw 5 horizontal lines across the plotting area, independent of axes
+  const CustomHorizontalGridLines: React.FC<any> = ({ offset }) => {
     if (!offset) return null;
     const { left, top, width, height } = offset;
-    const lineCount = 5; // draw 5 lines, including top and bottom
+    const lineCount = 5;
     const ys = Array.from({ length: lineCount }, (_, i) => top + (height * i) / (lineCount - 1));
     const x1 = left;
     const x2 = left + width;
     return (
       <g className="recharts-cartesian-grid-horizontal" pointerEvents="none">
         {ys.map((yVal) => (
-          <line key={yVal} stroke="#ccc" fill="none" x1={x1} y1={yVal} x2={x2} y2={yVal} />
+          <line
+            key={yVal}
+            stroke="#ccc"
+            fill="none"
+            x={left}
+            y={top}
+            width={width}
+            height={height}
+            x1={x1}
+            y1={yVal}
+            x2={x2}
+            y2={yVal}
+          />
         ))}
       </g>
     );
@@ -120,7 +131,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
             bottom: 5,
           }}
         >
-          {/* Disable default horizontal grid; we draw our own overlay lines */}
+          {/* Disable built-in horizontal grid and draw our own fixed 5 lines */}
           <CartesianGrid vertical={false} horizontal={false} />
           <Customized component={<CustomHorizontalGridLines />} />
           <XAxis dataKey="name" tick={{ fill: '#B6BEC6', fontSize: 11, cursor: 'default' }} tickMargin={14} />
