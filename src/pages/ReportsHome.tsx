@@ -31,21 +31,60 @@ const ReportsHome: React.FC = () => {
 
   return (
     <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
-      {/* Hero Section (matches Figma style) */}
+      {/* Hero Section (Figma-spec) */}
       <div className="mb-6">
-        <div className="bg-white border border-gray-200 rounded-lg px-6 py-5 flex items-center justify-between">
-          <div>
-            <h1 className="text-[28px] leading-8 font-semibold text-[#6B39F4]">Brand Share Reports Overview</h1>
-            <p className="text-sm text-[#6b7c8c] mt-1">Select a report to analyze or create a new one.</p>
+        {/* Top header row */}
+        <div className="bg-white border border-gray-200 rounded-t-[6px] px-6 py-2">
+          <div className="flex items-center justify-between overflow-clip w-full">
+            <div className="py-4">
+              <div className="mb-2">
+                <h1 className="text-[20px] leading-[28px] font-bold text-[#092540]">
+                  Brand Share Reports Overview
+                </h1>
+              </div>
+              <p className="text-[14px] leading-4 text-[#6b7c8c]">
+                Monitor your brand performance across categories and competitors
+              </p>
+            </div>
+            <div>
+              <Button
+                variant="primary"
+                className="px-4 py-2 text-[14px] leading-5 flex items-center gap-2"
+                onClick={() => navigate('/reports/new')}
+              >
+                <img
+                  src="/figma-assets/469213f20b34f60691ed81fa0082aa5c4fa6599b.svg"
+                  alt=""
+                  className="w-4 h-4"
+                />
+                Create a New Report
+              </Button>
+            </div>
           </div>
-          <Button
-            variant="primary"
-            className="bg-[#6B39F4] hover:bg-[#5A2FE3] px-4 py-2 text-sm flex items-center gap-2"
-            onClick={() => navigate('/reports/new')}
-          >
-            <span className="w-6 h-6 rounded-full bg-white text-[#6B39F4] flex items-center justify-center text-base leading-none">+</span>
-            New Report
-          </Button>
+        </div>
+
+        {/* Bottom KPI row */}
+        <div className="bg-white border border-gray-200 border-t-0 rounded-b-[8px] px-6 py-2">
+          <div className="flex items-center justify-between">
+            <div className="flex-1 flex items-center justify-center gap-1">
+              <span className="text-[14px] leading-5 text-[#092540]">Total Reports:</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{mockReports.length}</span>
+            </div>
+            <div className="w-5 self-stretch flex items-center justify-center">
+              <div className="w-[1px] h-full bg-[#e6e9ec]" />
+            </div>
+            <div className="flex-1 flex items-center justify-center gap-1">
+              <span className="text-[14px] leading-5 text-[#092540]">Brands Tracked:</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.brand)).size}</span>
+            </div>
+            <div className="w-5 self-stretch flex items-center justify-center">
+              <div className="w-[1px] h-full bg-[#e6e9ec]" />
+            </div>
+            <div className="flex-1 flex items-center justify-center gap-1">
+              <span className="text-[14px] leading-5 text-[#092540]">Categories:</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</span>
+            </div>
+          </div>
         </div>
       </div>
 
