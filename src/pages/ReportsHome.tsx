@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
 import Button from '../components/Button';
+import ReportsHeader from '../components/ReportsHeader';
 
 type SavedReport = {
   id: string;
@@ -30,10 +31,12 @@ const ReportsHome: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
-      {/* Hero Section (Figma-spec) */}
-      <div className="mb-6">
-        {/* Top header row with domain dropdown (selection screen only) */}
+    <div>
+      <ReportsHeader />
+      <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
+        {/* Hero Section (Figma-spec) */}
+        <div className="mb-6">
+        {/* Top header row without domain dropdown - moved to ReportsHeader */}
         <div
           className="border border-gray-200 rounded-t-[6px] px-6 py-2"
           style={{
@@ -42,23 +45,15 @@ const ReportsHome: React.FC = () => {
           }}
         >
           <div className="flex items-center justify-between overflow-clip w-full">
-            <div className="py-4 flex items-center gap-4">
-              <div>
-                <div className="mb-2">
-                  <h1 className="text-[20px] leading-[28px] font-bold text-[#092540]">
-                    Brand Share Reports Overview
-                  </h1>
-                </div>
-                <p className="text-[14px] leading-4 text-[#6b7c8c]">
-                  Monitor your brand performance across categories and competitors
-                </p>
+            <div className="py-4">
+              <div className="mb-2">
+                <h1 className="text-[20px] leading-[28px] font-bold text-[#092540]">
+                  Brand Share Reports Overview
+                </h1>
               </div>
-              {/* Domain dropdown (flag + domain) */}
-              <div className="bg-white border border-gray-200 rounded-lg h-10 px-3 flex items-center cursor-pointer select-none">
-                <img src="/icons/us-flag.svg" alt="US" className="w-4 h-4 mr-2" />
-                <span className="text-[14px] leading-5 text-[#092540]">amazon.com</span>
-                <img src="/icons/chevron-down.svg" alt="v" className="w-3 h-3 ml-2" />
-              </div>
+              <p className="text-[14px] leading-4 text-[#6b7c8c]">
+                Monitor your brand performance across categories and competitors
+              </p>
             </div>
             <div>
               <Button
@@ -293,6 +288,7 @@ const ReportsHome: React.FC = () => {
           </table>
         </div>
       </div>
+    </div>
     </div>
   );
 };
