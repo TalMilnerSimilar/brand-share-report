@@ -70,13 +70,7 @@ const ReportsHome: React.FC = () => {
         </div>
 
         {/* Bottom KPI row */}
-        <div
-          className="border border-gray-200 border-t-0 rounded-b-[8px] px-6 py-2"
-          style={{
-            background:
-              'linear-gradient(250deg, rgba(165, 31, 227, 0.15) 9.5%, rgba(25, 90, 254, 0.15) 26%, rgba(255, 255, 255, 0.15) 52%), #ffffff',
-          }}
-        >
+        <div className="bg-white border border-gray-200 border-t-0 rounded-b-[8px] px-6 py-2">
           <div className="flex items-center justify-between">
             <div className="flex-1 flex items-center justify-center gap-1">
               <span className="text-[14px] leading-5 text-[#092540]">Total Reports:</span>
