@@ -36,7 +36,7 @@ const BrandTrendChart: React.FC<BrandTrendChartProps> = ({
         >
           <CartesianGrid vertical={false} />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis axisLine={false} />
           <Tooltip content={<MetricTooltip metricColorMap={metricColorMap} />} />
           {Array.from(selectedMetrics).map((metric) => (
             <Line
