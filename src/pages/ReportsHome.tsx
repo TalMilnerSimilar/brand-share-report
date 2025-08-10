@@ -108,28 +108,60 @@ const ReportsHome: React.FC = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200 text-xs font-medium text-[#3A5166]">
-                    <th rowSpan={2} className="text-left p-4 border-r border-gray-200 align-middle">Report Name</th>
-                    <th colSpan={2} className="text-center p-4 border-r border-gray-200">Share of Branded Clicks</th>
-                    <th colSpan={2} className="text-center p-4 border-r border-gray-200">Share of Product Views</th>
-                    <th colSpan={2} className="text-center p-4 border-r border-gray-200">Share of Revenue</th>
-                    <th rowSpan={2} className="text-right p-4 align-middle">Actions</th>
-                  </tr>
-                  <tr className="border-b border-gray-200 text-xs font-medium text-[#3A5166]">
-                    <th className="text-right p-4">Value</th>
-                    <th className="text-left p-4 border-r border-gray-200">Wow Change</th>
-                    <th className="text-right p-4">Value</th>
-                    <th className="text-left p-4 border-r border-gray-200">Wow Change</th>
-                    <th className="text-right p-4">Value</th>
-                    <th className="text-left p-4 border-r border-gray-200">Wow Change</th>
-                  </tr>
-                </thead>
+                         <thead>
+               <tr className="border-b border-[#e6e9ec] text-xs font-medium text-[#3a5166]">
+                 <th rowSpan={2} className="text-left p-4 border-r border-[#e6e9ec] align-middle">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Report Name</span>
+                 </th>
+                 <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Share of Branded Clicks</span>
+                 </th>
+                 <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Share of Product Views</span>
+                 </th>
+                 <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Share of Paid Clicks</span>
+                 </th>
+                 <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Share of Revenue</span>
+                 </th>
+                 <th rowSpan={2} className="text-right p-4 align-middle">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Actions</span>
+                 </th>
+               </tr>
+               <tr className="border-b border-[#e6e9ec] text-xs font-medium text-[#3a5166]">
+                 <th className="text-right p-4">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Value</span>
+                 </th>
+                 <th className="text-left p-4 border-r border-[#e6e9ec]">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Wow Change</span>
+                 </th>
+                 <th className="text-right p-4">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Value</span>
+                 </th>
+                 <th className="text-left p-4 border-r border-[#e6e9ec]">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Wow Change</span>
+                 </th>
+                 <th className="text-right p-4">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Value</span>
+                 </th>
+                 <th className="text-left p-4 border-r border-[#e6e9ec]">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Wow Change</span>
+                 </th>
+                 <th className="text-right p-4">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Value</span>
+                 </th>
+                 <th className="text-left p-4 border-r border-[#e6e9ec]">
+                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Wow Change</span>
+                 </th>
+               </tr>
+             </thead>
             <tbody>
               {mockReports.map((report) => {
                 const brandData = (unifiedBrands as any)[report.brand];
                 const brandedClicks = brandData?.brandedClicks;
                 const productViews = brandData?.productViews;
+                const paidClicks = brandData?.paidClicks; // Add paid clicks data
                 const revenue = brandData?.revenue;
                 
                 return (
@@ -151,62 +183,69 @@ const ReportsHome: React.FC = () => {
                       </div>
                     </td>
                     
-                            {/* Branded Clicks - Value (share) */}
-                            <td className="p-4 text-sm text-gray-600 text-right">
-                              {brandedClicks ? `${(brandedClicks.share * 100).toFixed(1)}%` : '-'}
-                            </td>
-                            {/* Branded Clicks - Wow Change */}
-                            <td className="p-4 border-r border-gray-200">
-                      <div className="flex items-center gap-2 w-40">
-                                {brandedClicks && (
-                                  <div
-                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                                      brandedClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
-                                    }`}
-                                  >
-                                    {brandedClicks.change >= 0 ? '+' : ''}{(brandedClicks.change * 100).toFixed(1)} PP
-                                  </div>
-                                )}
-                      </div>
-                    </td>
+                                        {/* Branded Clicks - Value & Wow Change */}
+                     <td className="p-4 text-sm text-gray-600 text-right">
+                       {brandedClicks ? `${(brandedClicks.share * 100).toFixed(1)}%` : '-'}
+                     </td>
+                     <td className="p-4 border-r border-[#e6e9ec]">
+                       {brandedClicks && (
+                         <div
+                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                             brandedClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                           }`}
+                         >
+                           {brandedClicks.change >= 0 ? '+' : ''}{(brandedClicks.change * 100).toFixed(1)} PP
+                         </div>
+                       )}
+                     </td>
 
-                            {/* Product Views - Value (share) */}
-                            <td className="p-4 text-sm text-gray-600 text-right">
-                              {productViews ? `${(productViews.share * 100).toFixed(1)}%` : '-'}
-                            </td>
-                            {/* Product Views - Wow Change */}
-                            <td className="p-4 border-r border-gray-200">
-                      <div className="flex items-center gap-2 w-40">
-                                {productViews && (
-                                  <div
-                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                                      productViews.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
-                                    }`}
-                                  >
-                                    {productViews.change >= 0 ? '+' : ''}{(productViews.change * 100).toFixed(1)} PP
-                                  </div>
-                                )}
-                      </div>
-                    </td>
+                     {/* Product Views - Value & Wow Change */}
+                     <td className="p-4 text-sm text-gray-600 text-right">
+                       {productViews ? `${(productViews.share * 100).toFixed(1)}%` : '-'}
+                     </td>
+                     <td className="p-4 border-r border-[#e6e9ec]">
+                       {productViews && (
+                         <div
+                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                             productViews.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                           }`}
+                         >
+                           {productViews.change >= 0 ? '+' : ''}{(productViews.change * 100).toFixed(1)} PP
+                         </div>
+                       )}
+                     </td>
 
-                            {/* Revenue - Value (share) */}
-                            <td className="p-4 text-sm text-gray-600 text-right">
-                              {revenue ? `${(revenue.share * 100).toFixed(1)}%` : '-'}
-                            </td>
-                            {/* Revenue - Wow Change */}
-                            <td className="p-4 border-r border-gray-200">
-                      <div className="flex items-center gap-2 w-40">
-                                {revenue && (
-                                  <div
-                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                                      revenue.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
-                                    }`}
-                                  >
-                                    {revenue.change >= 0 ? '+' : ''}{(revenue.change * 100).toFixed(1)} PP
-                                  </div>
-                                )}
-                      </div>
-                    </td>
+                     {/* Paid Clicks - Value & Wow Change */}
+                     <td className="p-4 text-sm text-gray-600 text-right">
+                       {paidClicks ? `${(paidClicks.share * 100).toFixed(1)}%` : '-'}
+                     </td>
+                     <td className="p-4 border-r border-[#e6e9ec]">
+                       {paidClicks && (
+                         <div
+                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                             paidClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                           }`}
+                         >
+                           {paidClicks.change >= 0 ? '+' : ''}{(paidClicks.change * 100).toFixed(1)} PP
+                         </div>
+                       )}
+                     </td>
+
+                     {/* Revenue - Value & Wow Change */}
+                     <td className="p-4 text-sm text-gray-600 text-right">
+                       {revenue ? `${(revenue.share * 100).toFixed(1)}%` : '-'}
+                     </td>
+                     <td className="p-4 border-r border-[#e6e9ec]">
+                       {revenue && (
+                         <div
+                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                             revenue.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                           }`}
+                         >
+                           {revenue.change >= 0 ? '+' : ''}{(revenue.change * 100).toFixed(1)} PP
+                         </div>
+                       )}
+                     </td>
 
                     <td className="p-4 w-0">
                       <div className="flex items-center gap-2">
