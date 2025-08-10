@@ -468,26 +468,46 @@ const ReportsHome: React.FC = () => {
                           Analyze
                         </button>
                         
-                        {/* 3-dot menu button */}
+                        {/* 3-dot menu button (rebuilt) */}
                         <div className="relative" ref={openMenuRow === idx ? menuRef : null}>
                           <button
+                            id={`row-${report.id}-menubtn`}
+                            type="button"
+                            aria-haspopup="menu"
+                            aria-expanded={openMenuRow === idx}
+                            aria-controls={`row-${report.id}-menu`}
                             className="px-3 py-2 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active flex items-center justify-center"
                             onClick={() => handleMenuToggle(idx)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Escape') setOpenMenuRow(null);
+                              if ((e.key === 'Enter' || e.key === ' ') && openMenuRow !== idx) {
+                                e.preventDefault();
+                                setOpenMenuRow(idx);
+                              }
+                            }}
                           >
-                            <img src="/icons/menu-dots-vertical.svg" alt="More options" className="w-1 h-4" />
+                            <img src="/icons/menu-dots-vertical.svg" aria-hidden="true" alt="" className="w-1 h-4" />
+                            <span className="sr-only">More options</span>
                           </button>
                           
                           {/* Dropdown menu */}
                           {openMenuRow === idx && (
-                            <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                            <div
+                              id={`row-${report.id}-menu`}
+                              role="menu"
+                              aria-labelledby={`row-${report.id}-menubtn`}
+                              className="absolute right-0 top-full mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50"
+                            >
                               <div className="py-1">
                                 <button
+                                  role="menuitem"
                                   className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
                                   onClick={() => handleEdit(report.id)}
                                 >
                                   Edit
                                 </button>
                                 <button
+                                  role="menuitem"
                                   className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
                                   onClick={() => handleDelete(report.id)}
                                 >
