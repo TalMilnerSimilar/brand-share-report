@@ -471,7 +471,7 @@ const ReportsHome: React.FC = () => {
                         {/* 3-dot menu button */}
                         <div className="relative" ref={openMenuRow === idx ? menuRef : null}>
                           <button
-                            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors duration-150"
+                            className="px-3 py-2 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active flex items-center justify-center"
                             onClick={() => handleMenuToggle(idx)}
                           >
                             <img src="/icons/menu-dots.svg" alt="More options" className="w-4 h-4" />
