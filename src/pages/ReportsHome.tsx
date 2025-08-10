@@ -9,7 +9,6 @@ type SavedReport = {
   category: string;
   priceRange?: string;
   competitors: string[];
-  heroImage: string;
 };
 
 const mockReports: SavedReport[] = [
@@ -18,16 +17,24 @@ const mockReports: SavedReport[] = [
     brand: 'Nike',
     category: 'Premium Running Shoes (Price > $75)',
     competitors: ['Adidas', 'New Balance', 'Hoka', 'Asics'],
-    heroImage: '/icons/images/nike-sneaker.jpg',
   },
   {
     id: 'adidas-apparel',
     brand: 'Adidas',
     category: 'All Athletic Apparel',
     competitors: ['Nike', 'Under Armour', 'Puma', 'Hanes'],
-    heroImage: '/icons/images/shoe-1.png',
   },
 ];
+
+// Map each report id to the top hero image used on its report page
+const heroTopImageByReportId: Record<string, string> = {
+  'nike-shoes': '/icons/images/shoe-3.png',
+  'adidas-apparel': '/icons/images/shoe-2.png',
+};
+
+const getHeroTopImageForReport = (reportId: string): string => {
+  return heroTopImageByReportId[reportId] ?? '/icons/images/shoe-3.png';
+};
 
 type SortKey = 'reportName' | 'brandedClicksValue' | 'brandedClicksChange' | 'productViewsValue' | 'productViewsChange' | 'paidClicksValue' | 'paidClicksChange' | 'revenueValue' | 'revenueChange';
 
@@ -317,10 +324,10 @@ const ReportsHome: React.FC = () => {
                   >
                     <td className="px-4 py-3 border-r border-[#e6e9ec]">
                       <div className="flex items-center gap-4">
-                        {/* Product image */}
+                        {/* Product image (uses the top hero image for this report) */}
                         <div className="w-12 h-12 bg-white rounded-md border border-[#e6e9ec] flex items-center justify-center shrink-0">
-                          <img 
-                            src={report.heroImage}
+                          <img
+                            src={getHeroTopImageForReport(report.id)}
                             alt={`${report.brand} product`}
                             className="w-10 h-10 object-contain"
                           />
