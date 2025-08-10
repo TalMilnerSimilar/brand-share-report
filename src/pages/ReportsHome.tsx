@@ -108,53 +108,23 @@ const ReportsHome: React.FC = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200 text-xs font-medium text-gray-600">
-                <th className="text-left p-4 cursor-pointer text-[#3A5166] border-r border-gray-200">
-                  <div className="flex items-center gap-1">
-                    <span>Report Name</span>
-                  </div>
-                </th>
-                <th className="text-left p-4 cursor-pointer text-[#3A5166] border-r border-gray-200">
-                  <div className="flex items-center gap-1">
-                    <span>Branded Clicks</span>
-                  </div>
-                </th>
-                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
-                  <div className="flex items-center gap-1">
-                    <span>Share</span>
-                  </div>
-                </th>
-                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
-                  <div className="flex items-center gap-1">
-                    <span>Change</span>
-                  </div>
-                </th>
-                <th className="text-left p-4 border-r border-gray-200">Product Views</th>
-                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
-                  <div className="flex items-center gap-1">
-                    <span>Share</span>
-                  </div>
-                </th>
-                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
-                  <div className="flex items-center gap-1">
-                    <span>Change</span>
-                  </div>
-                </th>
-                <th className="text-left p-4 border-r border-gray-200">Revenue</th>
-                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
-                  <div className="flex items-center gap-1">
-                    <span>Share</span>
-                  </div>
-                </th>
-                <th className="text-left p-4 cursor-pointer text-[#3A5166]">
-                  <div className="flex items-center gap-1">
-                    <span>Change</span>
-                  </div>
-                </th>
-                <th className="text-left p-4 w-0">Actions</th>
-              </tr>
-            </thead>
+                <thead>
+                  <tr className="border-b border-gray-200 text-xs font-medium text-[#3A5166]">
+                    <th rowSpan={2} className="text-left p-4 border-r border-gray-200 align-middle">Report Name</th>
+                    <th colSpan={2} className="text-center p-4 border-r border-gray-200">Share of Branded Clicks</th>
+                    <th colSpan={2} className="text-center p-4 border-r border-gray-200">Share of Product Views</th>
+                    <th colSpan={2} className="text-center p-4 border-r border-gray-200">Share of Revenue</th>
+                    <th rowSpan={2} className="text-right p-4 align-middle">Actions</th>
+                  </tr>
+                  <tr className="border-b border-gray-200 text-xs font-medium text-[#3A5166]">
+                    <th className="text-right p-4">Value</th>
+                    <th className="text-left p-4 border-r border-gray-200">Wow Change</th>
+                    <th className="text-right p-4">Value</th>
+                    <th className="text-left p-4 border-r border-gray-200">Wow Change</th>
+                    <th className="text-right p-4">Value</th>
+                    <th className="text-left p-4 border-r border-gray-200">Wow Change</th>
+                  </tr>
+                </thead>
             <tbody>
               {mockReports.map((report) => {
                 const brandData = (unifiedBrands as any)[report.brand];
@@ -181,91 +151,61 @@ const ReportsHome: React.FC = () => {
                       </div>
                     </td>
                     
-                    {/* Branded Clicks */}
-                    <td className="p-4 text-sm text-gray-600 border-r border-gray-200">
-                      {brandedClicks ? `${(brandedClicks.value / 1000).toFixed(1)}K` : '-'}
-                    </td>
-                    <td className="p-4">
+                            {/* Branded Clicks - Value (share) */}
+                            <td className="p-4 text-sm text-gray-600 text-right">
+                              {brandedClicks ? `${(brandedClicks.share * 100).toFixed(1)}%` : '-'}
+                            </td>
+                            {/* Branded Clicks - Wow Change */}
+                            <td className="p-4 border-r border-gray-200">
                       <div className="flex items-center gap-2 w-40">
-                        <span className="text-sm text-gray-600 min-w-[40px]">
-                          {brandedClicks ? `${(brandedClicks.share * 100).toFixed(1)}%` : '-'}
-                        </span>
-                        <div className="flex-1 h-2 bg-gray-200 rounded">
-                          <div
-                            className="h-full bg-blue-600 rounded"
-                            style={{ width: brandedClicks ? `${brandedClicks.share * 100}%` : '0%' }}
-                          />
-                        </div>
+                                {brandedClicks && (
+                                  <div
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                                      brandedClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                                    }`}
+                                  >
+                                    {brandedClicks.change >= 0 ? '+' : ''}{(brandedClicks.change * 100).toFixed(1)} PP
+                                  </div>
+                                )}
                       </div>
-                    </td>
-                    <td className="p-4">
-                      {brandedClicks && (
-                        <div
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                            brandedClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
-                          }`}
-                        >
-                          {brandedClicks.change >= 0 ? '+' : ''}{(brandedClicks.change * 100).toFixed(1)} PP
-                        </div>
-                      )}
                     </td>
 
-                    {/* Product Views */}
-                    <td className="p-4 text-sm text-gray-600 border-r border-gray-200">
-                      {productViews ? `${(productViews.value / 1000).toFixed(1)}K` : '-'}
-                    </td>
-                    <td className="p-4">
+                            {/* Product Views - Value (share) */}
+                            <td className="p-4 text-sm text-gray-600 text-right">
+                              {productViews ? `${(productViews.share * 100).toFixed(1)}%` : '-'}
+                            </td>
+                            {/* Product Views - Wow Change */}
+                            <td className="p-4 border-r border-gray-200">
                       <div className="flex items-center gap-2 w-40">
-                        <span className="text-sm text-gray-600 min-w-[40px]">
-                          {productViews ? `${(productViews.share * 100).toFixed(1)}%` : '-'}
-                        </span>
-                        <div className="flex-1 h-2 bg-gray-200 rounded">
-                          <div
-                            className="h-full bg-blue-600 rounded"
-                            style={{ width: productViews ? `${productViews.share * 100}%` : '0%' }}
-                          />
-                        </div>
+                                {productViews && (
+                                  <div
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                                      productViews.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                                    }`}
+                                  >
+                                    {productViews.change >= 0 ? '+' : ''}{(productViews.change * 100).toFixed(1)} PP
+                                  </div>
+                                )}
                       </div>
-                    </td>
-                    <td className="p-4">
-                      {productViews && (
-                        <div
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                            productViews.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
-                          }`}
-                        >
-                          {productViews.change >= 0 ? '+' : ''}{(productViews.change * 100).toFixed(1)} PP
-                        </div>
-                      )}
                     </td>
 
-                    {/* Revenue */}
-                    <td className="p-4 text-sm text-gray-600 border-r border-gray-200">
-                      {revenue ? `$${(revenue.value / 1000000).toFixed(1)}M` : '-'}
-                    </td>
-                    <td className="p-4">
+                            {/* Revenue - Value (share) */}
+                            <td className="p-4 text-sm text-gray-600 text-right">
+                              {revenue ? `${(revenue.share * 100).toFixed(1)}%` : '-'}
+                            </td>
+                            {/* Revenue - Wow Change */}
+                            <td className="p-4 border-r border-gray-200">
                       <div className="flex items-center gap-2 w-40">
-                        <span className="text-sm text-gray-600 min-w-[40px]">
-                          {revenue ? `${(revenue.share * 100).toFixed(1)}%` : '-'}
-                        </span>
-                        <div className="flex-1 h-2 bg-gray-200 rounded">
-                          <div
-                            className="h-full bg-blue-600 rounded"
-                            style={{ width: revenue ? `${revenue.share * 100}%` : '0%' }}
-                          />
-                        </div>
+                                {revenue && (
+                                  <div
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
+                                      revenue.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                                    }`}
+                                  >
+                                    {revenue.change >= 0 ? '+' : ''}{(revenue.change * 100).toFixed(1)} PP
+                                  </div>
+                                )}
                       </div>
-                    </td>
-                    <td className="p-4">
-                      {revenue && (
-                        <div
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                            revenue.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
-                          }`}
-                        >
-                          {revenue.change >= 0 ? '+' : ''}{(revenue.change * 100).toFixed(1)} PP
-                        </div>
-                      )}
                     </td>
 
                     <td className="p-4 w-0">
