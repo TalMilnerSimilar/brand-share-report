@@ -232,7 +232,7 @@ const ReportsHome: React.FC = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto relative">
           <table className="w-full">
                          <thead>
                <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166] h-8">
@@ -461,26 +461,6 @@ const ReportsHome: React.FC = () => {
                               <circle cx="2" cy="14" r="2" fill="currentColor"/>
                             </svg>
                           </button>
-                          
-                          {/* Dropdown menu */}
-                          {openMenuRow === idx && (
-                            <div className="absolute left-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                              <div className="py-1">
-                                <button
-                                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
-                                  onClick={() => handleEdit(report.id)}
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
-                                  onClick={() => handleDelete(report.id)}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
-                          )}
                         </div>
                       </div>
                     </td>
@@ -491,6 +471,31 @@ const ReportsHome: React.FC = () => {
           </table>
         </div>
 
+        {/* Dropdown menu - positioned outside table */}
+        {openMenuRow !== null && (
+          <div 
+            className="fixed bg-white border border-gray-200 rounded-md shadow-lg z-[9999] w-32"
+            style={{
+              top: `${(menuRef.current?.getBoundingClientRect().bottom || 0) + 4}px`,
+              left: `${(menuRef.current?.getBoundingClientRect().right || 0) - 128}px`
+            }}
+          >
+            <div className="py-1">
+              <button
+                className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
+                onClick={() => handleEdit(sortedReports[openMenuRow].id)}
+              >
+                Edit
+              </button>
+              <button
+                className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
+                onClick={() => handleDelete(sortedReports[openMenuRow].id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
