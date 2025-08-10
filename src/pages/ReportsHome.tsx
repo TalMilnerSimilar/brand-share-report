@@ -61,9 +61,10 @@ const ReportsHome: React.FC = () => {
   const enhancedReports = useMemo(() => {
     return mockReports.map(report => {
       const brandData = (unifiedBrands as any)[report.brand];
-      const brandedClicks = brandData?.brandedClicks;
+      
+      const brandedClicks = brandData?.shareOfTotalClicks; // "Share of Branded Clicks" maps to shareOfTotalClicks
       const productViews = brandData?.productViews;
-      const paidClicks = brandData?.paidClicks;
+      const paidClicks = brandData?.shareOfPaidClicks; // "Share of Paid Clicks" maps to shareOfPaidClicks
       const revenue = brandData?.revenue;
       
       return {
@@ -122,21 +123,6 @@ const ReportsHome: React.FC = () => {
     return sortedReports.slice(start, start + rowsPerPage);
   }, [sortedReports, currentPage]);
 
-  // Overview KPIs (averages across reports)
-  const avgBrandedClicksShare = useMemo(() => {
-    if (enhancedReports.length === 0) return 0;
-    let total = 0;
-    for (const r of enhancedReports) total += r.brandedClicks?.share ?? 0;
-    return (total / enhancedReports.length) * 100;
-  }, [enhancedReports]);
-
-  const avgPaidClicksShare = useMemo(() => {
-    if (enhancedReports.length === 0) return 0;
-    let total = 0;
-    for (const r of enhancedReports) total += r.paidClicks?.share ?? 0;
-    return (total / enhancedReports.length) * 100;
-  }, [enhancedReports]);
-
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
       setSortAsc(!sortAsc);
@@ -194,42 +180,27 @@ const ReportsHome: React.FC = () => {
 
         {/* Bottom KPI row */}
         <div className="bg-white border border-gray-200 border-t-0 rounded-b-[8px] px-6 py-2">
-          <div className="grid grid-cols-5 items-center">
-            {/* Total Reports */}
-            <div className="flex items-center justify-center gap-2 py-2">
+          <div className="flex items-center justify-between">
+            <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/reports icon.svg" alt="Reports Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Total Reports:</span>
               <span className="text-[14px] leading-5 text-[#6b7c8c]">{mockReports.length}</span>
             </div>
-
-            {/* Divider */}
-            <div className="flex items-center justify-center">
-              <div className="w-[1px] h-6 bg-[#e6e9ec]" />
+            <div className="w-5 self-stretch flex items-center justify-center">
+              <div className="w-[1px] h-full bg-[#e6e9ec]" />
             </div>
-
-            {/* Brands Tracked */}
-            <div className="flex items-center justify-center gap-2 py-2">
+            <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/brands icon.svg" alt="Brands Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Brands Tracked:</span>
               <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.brand)).size}</span>
             </div>
-
-            {/* Divider */}
-            <div className="flex items-center justify-center">
-              <div className="w-[1px] h-6 bg-[#e6e9ec]" />
+            <div className="w-5 self-stretch flex items-center justify-center">
+              <div className="w-[1px] h-full bg-[#e6e9ec]" />
             </div>
-
-            {/* New KPIs: Avg Share of Branded Clicks and Paid Clicks */}
-            <div className="flex items-center justify-center gap-4 py-2">
-              <div className="flex items-center gap-2">
-                <span className="text-[14px] leading-5 text-[#092540]">Avg Branded Clicks:</span>
-                <span className="text-[14px] leading-5 text-[#6b7c8c]">{avgBrandedClicksShare.toFixed(1)}%</span>
-              </div>
-              <div className="w-[1px] h-6 bg-[#e6e9ec]" />
-              <div className="flex items-center gap-2">
-                <span className="text-[14px] leading-5 text-[#092540]">Avg Paid Clicks:</span>
-                <span className="text-[14px] leading-5 text-[#6b7c8c]">{avgPaidClicksShare.toFixed(1)}%</span>
-              </div>
+            <div className="flex-1 flex items-center justify-center gap-2">
+              <img src="/icons/categories icon.svg" alt="Categories Icon" className="w-4 h-4" />
+              <span className="text-[14px] leading-5 text-[#092540]">Categories:</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</span>
             </div>
           </div>
         </div>
