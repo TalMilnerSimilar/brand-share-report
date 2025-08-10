@@ -282,6 +282,8 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedCompetitors, setSelectedCompetitors] = useState<string[]>([]);
+  // Preserve the first suggested list so returning from manual shows the same initial suggestions
+  const [initialSuggestedCompetitors, setInitialSuggestedCompetitors] = useState<string[]>([]);
   const [isManualSelection, setIsManualSelection] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -302,6 +304,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
       setSelectedCategory('');
       setSelectedBrand('');
       setSelectedCompetitors([]);
+      setInitialSuggestedCompetitors([]);
       setIsManualSelection(false);
     }
   }, [isOpen]);
@@ -320,6 +323,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
       // Suggest competitors based on the selected brand
       const suggestedCompetitors = getSuggestedCompetitors(selectedBrand);
       setSelectedCompetitors(suggestedCompetitors);
+      setInitialSuggestedCompetitors(suggestedCompetitors);
     }
   }, [selectedBrand, currentStep]);
 
@@ -556,7 +560,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     <button
                       className="flex items-center gap-1 px-1 py-1 text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
                       onClick={() => {
-                        setSelectedCompetitors([]);
+                        // Enter manual mode (do not destroy the initial suggestions state)
                         setIsManualSelection(true);
                       }}
                     >
@@ -588,7 +592,11 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     </div>
                     <button
                       className="text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
-                      onClick={() => setIsManualSelection(false)}
+                      onClick={() => {
+                        // Return to suggestions: restore the first suggested list
+                        setSelectedCompetitors(initialSuggestedCompetitors);
+                        setIsManualSelection(false);
+                      }}
                     >
                       ← Back to suggestions
                     </button>
