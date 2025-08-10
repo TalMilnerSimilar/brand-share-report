@@ -510,7 +510,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                 <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select Competitors</div>
               </div>
               <div className="text-[14px] leading-[20px] text-[#092540] mb-4 font-dm-sans">
-                We've suggested some competitors based on your brand.
+                We’ve suggested your top competitors based on your brand. You can edit them to select any competitor you want manually
               </div>
 
               {!isManualSelection ? (
@@ -524,7 +524,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                       className="flex items-center gap-1 px-1 py-1 text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
                       onClick={() => setIsManualSelection(true)}
                     >
-                      Select Manually
+                      Edit
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6 12l4-4-4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
