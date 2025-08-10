@@ -464,7 +464,7 @@ const ReportsHome: React.FC = () => {
                           
                           {/* Dropdown menu */}
                           {openMenuRow === idx && (
-                            <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                            <div className="absolute left-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                               <div className="py-1">
                                 <button
                                   className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
