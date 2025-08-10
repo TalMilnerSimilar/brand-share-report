@@ -6,13 +6,164 @@ interface CreateReportDrawerProps {
   onSave?: (report: { title: string; category: string }) => void;
 }
 
-const categoriesMock: string[] = [
-  'Electronics > Accessories & Supplies',
-  'Electronics > Accessories & Supplies > Audio & Video Accessories',
-  'Electronics > Accessories & Supplies > Batteries, Chargers & Accessories',
-  'Electronics > Audio & Video Accessories > TV Accessories & Parts',
-  'Electronics > Audio & Video Accessories > Remote Controls & Accessories',
+// Build a deterministic catalog of ~200 categories with up to 4 levels
+const LEVEL1: string[] = [
+  'Electronics',
+  'Home & Kitchen',
+  'Beauty & Personal Care',
+  'Sports & Outdoors',
+  'Toys & Games',
+  'Automotive',
+  'Clothing, Shoes & Jewelry',
+  'Health & Household',
+  'Grocery & Gourmet Food',
+  'Pet Supplies',
+  'Tools & Home Improvement',
+  'Office Products',
+  'Baby',
+  'Industrial & Scientific',
+  'Books',
+  'Music',
+  'Movies & TV'
 ];
+
+const LEVEL2: string[] = [
+  'Accessories & Supplies',
+  'Appliances',
+  'Storage & Organization',
+  'Furniture',
+  'Décor',
+  'Cleaning & Care',
+  'Components',
+  'Wearables',
+  'Nutrition',
+  'Safety',
+  'Art & Craft',
+  'Stationery',
+  'Audio & Video',
+  'Camera & Photo',
+  'Smart Home'
+];
+
+const LEVEL3: string[] = [
+  'Audio & Video Accessories',
+  'Cables & Adapters',
+  'Batteries, Chargers & Power',
+  'Mounts & Stands',
+  'Cases & Covers',
+  'Replacement Parts',
+  'Lighting',
+  'Small Appliances',
+  'Cookware',
+  'Bedding',
+  'Organization Bins',
+  'Backpacks & Bags',
+  'Exercise & Fitness',
+  'Camping & Hiking',
+  'Bike Accessories',
+  'STEM Toys',
+  'Puzzles',
+  'Board Games',
+  'Car Electronics',
+  'Car Care',
+  'Men',
+  'Women',
+  'Kids',
+  'Vitamins',
+  'Wellness',
+  'Snacks',
+  'Beverages',
+  'Dog',
+  'Cat',
+  'Hand Tools',
+  'Power Tools',
+  'Desk Accessories',
+  'Paper',
+  'Lab & Test',
+  'Measurement'
+];
+
+const LEVEL4: string[] = [
+  'TV Accessories & Parts',
+  'Streaming Devices',
+  'Remote Controls & Accessories',
+  'Headphones',
+  'Speakers',
+  'Microphones',
+  'HDMI Cables',
+  'USB-C Cables',
+  'Wireless Chargers',
+  'Rechargeable Batteries',
+  'Lens Filters',
+  'Tripods',
+  'LED Bulbs',
+  'Smart Switches',
+  'Air Fryers',
+  'Coffee Makers',
+  'Nonstick Pans',
+  'Knife Sets',
+  'Duvet Covers',
+  'Pillowcases',
+  'Stackable Bins',
+  'Drawer Organizers',
+  'Treadmills',
+  'Dumbbells',
+  'Tents',
+  'Sleeping Bags',
+  'Dog Treats',
+  'Dog Leashes',
+  'Cordless Drills',
+  'Impact Drivers',
+  'Notebooks',
+  'Pens & Markers',
+  'Digital Calipers',
+  'Multimeters'
+];
+
+function buildCategoryList(maxCount: number): string[] {
+  const list: string[] = [];
+  const seen = new Set<string>();
+
+  for (const l1 of LEVEL1) {
+    // 1 level
+    if (!seen.has(l1)) {
+      list.push(l1);
+      seen.add(l1);
+      if (list.length >= maxCount) return list.slice(0, maxCount);
+    }
+
+    for (const l2 of LEVEL2) {
+      const two = `${l1} > ${l2}`;
+      if (!seen.has(two)) {
+        list.push(two);
+        seen.add(two);
+        if (list.length >= maxCount) return list.slice(0, maxCount);
+      }
+
+      for (const l3 of LEVEL3) {
+        const three = `${l1} > ${l2} > ${l3}`;
+        if (!seen.has(three)) {
+          list.push(three);
+          seen.add(three);
+          if (list.length >= maxCount) return list.slice(0, maxCount);
+        }
+
+        for (const l4 of LEVEL4) {
+          const four = `${l1} > ${l2} > ${l3} > ${l4}`;
+          if (!seen.has(four)) {
+            list.push(four);
+            seen.add(four);
+            if (list.length >= maxCount) return list.slice(0, maxCount);
+          }
+        }
+      }
+    }
+  }
+
+  return list.slice(0, maxCount);
+}
+
+const allCategories: string[] = buildCategoryList(200);
 
 const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose, onSave }) => {
   // removed title input – header is static now
@@ -35,7 +186,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
     }
   }, [isOpen]);
 
-  const filtered = categoriesMock.filter((c) =>
+  const filtered = allCategories.filter((c) =>
     c.toLowerCase().includes(search.trim().toLowerCase())
   );
 
