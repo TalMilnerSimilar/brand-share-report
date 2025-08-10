@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 interface CreateReportDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave?: (report: { title: string; category: string; brand: string }) => void;
+  onSave?: (report: { title: string; category: string; brand: string; competitors: string[] }) => void;
 }
 
 // Build a domain-specific catalog with different categories per level
@@ -227,12 +227,61 @@ const brandsMock: string[] = [
   'Premium', 'Signature', 'Choice', 'First Rate', 'Top Care', 'Smart Sense', 'Well at Walgreens', 'CVS Health', 'Rite Aid', 'Good Sense'
 ];
 
+// Function to suggest competitors based on selected brand
+const getSuggestedCompetitors = (brand: string): string[] => {
+  // Create category-based competitor suggestions
+  const competitorMap: Record<string, string[]> = {
+    // Tech & Electronics
+    'Apple': ['Samsung', 'Google', 'Microsoft', 'Sony'],
+    'Samsung': ['Apple', 'LG', 'Sony', 'Xiaomi'],
+    'Google': ['Apple', 'Microsoft', 'Amazon', 'Samsung'],
+    'Microsoft': ['Apple', 'Google', 'Amazon', 'Sony'],
+    'Sony': ['Samsung', 'LG', 'Panasonic', 'Canon'],
+    'Amazon': ['Google', 'Microsoft', 'Apple', 'Walmart'],
+    
+    // Fashion & Apparel
+    'Nike': ['Adidas', 'Puma', 'Under Armour', 'New Balance'],
+    'Adidas': ['Nike', 'Puma', 'Under Armour', 'Reebok'],
+    'Puma': ['Nike', 'Adidas', 'Under Armour', 'New Balance'],
+    'H&M': ['Zara', 'Uniqlo', 'Forever 21', 'Gap'],
+    'Zara': ['H&M', 'Uniqlo', 'Gap', 'Forever 21'],
+    
+    // Beauty & Personal Care
+    'L\'Oréal': ['Maybelline', 'Revlon', 'CoverGirl', 'Estée Lauder'],
+    'NIVEA': ['Dove', 'Olay', 'Neutrogena', 'CeraVe'],
+    'Gillette': ['Schick', 'Braun', 'Philips', 'Oral-B'],
+    
+    // Food & Beverages
+    'Coca-Cola': ['Pepsi', 'Dr Pepper', 'Sprite', 'Fanta'],
+    'Pepsi': ['Coca-Cola', 'Dr Pepper', 'Mountain Dew', 'Sprite'],
+    'McDonald\'s': ['Burger King', 'KFC', 'Subway', 'Wendy\'s'],
+    'Starbucks': ['Dunkin\'', 'Tim Hortons', 'Costa Coffee', 'Peet\'s'],
+    
+    // Automotive
+    'Toyota': ['Honda', 'Ford', 'Chevrolet', 'Nissan'],
+    'BMW': ['Mercedes-Benz', 'Audi', 'Lexus', 'Acura'],
+    'Tesla': ['BMW', 'Mercedes-Benz', 'Audi', 'Lucid'],
+  };
+
+  // Get suggested competitors or fallback to random selection
+  let suggested = competitorMap[brand];
+  if (!suggested) {
+    // Fallback: pick random brands from the same general category
+    const shuffled = [...brandsMock].filter(b => b !== brand).sort(() => 0.5 - Math.random());
+    suggested = shuffled.slice(0, 4);
+  }
+  
+  return suggested;
+};
+
 const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose, onSave }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [search, setSearch] = useState('');
   const [brandSearch, setBrandSearch] = useState('');
+  const [competitorSearch, setCompetitorSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedCompetitors, setSelectedCompetitors] = useState<string[]>([]);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -248,8 +297,10 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
       setCurrentStep(1);
       setSearch('');
       setBrandSearch('');
+      setCompetitorSearch('');
       setSelectedCategory('');
       setSelectedBrand('');
+      setSelectedCompetitors([]);
     }
   }, [isOpen]);
 
@@ -260,6 +311,16 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
     }
   }, [selectedCategory, currentStep]);
 
+  // Auto-advance to step 3 when brand is selected, and suggest competitors
+  useEffect(() => {
+    if (selectedBrand && currentStep === 2) {
+      setCurrentStep(3);
+      // Suggest competitors based on the selected brand
+      const suggestedCompetitors = getSuggestedCompetitors(selectedBrand);
+      setSelectedCompetitors(suggestedCompetitors);
+    }
+  }, [selectedBrand, currentStep]);
+
   const filteredCategories = allCategories.filter((c) =>
     c.toLowerCase().includes(search.trim().toLowerCase())
   );
@@ -268,12 +329,17 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
     b.toLowerCase().includes(brandSearch.trim().toLowerCase())
   );
 
+  const filteredCompetitors = brandsMock
+    .filter((b) => b !== selectedBrand) // Exclude the selected brand
+    .filter((b) => !selectedCompetitors.includes(b)) // Exclude already selected competitors
+    .filter((b) => b.toLowerCase().includes(competitorSearch.trim().toLowerCase()));
+
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === overlayRef.current) onClose();
   };
 
-  // Save enabled when category and brand are selected
-  const canSave = Boolean(selectedCategory && selectedBrand);
+  // Save enabled when category, brand, and at least one competitor are selected
+  const canSave = Boolean(selectedCategory && selectedBrand && selectedCompetitors.length > 0);
 
   const getDerivedTitle = (): string => {
     if (selectedCategory) {
@@ -370,8 +436,20 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
             </div>
           )}
 
-          {/* Step 2 - Brand (active when step >= 2) */}
-          {currentStep >= 2 ? (
+          {/* Step 2 - Brand (completed if step > 2) */}
+          {currentStep > 2 ? (
+            <div className="bg-white rounded-lg p-6 mb-6 flex items-center gap-6">
+              <div className="flex items-center gap-6">
+                <div className="w-6 h-6 rounded-full bg-[#18571da] flex items-center justify-center">
+                  <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 4.5L4.5 8L11 1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select your Brand</div>
+              </div>
+            </div>
+          ) : currentStep >= 2 ? (
+            /* Step 2 - Brand (active) */
             <div className="bg-white rounded-lg shadow-[0px_1px_8px_0px_rgba(9,37,64,0.08),0px_5px_24px_0px_rgba(9,37,64,0.08)] p-6 mb-6">
               <div className="flex items-center gap-4 mb-2">
                 <div className="w-6 h-6 rounded-full bg-[#3E74FE] text-white text-[14px] leading-[20px] flex items-center justify-center">2</div>
@@ -422,11 +500,88 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
             </div>
           )}
 
-          {/* Step 3 (disabled placeholder) */}
-          <div className="bg-white rounded-lg p-6 mb-4 flex items-center gap-4">
-            <div className="w-6 h-6 rounded-full bg-[#cbd1d7] text-white text-[14px] leading-[20px] flex items-center justify-center">3</div>
-            <div className="text-[20px] leading-[28px] text-[#b6bec6] font-dm-sans">Select Competitors</div>
-          </div>
+          {/* Step 3 - Competitors (active when step >= 3) */}
+          {currentStep >= 3 ? (
+            <div className="bg-white rounded-lg shadow-[0px_1px_8px_0px_rgba(9,37,64,0.08),0px_5px_24px_0px_rgba(9,37,64,0.08)] p-6 mb-6">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-6 h-6 rounded-full bg-[#3E74FE] text-white text-[14px] leading-[20px] flex items-center justify-center">3</div>
+                <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select Competitors</div>
+              </div>
+              <div className="text-[14px] leading-[20px] text-[#092540] mb-3 font-dm-sans">We've suggested some competitors. You can remove them and add your own.</div>
+
+              {/* Selected Competitors */}
+              {selectedCompetitors.length > 0 && (
+                <div className="mb-4">
+                  <div className="mb-2">
+                    <div className="text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">Selected Competitors:</div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCompetitors.map((competitor) => (
+                      <div
+                        key={competitor}
+                        className="bg-[#eef2ff] border border-[#c7d7fe] rounded-lg px-3 py-1.5 flex items-center gap-2"
+                      >
+                        <span className="text-[14px] leading-[20px] text-[#092540]">{competitor}</span>
+                        <button
+                          className="text-[#6b7c8c] hover:text-[#092540] w-4 h-4 flex items-center justify-center"
+                          onClick={() => setSelectedCompetitors(prev => prev.filter(c => c !== competitor))}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3l6 6M9 3L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Add More Competitors */}
+              <div className="mb-1">
+                <div className="text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">Add More Competitors:</div>
+              </div>
+              <div className="relative border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]">
+                <div className="flex items-center h-10 px-4 gap-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.25 12.5a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5Zm6 2-3.2-3.2" stroke="#B6BEC6" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                  <input
+                    className="flex-1 outline-none text-[14px] leading-[20px] placeholder-[#b6bec6] text-[#3a5166]"
+                    placeholder="Search and select competitors"
+                    value={competitorSearch}
+                    onChange={(e) => setCompetitorSearch(e.target.value)}
+                  />
+                </div>
+                <div className="h-px bg-[#3E74FE]" />
+
+                <div className="max-h-60 overflow-auto py-1">
+                  {filteredCompetitors.length === 0 && (
+                    <div className="px-4 py-2 text-[14px] text-[#6b7c8c]">No more competitors available</div>
+                  )}
+                  {filteredCompetitors.map((competitor) => (
+                    <button
+                      key={competitor}
+                      className="w-full text-left h-11 px-4 hover:bg-[#f7f7f8]"
+                      onClick={() => {
+                        if (!selectedCompetitors.includes(competitor)) {
+                          setSelectedCompetitors(prev => [...prev, competitor]);
+                          setCompetitorSearch('');
+                        }
+                      }}
+                    >
+                      <span className="text-[14px] leading-[20px] text-[#092540]">{competitor}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Step 3 - Competitors (disabled placeholder) */
+            <div className="bg-white rounded-lg p-6 mb-4 flex items-center gap-4">
+              <div className="w-6 h-6 rounded-full bg-[#cbd1d7] text-white text-[14px] leading-[20px] flex items-center justify-center">3</div>
+              <div className="text-[20px] leading-[28px] text-[#b6bec6] font-dm-sans">Select Competitors</div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -444,7 +599,12 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
             onClick={() => {
               if (!canSave) return;
               const derived = getDerivedTitle();
-              onSave?.({ title: derived, category: selectedCategory, brand: selectedBrand });
+              onSave?.({ 
+                title: derived, 
+                category: selectedCategory, 
+                brand: selectedBrand, 
+                competitors: selectedCompetitors 
+              });
               onClose();
             }}
             disabled={!canSave}
