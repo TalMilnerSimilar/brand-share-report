@@ -78,6 +78,10 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
             </svg>
           </button>
         </div>
+        {/* Header subtitle */}
+        <div className="px-8 pb-2 text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">
+          Name your report and select its category to get started.
+        </div>
 
         {/* Body */}
         <div className="bg-[#f7f7f8] h-[calc(100%-160px)] overflow-auto px-8 py-4">
@@ -87,7 +91,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
               <div className="w-6 h-6 rounded-full bg-[#3E74FE] text-white text-[14px] leading-[20px] flex items-center justify-center">1</div>
               <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select your Category</div>
             </div>
-            <div className="text-[14px] leading-[20px] text-[#092540] mb-3 font-dm-sans">subtitle</div>
+            <div className="text-[14px] leading-[20px] text-[#092540] mb-3 font-dm-sans">Search or browse to set the base category for this report.</div>
 
             <div className="relative border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]">
               <div className="flex items-center h-10 px-4 gap-2">
