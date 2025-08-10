@@ -544,7 +544,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                   </div>
                 </div>
               ) : (
-                /* Manual Selection View */
+                /* Manual Selection View - matching Figma design */
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between">
                     <div className="text-[16px] leading-[22px] text-[#092540] font-bold font-dm-sans">
@@ -558,52 +558,63 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     </button>
                   </div>
 
-                  {/* Search */}
-                  <div className="relative border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]">
-                    <div className="flex items-center h-10 px-4 gap-2">
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7.25 12.5a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5Zm6 2-3.2-3.2" stroke="#B6BEC6" strokeWidth="1.5" strokeLinecap="round" />
-                      </svg>
-                      <input
-                        className="flex-1 outline-none text-[14px] leading-[20px] placeholder-[#b6bec6] text-[#3a5166]"
-                        placeholder="Search competitors..."
-                        value={competitorSearch}
-                        onChange={(e) => setCompetitorSearch(e.target.value)}
-                      />
-                    </div>
+                  {/* Brands label */}
+                  <div className="mb-1">
+                    <div className="text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">Brands:</div>
                   </div>
 
-                  {/* Checkbox List */}
-                  <div className="max-h-60 overflow-auto border border-[#e6e9ec] rounded">
-                    {filteredCompetitors.slice(0, 20).map((competitor) => (
-                      <label
-                        key={competitor}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-[#f7f7f8] cursor-pointer border-b border-[#e6e9ec] last:border-b-0"
-                      >
+                  {/* Search List Container - matching Figma design */}
+                  <div className="bg-white border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)] h-[277px] relative">
+                    <div className="flex flex-col h-full overflow-hidden">
+                      {/* Search Input */}
+                      <div className="flex items-center gap-2 px-4 py-4 border-b border-[#e6e9ec]">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M7.25 12.5a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5Zm6 2-3.2-3.2" stroke="#B6BEC6" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
                         <input
-                          type="checkbox"
-                          checked={selectedCompetitors.includes(competitor)}
-                          disabled={!selectedCompetitors.includes(competitor) && selectedCompetitors.length >= 4}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              if (selectedCompetitors.length < 4) {
-                                setSelectedCompetitors(prev => [...prev, competitor]);
-                              }
-                            } else {
-                              setSelectedCompetitors(prev => prev.filter(c => c !== competitor));
-                            }
-                          }}
-                          className="w-4 h-4 text-[#195afe] border-[#cbd1d7] rounded focus:ring-[#195afe]"
+                          className="flex-1 outline-none text-[14px] leading-[20px] placeholder-[#b6bec6] text-[#3a5166]"
+                          placeholder="Search or select brands..."
+                          value={competitorSearch}
+                          onChange={(e) => setCompetitorSearch(e.target.value)}
                         />
-                        <span className={`text-[14px] leading-[20px] font-dm-sans ${
-                          !selectedCompetitors.includes(competitor) && selectedCompetitors.length >= 4 
-                            ? 'text-[#9ca3af]' 
-                            : 'text-[#092540]'
-                        }`}>
-                          {competitor}
-                        </span>
-                      </label>
-                    ))}
+                      </div>
+                      
+                      {/* Blue separator line */}
+                      <div className="h-px bg-[#3e74fe]" />
+
+                      {/* Checkbox List */}
+                      <div className="flex-1 overflow-auto px-px">
+                        {filteredCompetitors.slice(0, 20).map((competitor) => (
+                          <label
+                            key={competitor}
+                            className="flex items-center gap-2 px-4 py-3 h-11 hover:bg-[#f7f7f8] cursor-pointer border-b border-[#e6e9ec] last:border-b-0"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedCompetitors.includes(competitor)}
+                              disabled={!selectedCompetitors.includes(competitor) && selectedCompetitors.length >= 4}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  if (selectedCompetitors.length < 4) {
+                                    setSelectedCompetitors(prev => [...prev, competitor]);
+                                  }
+                                } else {
+                                  setSelectedCompetitors(prev => prev.filter(c => c !== competitor));
+                                }
+                              }}
+                              className="w-5 h-5 text-[#195afe] border-[#cbd1d7] rounded focus:ring-[#195afe]"
+                            />
+                            <span className={`text-[14px] leading-[20px] font-roboto ${
+                              !selectedCompetitors.includes(competitor) && selectedCompetitors.length >= 4 
+                                ? 'text-[#9ca3af]' 
+                                : 'text-[#092540]'
+                            }`}>
+                              {competitor}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Selected count */}
