@@ -312,20 +312,40 @@ const ReportsHome: React.FC = () => {
                     onMouseEnter={() => setHoveredRow(idx)}
                     onMouseLeave={() => setHoveredRow(null)}
                   >
-                    <td className="p-4 border-r border-gray-200">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-[#195afe] cursor-pointer">
-                          {report.brand}
-                          {report.brand === 'Nike' && (
-                            <span className="ml-2 px-2 py-0.5 bg-[#b6bec6] text-[#ffffff] text-[10px] font-bold tracking-[0.3px] rounded-[26px]">My Brand</span>
-                          )}
-                        </span>
-                      </div>
-                      <div className="text-xs text-[#6b7c8c] mt-1">{report.category}</div>
-                      <div className="flex items-center gap-1 mt-1 text-xs text-[#6b7c8c]">
-                        <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
-                        <span>vs.</span>
-                        <span>{report.competitors.join('   ')}</span>
+                    <td className="px-4 py-3 border-r border-[#e6e9ec]">
+                      <div className="flex items-center gap-4">
+                        {/* Product image */}
+                        <div className="w-12 h-12 bg-white rounded-md border border-[#e6e9ec] flex items-center justify-center shrink-0">
+                          <img 
+                            src="/figma-assets/63a1b57a6a3316adf29db7287d1a9713a16cfcb4.png"
+                            alt={`${report.brand} product`}
+                            className="w-10 h-10 object-contain"
+                          />
+                        </div>
+                        
+                        {/* Text content */}
+                        <div className="flex flex-col gap-0.5">
+                          {/* Brand name row */}
+                          <div className="flex items-start gap-0.5">
+                            <span className="font-bold text-[14px] leading-[20px] text-[#092540] font-dm-sans">
+                              {report.brand}
+                              {report.brand === 'Nike' && (
+                                <span className="ml-2 px-2 py-0.5 bg-[#b6bec6] text-[#ffffff] text-[10px] font-bold tracking-[0.3px] rounded-[26px]">My Brand</span>
+                              )}
+                            </span>
+                          </div>
+                          
+                          {/* Category row */}
+                          <div className="flex items-start gap-0.5 text-[14px] leading-[20px] text-[#092540] font-dm-sans">
+                            <span className="font-normal">Across</span>
+                            <span className="font-bold">{report.category}</span>
+                          </div>
+                          
+                          {/* Competitors count */}
+                          <div className="text-[12px] leading-[16px] text-[#b6bec6] font-dm-sans">
+                            {report.competitors.length} competitors
+                          </div>
+                        </div>
                       </div>
                     </td>
                     
