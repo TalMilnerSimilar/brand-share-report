@@ -550,12 +550,22 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     <div className="text-[16px] leading-[22px] text-[#092540] font-bold font-dm-sans">
                       Select competitors manually
                     </div>
-                    <button
-                      className="text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
-                      onClick={() => setIsManualSelection(false)}
-                    >
-                      ← Back to suggestions
-                    </button>
+                    <div className="flex items-center gap-3">
+                      {selectedCompetitors.length > 0 && (
+                        <button
+                          className="text-[14px] leading-[20px] text-[#6b7c8c] hover:text-[#092540] font-dm-sans"
+                          onClick={() => setSelectedCompetitors([])}
+                        >
+                          Clear all
+                        </button>
+                      )}
+                      <button
+                        className="text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
+                        onClick={() => setIsManualSelection(false)}
+                      >
+                        ← Back to suggestions
+                      </button>
+                    </div>
                   </div>
 
                   {/* Brands label */}
@@ -617,9 +627,21 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     </div>
                   </div>
 
-                  {/* Selected count */}
-                  <div className="text-[12px] leading-[16px] text-[#6b7c8c] font-dm-sans">
-                    {selectedCompetitors.length}/4 competitors selected
+                  {/* Selected count and help text */}
+                  <div className="flex flex-col gap-1">
+                    <div className="text-[12px] leading-[16px] text-[#6b7c8c] font-dm-sans">
+                      {selectedCompetitors.length}/4 competitors selected
+                    </div>
+                    {selectedCompetitors.length === 0 && (
+                      <div className="text-[12px] leading-[16px] text-[#9ca3af] font-dm-sans">
+                        Select up to 4 competitors from the list above
+                      </div>
+                    )}
+                    {selectedCompetitors.length >= 4 && (
+                      <div className="text-[12px] leading-[16px] text-[#195afe] font-dm-sans">
+                        Maximum competitors selected. Uncheck to select different ones.
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
