@@ -384,15 +384,25 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
           
           {/* Step 1 - Category (completed if step > 1) */}
           {currentStep > 1 ? (
-            <div className="bg-white rounded-lg p-6 mb-6 flex items-center gap-6">
+            <div className="bg-white rounded-lg p-6 mb-6 flex items-center justify-between hover:shadow-[0px_1px_8px_0px_rgba(9,37,64,0.03),0px_5px_24px_0px_rgba(9,37,64,0.06)] transition-shadow cursor-pointer group">
               <div className="flex items-center gap-6">
-                <div className="w-6 h-6 rounded-full bg-[#18571da] flex items-center justify-center">
-                  <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div className="w-6 h-6 rounded-full bg-[#18571da] flex items-center justify-center relative">
+                  {/* Default checkmark */}
+                  <svg className="group-hover:opacity-0 transition-opacity" width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1 4.5L4.5 8L11 1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  {/* Edit icon on hover */}
+                  <svg className="absolute opacity-0 group-hover:opacity-100 transition-opacity" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.5 2.5L13.5 4.5L5 13H3V11L11.5 2.5Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
                 <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select your Category</div>
               </div>
+              {/* Open Step button on hover */}
+              <button className="opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white border border-[#195afe] text-[#195afe] text-[14px] leading-[20px] font-medium font-dm-sans rounded-[18px] hover:bg-[#f3f7ff]"
+                onClick={() => setCurrentStep(1)}>
+                Open Step
+              </button>
             </div>
           ) : (
             /* Step 1 - Category (active) */
@@ -439,15 +449,25 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
 
           {/* Step 2 - Brand (completed if step > 2) */}
           {currentStep > 2 ? (
-            <div className="bg-white rounded-lg p-6 mb-6 flex items-center gap-6">
+            <div className="bg-white rounded-lg p-6 mb-6 flex items-center justify-between hover:shadow-[0px_1px_8px_0px_rgba(9,37,64,0.03),0px_5px_24px_0px_rgba(9,37,64,0.06)] transition-shadow cursor-pointer group">
               <div className="flex items-center gap-6">
-                <div className="w-6 h-6 rounded-full bg-[#18571da] flex items-center justify-center">
-                  <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div className="w-6 h-6 rounded-full bg-[#18571da] flex items-center justify-center relative">
+                  {/* Default checkmark */}
+                  <svg className="group-hover:opacity-0 transition-opacity" width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1 4.5L4.5 8L11 1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  {/* Edit icon on hover */}
+                  <svg className="absolute opacity-0 group-hover:opacity-100 transition-opacity" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.5 2.5L13.5 4.5L5 13H3V11L11.5 2.5Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
                 <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select your Brand</div>
               </div>
+              {/* Open Step button on hover */}
+              <button className="opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white border border-[#195afe] text-[#195afe] text-[14px] leading-[20px] font-medium font-dm-sans rounded-[18px] hover:bg-[#f3f7ff]"
+                onClick={() => setCurrentStep(2)}>
+                Open Step
+              </button>
             </div>
           ) : currentStep >= 2 ? (
             /* Step 2 - Brand (active) */
