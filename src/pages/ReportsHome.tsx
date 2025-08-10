@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
 import Button from '../components/Button';
 import Tooltip from '../components/Tooltip';
-import DeleteReportModal from '../components/DeleteReportModal';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 
 type SavedReport = {
   id: string;
@@ -13,7 +13,7 @@ type SavedReport = {
   competitors: string[];
 };
 
-const initialReports: SavedReport[] = [
+const mockReports: SavedReport[] = [
   {
     id: 'nike-shoes',
     brand: 'Nike',
@@ -57,14 +57,13 @@ const ReportsHome: React.FC = () => {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [openMenuRow, setOpenMenuRow] = useState<number | null>(null);
   const [menuPosition, setMenuPosition] = useState<{top: number, left: number} | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  // Local state for reports so we can delete
-  const [reports, setReports] = useState<SavedReport[]>(initialReports);
 
   // Enhanced data with sortable values
   const enhancedReports = useMemo(() => {
-    return reports.map(report => {
+    return mockReports.map(report => {
       const brandData = (unifiedBrands as any)[report.brand];
       
       const brandedClicks = brandData?.shareOfTotalClicks; // "Share of Branded Clicks" maps to shareOfTotalClicks
@@ -88,7 +87,7 @@ const ReportsHome: React.FC = () => {
         revenue
       };
     });
-  }, [reports]);
+  }, []);
 
   // Sorted data
   const sortedReports = useMemo(() => {
@@ -169,24 +168,25 @@ const ReportsHome: React.FC = () => {
     // TODO: Navigate to edit page or open edit modal
   };
 
-  // Delete modal state
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-
   const handleDelete = (reportId: string) => {
+    setReportToDelete(reportId);
+    setDeleteModalOpen(true);
     setOpenMenuRow(null);
     setMenuPosition(null);
-    setDeleteTargetId(reportId);
   };
 
   const confirmDelete = () => {
-    if (deleteTargetId) {
-      setReports(prev => prev.filter(r => r.id !== deleteTargetId));
+    if (reportToDelete) {
+      console.log('Confirmed delete report:', reportToDelete);
+      // TODO: Implement actual delete functionality
+      setDeleteModalOpen(false);
+      setReportToDelete(null);
     }
-    setDeleteTargetId(null);
   };
 
   const cancelDelete = () => {
-    setDeleteTargetId(null);
+    setDeleteModalOpen(false);
+    setReportToDelete(null);
   };
 
   return (
@@ -235,7 +235,7 @@ const ReportsHome: React.FC = () => {
             <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/reports icon.svg" alt="Reports Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Total Reports:</span>
-              <span className="text-[14px] leading-5 text-[#6b7c8c]">{reports.length}</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{mockReports.length}</span>
             </div>
             <div className="w-5 self-stretch flex items-center justify-center">
               <div className="w-[1px] h-full bg-[#e6e9ec]" />
@@ -243,7 +243,7 @@ const ReportsHome: React.FC = () => {
             <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/brands icon.svg" alt="Brands Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Brands Tracked:</span>
-              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(reports.map(r => r.brand)).size}</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.brand)).size}</span>
             </div>
             <div className="w-5 self-stretch flex items-center justify-center">
               <div className="w-[1px] h-full bg-[#e6e9ec]" />
@@ -251,7 +251,7 @@ const ReportsHome: React.FC = () => {
             <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/categories icon.svg" alt="Categories Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Categories:</span>
-              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(reports.map(r => r.category.split(' ')[0])).size}</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</span>
             </div>
           </div>
         </div>
@@ -531,12 +531,13 @@ const ReportsHome: React.FC = () => {
           </div>
         )}
 
-      {/* Delete confirmation modal */}
-      <DeleteReportModal
-        open={!!deleteTargetId}
-        onCancel={cancelDelete}
-        onConfirm={confirmDelete}
-      />
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={deleteModalOpen}
+          onClose={cancelDelete}
+          onConfirm={confirmDelete}
+          reportName={reportToDelete ? sortedReports.find(r => r.id === reportToDelete)?.brand : undefined}
+        />
 
       </div>
     </div>
