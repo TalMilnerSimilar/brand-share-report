@@ -474,7 +474,7 @@ const ReportsHome: React.FC = () => {
                             className="px-3 py-2 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active flex items-center justify-center"
                             onClick={() => handleMenuToggle(idx)}
                           >
-                            <img src="/icons/menu-dots.svg" alt="More options" className="w-4 h-4" />
+                            <img src="/icons/menu-dots-vertical.svg" alt="More options" className="w-1 h-4" />
                           </button>
                           
                           {/* Dropdown menu */}
