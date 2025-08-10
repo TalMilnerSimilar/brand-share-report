@@ -349,7 +349,7 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
                   {row.brand}
                     </span>
                     {row.brand === 'Nike' && (
-                      <span className="px-2 py-0.5 bg-[#e6faf5] text-[#009688] text-[10px] font-bold tracking-[0.3px] rounded-[26px] leading-[12px]">My Brand</span>
+                      <span className="px-2 py-0.5 bg-[#b6bec6] text-[#ffffff] text-[10px] font-bold tracking-[0.3px] rounded-[26px] leading-[12px] font-dm-sans">My Brand</span>
                     )}
                     {competitorBrands.includes(row.brand) && (
                       <span className="px-2 py-0.5 bg-[#e8eeff] text-[#6b7c8c] text-[10px] font-bold tracking-[0.3px] rounded-[26px] leading-[12px]">Competitor</span>
