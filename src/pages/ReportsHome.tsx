@@ -54,11 +54,8 @@ const ReportsHome: React.FC = () => {
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageInput, setPageInput] = useState('1');
   const [openMenuRow, setOpenMenuRow] = useState<number | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const rowsPerPage = 5;
 
   // Enhanced data with sortable values
   const enhancedReports = useMemo(() => {
@@ -110,16 +107,7 @@ const ReportsHome: React.FC = () => {
     });
   }, [enhancedReports, sortKey, sortAsc]);
 
-  // Pagination
-  const totalPages = Math.ceil(sortedReports.length / rowsPerPage);
-  
-  useEffect(() => {
-    if (currentPage > totalPages && totalPages > 0) setCurrentPage(totalPages);
-  }, [totalPages, currentPage]);
 
-  useEffect(() => {
-    setPageInput(currentPage.toString());
-  }, [currentPage]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -138,10 +126,7 @@ const ReportsHome: React.FC = () => {
     };
   }, [openMenuRow]);
 
-  const pagedReports = useMemo(() => {
-    const start = (currentPage - 1) * rowsPerPage;
-    return sortedReports.slice(start, start + rowsPerPage);
-  }, [sortedReports, currentPage]);
+
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -152,11 +137,7 @@ const ReportsHome: React.FC = () => {
     }
   };
 
-  const clampPage = (p: number) => {
-    if (isNaN(p) || p < 1) return 1;
-    if (p > totalPages) return totalPages;
-    return p;
-  };
+
 
   const toggleMenu = (rowIndex: number) => {
     setOpenMenuRow(openMenuRow === rowIndex ? null : rowIndex);
@@ -351,7 +332,7 @@ const ReportsHome: React.FC = () => {
                </tr>
              </thead>
             <tbody>
-              {pagedReports.map((report, idx) => {
+              {sortedReports.map((report, idx) => {
                 return (
                   <tr 
                     key={report.id} 
@@ -510,65 +491,7 @@ const ReportsHome: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination Controls */}
-        <div className="flex items-center justify-end gap-4 p-4 border-t border-gray-200 select-none">
-          <div className="flex items-center gap-2">
-            <button
-              className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
-              onClick={() => setCurrentPage(1)}
-              disabled={currentPage === 1}
-            >
-              <div className="flex -space-x-1">
-                <img src="/icons/chevron-left.svg" alt="First" className="w-4 h-4" />
-                <img src="/icons/chevron-left.svg" alt="First" className="w-4 h-4 -ml-1" />
-              </div>
-            </button>
-            <button
-              className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-            >
-              <img src="/icons/chevron-left.svg" alt="Prev" className="w-4 h-4" />
-            </button>
-          </div>
 
-          <div className="flex items-center gap-2 text-xs text-gray-600">
-            <input
-              type="text"
-              value={pageInput}
-              onChange={(e) => setPageInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  setCurrentPage(clampPage(parseInt(pageInput, 10)));
-                }
-              }}
-              className="px-1.5 py-0.5 border border-gray-200 rounded text-center"
-              style={{ width: '30px' }}
-            />
-            <span>out of</span>
-            <span>{totalPages}</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-            >
-              <img src="/icons/chevron-right.svg" alt="Next" className="w-4 h-4" />
-            </button>
-            <button
-              className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
-              onClick={() => setCurrentPage(totalPages)}
-              disabled={currentPage === totalPages}
-            >
-              <div className="flex -space-x-1">
-                <img src="/icons/chevron-right.svg" alt="Last" className="w-4 h-4" />
-                <img src="/icons/chevron-right.svg" alt="Last" className="w-4 h-4 -ml-1" />
-              </div>
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
