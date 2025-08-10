@@ -333,7 +333,6 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
 
   const filteredCompetitors = brandsMock
     .filter((b) => b !== selectedBrand) // Exclude the selected brand
-    .filter((b) => !selectedCompetitors.includes(b)) // Exclude already selected competitors
     .filter((b) => b.toLowerCase().includes(competitorSearch.trim().toLowerCase()));
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -522,7 +521,10 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     </div>
                     <button
                       className="flex items-center gap-1 px-1 py-1 text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
-                      onClick={() => setIsManualSelection(true)}
+                      onClick={() => {
+                        setSelectedCompetitors([]);
+                        setIsManualSelection(true);
+                      }}
                     >
                       Edit
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -550,22 +552,12 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     <div className="text-[16px] leading-[22px] text-[#092540] font-bold font-dm-sans">
                       Select competitors manually
                     </div>
-                    <div className="flex items-center gap-3">
-                      {selectedCompetitors.length > 0 && (
-                        <button
-                          className="text-[14px] leading-[20px] text-[#6b7c8c] hover:text-[#092540] font-dm-sans"
-                          onClick={() => setSelectedCompetitors([])}
-                        >
-                          Clear all
-                        </button>
-                      )}
-                      <button
-                        className="text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
-                        onClick={() => setIsManualSelection(false)}
-                      >
-                        ← Back to suggestions
-                      </button>
-                    </div>
+                    <button
+                      className="text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
+                      onClick={() => setIsManualSelection(false)}
+                    >
+                      ← Back to suggestions
+                    </button>
                   </div>
 
                   {/* Brands label */}
