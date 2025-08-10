@@ -614,12 +614,24 @@ const ReportsHome: React.FC = () => {
           onSave={({ title, category, brand, competitors }) => {
             // naive id generation
             const id = title.trim().toLowerCase().replace(/\s+/g, '-');
+            
+            // Extract leaf category (last part after last '>')
+            const leafCategory = category.includes(' > ') 
+              ? category.split(' > ').pop()?.trim() || category
+              : category;
+            
             const newReport: SavedReport = {
               id,
               brand: brand,
-              category,
+              category: leafCategory,
               competitors: competitors,
             };
+            
+            // Ensure the brand exists in unifiedBrands data
+            if (!(unifiedBrands as any)[brand]) {
+              console.warn(`Brand "${brand}" not found in unifiedBrands data. Metrics may not display correctly.`);
+            }
+            
             setReports(prev => [...prev, newReport]);
             setDrawerOpen(false);
           }}
