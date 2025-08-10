@@ -378,7 +378,9 @@ const ReportsHome: React.FC = () => {
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-medium text-gray-900">All Reports</h2>
-            <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400" />
+            <Tooltip content="View and manage all your brand performance reports. Each report contains detailed analysis of your brand's share metrics compared to competitors in specific categories.">
+              <img src="/icons/info-icon.svg" alt="Info" className="w-4 h-4 text-gray-400 cursor-help" />
+            </Tooltip>
           </div>
         </div>
 
