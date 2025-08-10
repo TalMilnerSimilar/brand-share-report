@@ -31,6 +31,43 @@ const mockReports: SavedReport[] = [
   },
 ];
 
+// Available product images for reports
+const availableImages = [
+  '/icons/images/shoe-3.png',
+  '/icons/images/shoe-2.png', 
+  '/icons/images/shoe-1.png',
+  '/icons/images/nike-sneaker.jpg',
+  '/icons/images/apple-watch.jpg',
+  '/icons/images/airpods-max.jpg',
+  '/icons/images/iphone-13.jpg',
+  '/icons/images/macbook-laptop.jpg',
+  '/icons/images/laptop.png',
+  '/icons/images/tablet.png',
+  '/icons/images/smartphone.png',
+  '/icons/images/wireless-headphones.jpg',
+  '/icons/images/bluetooth-speaker.jpg',
+  '/icons/images/headphones.png',
+  '/icons/images/headphones-2.png',
+  '/icons/images/gaming-controller.jpg',
+  '/icons/images/keyboard.png',
+  '/icons/images/mechanical-keyboard.jpg',
+  '/icons/images/mouse.png',
+  '/icons/images/wireless-mouse.jpg',
+  '/icons/images/camera-1.png',
+  '/icons/images/camera-2.png',
+  '/icons/images/camera-lens.jpg',
+  '/icons/images/drone.jpg',
+  '/icons/images/tv.png',
+  '/icons/images/watch.png',
+  '/icons/images/fitness-tracker.jpg',
+  '/icons/images/smart-home-device.jpg',
+  '/icons/images/sunglasses.jpg',
+  '/icons/images/perfume-bottle.jpg',
+  '/icons/images/leather-bag.jpg',
+  '/icons/images/coffee-cup.jpg',
+  '/icons/images/phone-case.jpg',
+];
+
 // Map each report id to the top hero image used on its report page
 const heroTopImageByReportId: Record<string, string> = {
   'nike-shoes': '/icons/images/shoe-3.png',
@@ -38,7 +75,22 @@ const heroTopImageByReportId: Record<string, string> = {
 };
 
 const getHeroTopImageForReport = (reportId: string): string => {
-  return heroTopImageByReportId[reportId] ?? '/icons/images/shoe-3.png';
+  // Use existing mapping if available
+  if (heroTopImageByReportId[reportId]) {
+    return heroTopImageByReportId[reportId];
+  }
+  
+  // Generate consistent image index based on report ID
+  let hash = 0;
+  for (let i = 0; i < reportId.length; i++) {
+    const char = reportId.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  
+  // Use absolute value and mod to get image index
+  const imageIndex = Math.abs(hash) % availableImages.length;
+  return availableImages[imageIndex];
 };
 
 type SortKey = 'reportName' | 'brandedClicksValue' | 'brandedClicksChange' | 'productViewsValue' | 'productViewsChange' | 'paidClicksValue' | 'paidClicksChange' | 'revenueValue' | 'revenueChange';
