@@ -166,28 +166,65 @@ function buildCategoryList(maxCount: number): string[] {
 
 const allCategories: string[] = buildCategoryList(200);
 
-// Mock brand list
+// Mock brand list - 400 brands across various categories
 const brandsMock: string[] = [
-  'Amazon',
-  'Amazon Basics',
-  'Generic',
-  'NIVEA',
-  'CeraVe',
-  'Nike',
-  'Adidas',
-  'Apple',
-  'Samsung',
-  'Sony',
-  'LG',
-  'Philips',
-  'Bosch',
-  'KitchenAid',
-  'Dyson',
-  'Black+Decker',
-  'DeWalt',
-  'Makita',
-  'Oral-B',
-  'Gillette'
+  // Tech & Electronics
+  'Apple', 'Samsung', 'Sony', 'LG', 'Microsoft', 'Google', 'Amazon', 'Dell', 'HP', 'Lenovo',
+  'ASUS', 'Acer', 'MSI', 'Intel', 'AMD', 'NVIDIA', 'Corsair', 'Logitech', 'Razer', 'SteelSeries',
+  'Canon', 'Nikon', 'Fujifilm', 'Olympus', 'Panasonic', 'JBL', 'Bose', 'Beats', 'Audio-Technica', 'Sennheiser',
+  'Philips', 'TCL', 'Hisense', 'Vizio', 'Roku', 'Xiaomi', 'Huawei', 'OnePlus', 'Oppo', 'Vivo',
+  
+  // Fashion & Apparel
+  'Nike', 'Adidas', 'Puma', 'Under Armour', 'New Balance', 'Converse', 'Vans', 'Reebok', 'ASICS', 'Skechers',
+  'H&M', 'Zara', 'Uniqlo', 'Gap', 'Old Navy', 'Forever 21', 'Primark', 'Target', 'Walmart', 'Costco',
+  'Levi\'s', 'Wrangler', 'Lee', 'Calvin Klein', 'Tommy Hilfiger', 'Ralph Lauren', 'Lacoste', 'Hugo Boss', 'Armani', 'Gucci',
+  'Prada', 'Louis Vuitton', 'Chanel', 'Hermès', 'Burberry', 'Versace', 'Dolce & Gabbana', 'Fendi', 'Balenciaga', 'Givenchy',
+  
+  // Beauty & Personal Care
+  'L\'Oréal', 'Maybelline', 'Revlon', 'CoverGirl', 'MAC', 'Estée Lauder', 'Clinique', 'Lancôme', 'Dior', 'Chanel',
+  'NIVEA', 'Dove', 'Olay', 'Neutrogena', 'CeraVe', 'Cetaphil', 'Aveeno', 'Eucerin', 'La Roche-Posay', 'Vichy',
+  'Head & Shoulders', 'Pantene', 'Herbal Essences', 'TRESemmé', 'Garnier', 'Schwarzkopf', 'Matrix', 'Redken', 'Paul Mitchell', 'Aveda',
+  'Gillette', 'Schick', 'Braun', 'Oral-B', 'Colgate', 'Crest', 'Listerine', 'Sensodyne', 'Aquafresh', 'TheraBreath',
+  
+  // Food & Beverages
+  'Coca-Cola', 'Pepsi', 'Dr Pepper', 'Sprite', 'Fanta', 'Mountain Dew', 'Red Bull', 'Monster', 'Rockstar', 'Bang',
+  'Starbucks', 'Dunkin\'', 'Tim Hortons', 'Costa Coffee', 'Nescafé', 'Folgers', 'Maxwell House', 'Lavazza', 'Illy', 'Peet\'s',
+  'McDonald\'s', 'Burger King', 'KFC', 'Subway', 'Pizza Hut', 'Domino\'s', 'Taco Bell', 'Wendy\'s', 'Chick-fil-A', 'Chipotle',
+  'Heinz', 'Kraft', 'Nestlé', 'Unilever', 'General Mills', 'Kellogg\'s', 'Post', 'Quaker', 'Campbell\'s', 'Progresso',
+  
+  // Home & Garden
+  'IKEA', 'Home Depot', 'Lowe\'s', 'Wayfair', 'Ashley Furniture', 'La-Z-Boy', 'Pottery Barn', 'West Elm', 'Crate & Barrel', 'Williams Sonoma',
+  'KitchenAid', 'Cuisinart', 'Hamilton Beach', 'Black+Decker', 'Ninja', 'Vitamix', 'Instant Pot', 'Crock-Pot', 'Keurig', 'Nespresso',
+  'Dyson', 'Shark', 'Bissell', 'Hoover', 'Roomba', 'Miele', 'Electrolux', 'Whirlpool', 'GE', 'Frigidaire',
+  'Scotts', 'Miracle-Gro', 'Roundup', 'Ortho', 'Bayer', 'DeWalt', 'Makita', 'Milwaukee', 'Ryobi', 'Craftsman',
+  
+  // Automotive
+  'Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Nissan', 'Hyundai',
+  'Kia', 'Mazda', 'Subaru', 'Lexus', 'Acura', 'Infiniti', 'Cadillac', 'Lincoln', 'Buick', 'GMC',
+  'Jeep', 'Ram', 'Dodge', 'Chrysler', 'Tesla', 'Volvo', 'Jaguar', 'Land Rover', 'Porsche', 'Ferrari',
+  'Michelin', 'Bridgestone', 'Goodyear', 'Continental', 'Pirelli', 'Dunlop', 'Yokohama', 'Cooper', 'Hankook', 'Toyo',
+  
+  // Sports & Fitness
+  'Spalding', 'Wilson', 'Rawlings', 'Easton', 'Louisville Slugger', 'Titleist', 'Callaway', 'TaylorMade', 'Ping', 'Cobra',
+  'Yeti', 'Coleman', 'The North Face', 'Patagonia', 'Columbia', 'REI', 'Dick\'s Sporting Goods', 'Sports Authority', 'Big 5', 'Modell\'s',
+  'Peloton', 'NordicTrack', 'Bowflex', 'Schwinn', 'Life Fitness', 'Precor', 'Nautilus', 'Sole', 'ProForm', 'Horizon',
+  'Gatorade', 'Powerade', 'BodyArmor', 'Vitamin Water', 'Smartwater', 'Fiji', 'Evian', 'Perrier', 'San Pellegrino', 'LaCroix',
+  
+  // Healthcare & Pharmacy
+  'Johnson & Johnson', 'Pfizer', 'Merck', 'Bristol Myers Squibb', 'AbbVie', 'Novartis', 'Roche', 'Sanofi', 'GlaxoSmithKline', 'AstraZeneca',
+  'CVS', 'Walgreens', 'Rite Aid', 'Duane Reade', 'Boots', 'Shoppers Drug Mart', 'Rexall', 'Pharmaprix', 'Jean Coutu', 'Familiprix',
+  'Band-Aid', 'Neosporin', 'Benadryl', 'Tylenol', 'Advil', 'Motrin', 'Aleve', 'Aspirin', 'Pepto-Bismol', 'Imodium',
+  'Claritin', 'Zyrtec', 'Allegra', 'Flonase', 'Nasacort', 'Sudafed', 'Robitussin', 'Delsym', 'Mucinex', 'Halls',
+  
+  // Retail & E-commerce
+  'Amazon Basics', 'Walmart Great Value', 'Target Good & Gather', 'Costco Kirkland', 'Sam\'s Choice', 'Member\'s Mark', 'Up & Up', 'Simply Balanced', 'Market Pantry', 'Archer Farms',
+  'Best Buy Insignia', 'Home Depot Husky', 'Lowe\'s Kobalt', 'Sears Kenmore', 'Macy\'s', 'Nordstrom', 'Bloomingdale\'s', 'Saks Fifth Avenue', 'Neiman Marcus', 'Barneys',
+  'TJ Maxx', 'Marshall\'s', 'Nordstrom Rack', 'Saks OFF 5TH', 'Outlet', 'Burlington', 'Ross', 'Big Lots', 'Dollar Tree', 'Family Dollar',
+  'eBay', 'Etsy', 'Shopify', 'Square', 'PayPal', 'Stripe', 'Alibaba', 'AliExpress', 'Wish', 'Overstock',
+  
+  // Generic & Store Brands
+  'Generic', 'Store Brand', 'Private Label', 'No Name', 'President\'s Choice', 'Our Brand', 'Value', 'Essential', 'Basic', 'Select',
+  'Premium', 'Signature', 'Choice', 'First Rate', 'Top Care', 'Smart Sense', 'Well at Walgreens', 'CVS Health', 'Rite Aid', 'Good Sense'
 ];
 
 const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose, onSave }) => {
