@@ -537,43 +537,57 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
               )}
 
               {/* Add More Competitors */}
-              <div className="mb-1">
-                <div className="text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">Add More Competitors:</div>
-              </div>
-              <div className="relative border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]">
-                <div className="flex items-center h-10 px-4 gap-2">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.25 12.5a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5Zm6 2-3.2-3.2" stroke="#B6BEC6" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                  <input
-                    className="flex-1 outline-none text-[14px] leading-[20px] placeholder-[#b6bec6] text-[#3a5166]"
-                    placeholder="Search and select competitors"
-                    value={competitorSearch}
-                    onChange={(e) => setCompetitorSearch(e.target.value)}
-                  />
-                </div>
-                <div className="h-px bg-[#3E74FE]" />
+              {selectedCompetitors.length < 4 && (
+                <>
+                  <div className="mb-1">
+                    <div className="text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">
+                      Add More Competitors ({selectedCompetitors.length}/4):
+                    </div>
+                  </div>
+                  <div className="relative border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]">
+                    <div className="flex items-center h-10 px-4 gap-2">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.25 12.5a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5Zm6 2-3.2-3.2" stroke="#B6BEC6" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                      <input
+                        className="flex-1 outline-none text-[14px] leading-[20px] placeholder-[#b6bec6] text-[#3a5166]"
+                        placeholder="Search and select competitors"
+                        value={competitorSearch}
+                        onChange={(e) => setCompetitorSearch(e.target.value)}
+                      />
+                    </div>
+                    <div className="h-px bg-[#3E74FE]" />
 
-                <div className="max-h-60 overflow-auto py-1">
-                  {filteredCompetitors.length === 0 && (
-                    <div className="px-4 py-2 text-[14px] text-[#6b7c8c]">No more competitors available</div>
-                  )}
-                  {filteredCompetitors.map((competitor) => (
-                    <button
-                      key={competitor}
-                      className="w-full text-left h-11 px-4 hover:bg-[#f7f7f8]"
-                      onClick={() => {
-                        if (!selectedCompetitors.includes(competitor)) {
-                          setSelectedCompetitors(prev => [...prev, competitor]);
-                          setCompetitorSearch('');
-                        }
-                      }}
-                    >
-                      <span className="text-[14px] leading-[20px] text-[#092540]">{competitor}</span>
-                    </button>
-                  ))}
+                    <div className="max-h-60 overflow-auto py-1">
+                      {filteredCompetitors.length === 0 && (
+                        <div className="px-4 py-2 text-[14px] text-[#6b7c8c]">No more competitors available</div>
+                      )}
+                      {filteredCompetitors.map((competitor) => (
+                        <button
+                          key={competitor}
+                          className="w-full text-left h-11 px-4 hover:bg-[#f7f7f8]"
+                          onClick={() => {
+                            if (!selectedCompetitors.includes(competitor) && selectedCompetitors.length < 4) {
+                              setSelectedCompetitors(prev => [...prev, competitor]);
+                              setCompetitorSearch('');
+                            }
+                          }}
+                        >
+                          <span className="text-[14px] leading-[20px] text-[#092540]">{competitor}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {selectedCompetitors.length >= 4 && (
+                <div className="bg-[#f7f7f8] border border-[#e6e9ec] rounded-lg p-3">
+                  <div className="text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">
+                    Maximum of 4 competitors selected. Remove a competitor to add a different one.
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : (
             /* Step 3 - Competitors (disabled placeholder) */
