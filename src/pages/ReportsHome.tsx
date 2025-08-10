@@ -9,6 +9,7 @@ type SavedReport = {
   category: string;
   priceRange?: string;
   competitors: string[];
+  heroImage: string;
 };
 
 const mockReports: SavedReport[] = [
@@ -17,12 +18,14 @@ const mockReports: SavedReport[] = [
     brand: 'Nike',
     category: 'Premium Running Shoes (Price > $75)',
     competitors: ['Adidas', 'New Balance', 'Hoka', 'Asics'],
+    heroImage: '/icons/images/nike-sneaker.jpg',
   },
   {
     id: 'adidas-apparel',
     brand: 'Adidas',
     category: 'All Athletic Apparel',
     competitors: ['Nike', 'Under Armour', 'Puma', 'Hanes'],
+    heroImage: '/icons/images/shoe-1.png',
   },
 ];
 
@@ -317,7 +320,7 @@ const ReportsHome: React.FC = () => {
                         {/* Product image */}
                         <div className="w-12 h-12 bg-white rounded-md border border-[#e6e9ec] flex items-center justify-center shrink-0">
                           <img 
-                            src="/figma-assets/63a1b57a6a3316adf29db7287d1a9713a16cfcb4.png"
+                            src={report.heroImage}
                             alt={`${report.brand} product`}
                             className="w-10 h-10 object-contain"
                           />
