@@ -339,9 +339,7 @@ const ReportsHome: React.FC = () => {
                           <div className="flex items-start gap-0.5">
                             <span className="font-bold text-[14px] leading-[20px] text-[#092540] font-dm-sans">
                               {report.brand}
-                              {report.brand === 'Nike' && (
-                                <span className="ml-2 px-2 py-0.5 bg-[#b6bec6] text-[#ffffff] text-[10px] font-bold tracking-[0.3px] rounded-[26px]">My Brand</span>
-                              )}
+                              {/* No need for a 'My Brand' pill: in each report the header brand is the user's brand */}
                             </span>
                           </div>
                           
