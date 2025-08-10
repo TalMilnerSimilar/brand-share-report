@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
 import Button from '../components/Button';
+import Tooltip from '../components/Tooltip';
 
 type SavedReport = {
   id: string;
@@ -350,9 +351,11 @@ const ReportsHome: React.FC = () => {
                           </div>
                           
                           {/* Competitors count */}
-                          <div className="text-[12px] leading-[16px] text-[#b6bec6] font-dm-sans">
-                            {report.competitors.length} competitors
-                          </div>
+                          <Tooltip content={`Competitors: ${report.competitors.join(', ')}`}>
+                            <div className="text-[12px] leading-[16px] text-[#b6bec6] font-dm-sans cursor-pointer">
+                              {report.competitors.length} competitors
+                            </div>
+                          </Tooltip>
                         </div>
                       </div>
                     </td>
