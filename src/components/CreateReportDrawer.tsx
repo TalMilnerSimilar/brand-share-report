@@ -560,7 +560,8 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     <button
                       className="flex items-center gap-1 px-1 py-1 text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
                       onClick={() => {
-                        // Enter manual mode (do not destroy the initial suggestions state)
+                        // Enter manual mode with an empty selection, while preserving initialSuggestedCompetitors
+                        setSelectedCompetitors([]);
                         setIsManualSelection(true);
                       }}
                     >
