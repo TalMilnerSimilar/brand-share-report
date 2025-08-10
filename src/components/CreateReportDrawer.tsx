@@ -15,7 +15,7 @@ const categoriesMock: string[] = [
 ];
 
 const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose, onSave }) => {
-  const [title, setTitle] = useState('');
+  // removed title input – header is static now
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,6 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
 
   useEffect(() => {
     if (!isOpen) {
-      setTitle('');
       setSearch('');
       setSelectedCategory('');
     }
@@ -44,7 +43,17 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
     if (e.target === overlayRef.current) onClose();
   };
 
-  const canSave = Boolean(title.trim() && selectedCategory);
+  // Save enabled when a category is selected
+  const canSave = Boolean(selectedCategory);
+
+  const getDerivedTitle = (): string => {
+    if (selectedCategory) {
+      const parts = selectedCategory.split('>');
+      const last = parts[parts.length - 1]?.trim();
+      if (last) return last;
+    }
+    return 'New Report';
+  };
 
   return (
     <div
@@ -62,12 +71,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
       >
         {/* Header */}
         <div className="flex items-center justify-between px-8 pt-8 pb-4">
-          <input
-            className="w-full mr-4 outline-none text-[24px] leading-6 font-normal font-dm-sans text-[#092540] placeholder-[#092540]"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+          <h2 className="text-[24px] leading-6 font-normal font-dm-sans text-[#092540] mr-4">Create New Report</h2>
           <button
             aria-label="Close"
             className="w-10 h-10 rounded-full hover:bg-[#f3f7ff] active:bg-[#e8eeff] flex items-center justify-center"
@@ -77,10 +81,6 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
               <path d="M5 5l10 10M15 5L5 15" stroke="#3A5166" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </button>
-        </div>
-        {/* Header subtitle */}
-        <div className="px-8 pb-2 text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">
-          Name your report and select its category to get started.
         </div>
 
         {/* Body */}
@@ -153,7 +153,8 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
             }`}
             onClick={() => {
               if (!canSave) return;
-              onSave?.({ title: title.trim(), category: selectedCategory });
+              const derived = getDerivedTitle();
+              onSave?.({ title: derived, category: selectedCategory });
               onClose();
             }}
             disabled={!canSave}
