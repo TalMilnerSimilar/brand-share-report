@@ -6,6 +6,7 @@ import Tooltip from '../components/Tooltip';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import Toast from '../components/Toast';
 import EmptyState from '../components/EmptyState';
+import CreateReportDrawer from '../components/CreateReportDrawer';
 
 type SavedReport = {
   id: string;
@@ -64,6 +65,7 @@ const ReportsHome: React.FC = () => {
   const [reportToDelete, setReportToDelete] = useState<string | null>(null);
   const [toastVisible, setToastVisible] = useState(false);
   const [deletedReport, setDeletedReport] = useState<SavedReport | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Enhanced data with sortable values
@@ -259,7 +261,7 @@ const ReportsHome: React.FC = () => {
               <Button
                 variant="primary"
                 className="px-4 py-2 text-[14px] leading-5 flex items-center gap-2"
-                onClick={() => navigate('/reports/new')}
+                onClick={() => setDrawerOpen(true)}
               >
                 <img
                   src="/figma-assets/469213f20b34f60691ed81fa0082aa5c4fa6599b.svg"
@@ -553,7 +555,7 @@ const ReportsHome: React.FC = () => {
             title="No reports yet"
             description="Get started by creating your first brand share report. You'll be able to track brand performance, analyze competitors, and monitor market trends."
             actionText="Create your first report"
-            onAction={() => navigate('/new-report')}
+            onAction={() => setDrawerOpen(true)}
           />
         )}
 
@@ -603,6 +605,24 @@ const ReportsHome: React.FC = () => {
           message="Report deleted successfully"
           onUndo={handleUndo}
           onClose={handleToastClose}
+        />
+
+        {/* Create Report Drawer */}
+        <CreateReportDrawer
+          isOpen={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          onSave={({ title, category }) => {
+            // naive id generation
+            const id = title.trim().toLowerCase().replace(/\s+/g, '-');
+            const newReport: SavedReport = {
+              id,
+              brand: title.trim(),
+              category,
+              competitors: [],
+            };
+            setReports(prev => [...prev, newReport]);
+            setDrawerOpen(false);
+          }}
         />
 
       </div>
