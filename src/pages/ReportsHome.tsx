@@ -109,50 +109,50 @@ const ReportsHome: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
                          <thead>
-               <tr className="border-b border-[#e6e9ec] text-xs font-medium text-[#3a5166]">
+               <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166]">
                  <th rowSpan={2} className="text-left p-4 border-r border-[#e6e9ec] align-middle">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Report Name</span>
+                   <span className="text-[12px] leading-[16px]">Report Name</span>
                  </th>
                  <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Share of Branded Clicks</span>
+                   <span className="text-[12px] leading-[16px]">Share of Branded Clicks</span>
                  </th>
                  <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Share of Product Views</span>
+                   <span className="text-[12px] leading-[16px]">Share of Product Views</span>
                  </th>
                  <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Share of Paid Clicks</span>
+                   <span className="text-[12px] leading-[16px]">Share of Paid Clicks</span>
                  </th>
                  <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Share of Revenue</span>
+                   <span className="text-[12px] leading-[16px]">Share of Revenue</span>
                  </th>
                  <th rowSpan={2} className="text-right p-4 align-middle">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Actions</span>
+                   <span className="text-[12px] leading-[16px]">Actions</span>
                  </th>
                </tr>
-               <tr className="border-b border-[#e6e9ec] text-xs font-medium text-[#3a5166]">
+               <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166]">
                  <th className="text-right p-4">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Value</span>
+                   <span className="text-[12px] leading-[16px]">Value</span>
                  </th>
                  <th className="text-left p-4 border-r border-[#e6e9ec]">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Wow Change</span>
+                   <span className="text-[12px] leading-[16px]">Wow Change</span>
                  </th>
                  <th className="text-right p-4">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Value</span>
+                   <span className="text-[12px] leading-[16px]">Value</span>
                  </th>
                  <th className="text-left p-4 border-r border-[#e6e9ec]">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Wow Change</span>
+                   <span className="text-[12px] leading-[16px]">Wow Change</span>
                  </th>
                  <th className="text-right p-4">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Value</span>
+                   <span className="text-[12px] leading-[16px]">Value</span>
                  </th>
                  <th className="text-left p-4 border-r border-[#e6e9ec]">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Wow Change</span>
+                   <span className="text-[12px] leading-[16px]">Wow Change</span>
                  </th>
                  <th className="text-right p-4">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Value</span>
+                   <span className="text-[12px] leading-[16px]">Value</span>
                  </th>
                  <th className="text-left p-4 border-r border-[#e6e9ec]">
-                   <span className="font-['Roboto'] font-medium text-[12px] leading-[16px]">Wow Change</span>
+                   <span className="text-[12px] leading-[16px]">Wow Change</span>
                  </th>
                </tr>
              </thead>
