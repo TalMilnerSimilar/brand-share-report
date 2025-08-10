@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
 import Button from '../components/Button';
@@ -56,7 +56,8 @@ const ReportsHome: React.FC = () => {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInput, setPageInput] = useState('1');
-
+  const [openMenuRow, setOpenMenuRow] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const rowsPerPage = 5;
 
   // Enhanced data with sortable values
@@ -120,7 +121,22 @@ const ReportsHome: React.FC = () => {
     setPageInput(currentPage.toString());
   }, [currentPage]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenuRow(null);
+      }
+    };
 
+    if (openMenuRow !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openMenuRow]);
 
   const pagedReports = useMemo(() => {
     const start = (currentPage - 1) * rowsPerPage;
@@ -142,7 +158,21 @@ const ReportsHome: React.FC = () => {
     return p;
   };
 
+  const toggleMenu = (rowIndex: number) => {
+    setOpenMenuRow(openMenuRow === rowIndex ? null : rowIndex);
+  };
 
+  const handleEdit = (reportId: string) => {
+    console.log('Edit report:', reportId);
+    setOpenMenuRow(null);
+    // TODO: Navigate to edit page or open edit modal
+  };
+
+  const handleDelete = (reportId: string) => {
+    console.log('Delete report:', reportId);
+    setOpenMenuRow(null);
+    // TODO: Show delete confirmation modal
+  };
 
   return (
     <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
@@ -437,6 +467,40 @@ const ReportsHome: React.FC = () => {
                         >
                           Analyze
                         </button>
+                        
+                        {/* Three-dot menu button */}
+                        <div className="relative" ref={openMenuRow === idx ? menuRef : null}>
+                          <button
+                            className="px-3 py-2 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active flex items-center justify-center"
+                            onClick={() => toggleMenu(idx)}
+                          >
+                            <svg width="4" height="16" viewBox="0 0 4 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="2" cy="2" r="2" fill="currentColor"/>
+                              <circle cx="2" cy="8" r="2" fill="currentColor"/>
+                              <circle cx="2" cy="14" r="2" fill="currentColor"/>
+                            </svg>
+                          </button>
+                          
+                          {/* Dropdown menu */}
+                          {openMenuRow === idx && (
+                            <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                              <div className="py-1">
+                                <button
+                                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
+                                  onClick={() => handleEdit(report.id)}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
+                                  onClick={() => handleDelete(report.id)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>
