@@ -55,6 +55,7 @@ const ReportsHome: React.FC = () => {
   const [sortAsc, setSortAsc] = useState(true);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [openMenuRow, setOpenMenuRow] = useState<number | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{top: number, left: number} | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Enhanced data with sortable values
@@ -139,19 +140,35 @@ const ReportsHome: React.FC = () => {
 
 
 
-  const toggleMenu = (rowIndex: number) => {
-    setOpenMenuRow(openMenuRow === rowIndex ? null : rowIndex);
+  const toggleMenu = (rowIndex: number, buttonElement?: HTMLButtonElement) => {
+    if (openMenuRow === rowIndex) {
+      setOpenMenuRow(null);
+      setMenuPosition(null);
+    } else {
+      setOpenMenuRow(rowIndex);
+      
+      // Calculate position immediately using the button element
+      if (buttonElement) {
+        const rect = buttonElement.getBoundingClientRect();
+        setMenuPosition({
+          top: rect.bottom + 4,
+          left: rect.right - 128
+        });
+      }
+    }
   };
 
   const handleEdit = (reportId: string) => {
     console.log('Edit report:', reportId);
     setOpenMenuRow(null);
+    setMenuPosition(null);
     // TODO: Navigate to edit page or open edit modal
   };
 
   const handleDelete = (reportId: string) => {
     console.log('Delete report:', reportId);
     setOpenMenuRow(null);
+    setMenuPosition(null);
     // TODO: Show delete confirmation modal
   };
 
@@ -453,7 +470,7 @@ const ReportsHome: React.FC = () => {
                         <div className="relative" ref={openMenuRow === idx ? menuRef : null}>
                           <button
                             className="w-8 h-8 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active flex items-center justify-center"
-                            onClick={() => toggleMenu(idx)}
+                            onClick={(e) => toggleMenu(idx, e.currentTarget)}
                           >
                             <svg width="4" height="16" viewBox="0 0 4 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <circle cx="2" cy="2" r="2" fill="currentColor"/>
@@ -472,12 +489,12 @@ const ReportsHome: React.FC = () => {
         </div>
 
         {/* Dropdown menu - positioned outside table */}
-        {openMenuRow !== null && (
+        {openMenuRow !== null && menuPosition && (
           <div 
             className="fixed bg-white border border-gray-200 rounded-md shadow-lg z-[9999] w-32"
             style={{
-              top: `${(menuRef.current?.getBoundingClientRect().bottom || 0) + 4}px`,
-              left: `${(menuRef.current?.getBoundingClientRect().right || 0) - 128}px`
+              top: `${menuPosition.top}px`,
+              left: `${menuPosition.left}px`
             }}
           >
             <div className="py-1">
