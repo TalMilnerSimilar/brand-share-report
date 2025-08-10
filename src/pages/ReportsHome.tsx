@@ -116,13 +116,25 @@ const ReportsHome: React.FC = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      // Check if the click target is within the dropdown menu
+      const target = event.target as Node;
+      const dropdownElement = document.querySelector(`[data-dropdown-menu="${openMenuRow}"]`);
+      
+      if (dropdownElement && dropdownElement.contains(target)) {
+        return; // Don't close if clicking inside the dropdown
+      }
+      
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setOpenMenuRow(null);
+        setMenuPosition(null);
       }
     };
 
     if (openMenuRow !== null) {
-      document.addEventListener('mousedown', handleClickOutside);
+      // Use a slight delay to avoid conflicts with button clicks
+      setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+      }, 10);
     }
 
     return () => {
@@ -169,6 +181,7 @@ const ReportsHome: React.FC = () => {
   };
 
   const handleDelete = (reportId: string) => {
+    console.log('handleDelete called with reportId:', reportId);
     setReportToDelete(reportId);
     setDeleteModalOpen(true);
     setOpenMenuRow(null);
@@ -509,6 +522,7 @@ const ReportsHome: React.FC = () => {
         {openMenuRow !== null && menuPosition && (
           <div 
             className="fixed bg-white border border-gray-200 rounded-md shadow-lg z-[9999] w-32"
+            data-dropdown-menu={openMenuRow}
             style={{
               top: `${menuPosition.top}px`,
               left: `${menuPosition.left}px`
@@ -523,7 +537,12 @@ const ReportsHome: React.FC = () => {
               </button>
               <button
                 className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
-                onClick={() => handleDelete(sortedReports[openMenuRow].id)}
+                onClick={() => {
+                  console.log('Delete button clicked, openMenuRow:', openMenuRow);
+                  if (openMenuRow !== null && sortedReports[openMenuRow]) {
+                    handleDelete(sortedReports[openMenuRow].id);
+                  }
+                }}
               >
                 Delete
               </button>
