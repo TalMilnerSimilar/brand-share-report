@@ -279,7 +279,7 @@ const ReportsHome: React.FC = () => {
                  <th colSpan={2} className="text-center px-4 py-0 border-r border-[#e6e9ec] h-8">
                    <span className="text-[12px] leading-[16px]">Share of Revenue</span>
                  </th>
-                 <th rowSpan={2} className="text-right px-4 py-0 align-middle">
+                 <th rowSpan={2} className="text-left px-4 py-0 align-middle">
                    <span className="text-[12px] leading-[16px]">Actions</span>
                  </th>
                </tr>
