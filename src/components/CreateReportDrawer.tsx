@@ -535,9 +535,9 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                     {selectedCompetitors.map((competitor) => (
                       <div
                         key={competitor}
-                        className="bg-white rounded-full px-3 py-1 shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]"
+                        className="bg-[#ffffff] box-border flex flex-row gap-2 items-center justify-start px-3 py-1 rounded-[40px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]"
                       >
-                        <span className="text-[12px] leading-[16px] text-[#092540] font-dm-sans">{competitor}</span>
+                        <span className="text-[12px] leading-[16px] text-[#092540] font-dm-sans text-nowrap">{competitor}</span>
                       </div>
                     ))}
                   </div>
