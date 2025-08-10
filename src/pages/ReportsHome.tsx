@@ -461,12 +461,12 @@ const ReportsHome: React.FC = () => {
 
                     <td className="p-4 w-0">
                       <div className="flex items-center gap-2">
-                        <button
-                          className="px-4 py-2 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active"
+                        <Button
+                          variant={hoveredRow === idx ? 'primary' : 'ghost'}
                           onClick={() => navigate(`/reports/${report.id}`)}
                         >
                           Analyze
-                        </button>
+                        </Button>
                         
                         {/* Three-dot menu button */}
                         <div className="relative" ref={openMenuRow === idx ? menuRef : null}>
