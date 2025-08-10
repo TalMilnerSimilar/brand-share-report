@@ -399,7 +399,22 @@ const DataTable: React.FC<DataTableProps> = ({ activeAnalysisTab, onAnalyzeBrand
                           </Button>
                         </Tooltip>
                         <Tooltip content="Get detailed insights and trend analysis for this brand across all metrics">
-                          <Button onClick={() => onAnalyzeBrand(row.brand, metricLabels)}>Analyze</Button>
+                          <Button
+                            onClick={() => {
+                              const clickedMetricLabel = metricLabels[metricIdx];
+                              const baseMetrics = [
+                                metricLabelMap.productViews,
+                                metricLabelMap.unitsSold,
+                                metricLabelMap.revenue,
+                              ];
+                              const metricsToSend = isFunnelAnalysis
+                                ? Array.from(new Set([clickedMetricLabel, ...baseMetrics]))
+                                : metricLabels;
+                              onAnalyzeBrand(row.brand, metricsToSend);
+                            }}
+                          >
+                            Analyze
+                          </Button>
                         </Tooltip>
                   </div>
                 </td>

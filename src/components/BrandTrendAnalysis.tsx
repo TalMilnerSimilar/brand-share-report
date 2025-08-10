@@ -14,8 +14,8 @@ interface BrandTrendAnalysisProps {
 const BrandTrendAnalysis: React.FC<BrandTrendAnalysisProps> = ({ selectedBrandProp, selectedMetricsProp }) => {
   const [selectedBrand, setSelectedBrand] = useState<string>(selectedBrandProp || 'Nike');
   const [selectedMetrics, setSelectedMetrics] = useState<Set<string>>(
-    selectedMetricsProp && selectedMetricsProp.length > 0 
-      ? new Set(selectedMetricsProp) 
+    selectedMetricsProp && selectedMetricsProp.length > 0
+      ? new Set(selectedMetricsProp)
       : new Set(metrics)
   );
   const [isBrandDropdownOpen, setIsBrandDropdownOpen] = useState(false);
@@ -25,6 +25,19 @@ const BrandTrendAnalysis: React.FC<BrandTrendAnalysisProps> = ({ selectedBrandPr
     setSelectedBrand(brand);
     setIsBrandDropdownOpen(false);
   };
+
+  // Keep internal state in sync when parent passes new props
+  useEffect(() => {
+    if (selectedBrandProp) {
+      setSelectedBrand(selectedBrandProp);
+    }
+  }, [selectedBrandProp]);
+
+  useEffect(() => {
+    if (selectedMetricsProp && selectedMetricsProp.length > 0) {
+      setSelectedMetrics(new Set(selectedMetricsProp));
+    }
+  }, [selectedMetricsProp]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
