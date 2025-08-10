@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
 import Button from '../components/Button';
@@ -56,8 +56,7 @@ const ReportsHome: React.FC = () => {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInput, setPageInput] = useState('1');
-  const [openMenuRow, setOpenMenuRow] = useState<number | null>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+
   const rowsPerPage = 5;
 
   // Enhanced data with sortable values
@@ -121,22 +120,7 @@ const ReportsHome: React.FC = () => {
     setPageInput(currentPage.toString());
   }, [currentPage]);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setOpenMenuRow(null);
-      }
-    };
 
-    if (openMenuRow !== null) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [openMenuRow]);
 
   const pagedReports = useMemo(() => {
     const start = (currentPage - 1) * rowsPerPage;
@@ -158,21 +142,7 @@ const ReportsHome: React.FC = () => {
     return p;
   };
 
-  const handleMenuToggle = (rowIndex: number) => {
-    setOpenMenuRow(openMenuRow === rowIndex ? null : rowIndex);
-  };
 
-  const handleEdit = (reportId: string) => {
-    console.log('Edit report:', reportId);
-    setOpenMenuRow(null);
-    // TODO: Navigate to edit page or open edit modal
-  };
-
-  const handleDelete = (reportId: string) => {
-    console.log('Delete report:', reportId);
-    setOpenMenuRow(null);
-    // TODO: Show delete confirmation modal
-  };
 
   return (
     <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
@@ -460,63 +430,13 @@ const ReportsHome: React.FC = () => {
                      </td>
 
                     <td className="p-4 w-0">
-                      <div className="flex items-center gap-2 relative">
+                      <div className="flex items-center gap-2">
                         <button
                           className="px-4 py-2 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active"
                           onClick={() => navigate(`/reports/${report.id}`)}
                         >
                           Analyze
                         </button>
-                        
-                        {/* 3-dot menu button (rebuilt) */}
-                        <div className="relative" ref={openMenuRow === idx ? menuRef : null}>
-                          <button
-                            id={`row-${report.id}-menubtn`}
-                            type="button"
-                            aria-haspopup="menu"
-                            aria-expanded={openMenuRow === idx}
-                            aria-controls={`row-${report.id}-menu`}
-                            className="px-3 py-2 text-xs font-medium font-dm-sans leading-4 rounded-[18px] transition-all duration-150 text-primary-blue bg-white shadow-[0_0_0_1px_#E6E9EC_inset] hover:shadow-[0_0_0_1px_#195AFE_inset] hover:bg-primary-blue-light-hover active:shadow-[0_0_0_1px_#195AFE_inset] active:bg-primary-blue-light-active flex items-center justify-center"
-                            onClick={() => handleMenuToggle(idx)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Escape') setOpenMenuRow(null);
-                              if ((e.key === 'Enter' || e.key === ' ') && openMenuRow !== idx) {
-                                e.preventDefault();
-                                setOpenMenuRow(idx);
-                              }
-                            }}
-                          >
-                            <img src="/icons/menu-dots-vertical.svg" aria-hidden="true" alt="" className="w-1 h-4" />
-                            <span className="sr-only">More options</span>
-                          </button>
-                          
-                          {/* Dropdown menu */}
-                          {openMenuRow === idx && (
-                            <div
-                              id={`row-${report.id}-menu`}
-                              role="menu"
-                              aria-labelledby={`row-${report.id}-menubtn`}
-                              className="absolute right-0 top-full mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50"
-                            >
-                              <div className="py-1">
-                                <button
-                                  role="menuitem"
-                                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
-                                  onClick={() => handleEdit(report.id)}
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  role="menuitem"
-                                  className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150"
-                                  onClick={() => handleDelete(report.id)}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                        </div>
                       </div>
                     </td>
                   </tr>
