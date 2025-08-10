@@ -543,15 +543,15 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
                 <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select Competitors</div>
               </div>
               <div className="text-[14px] leading-[20px] text-[#092540] mb-4 font-dm-sans">
-                We’ve suggested your top competitors based on your brand. You can edit them to select any competitor you want manually
+                We’ve selected category leaders based on your brand. You can edit them to select any competitors you want manually
               </div>
 
               {!isManualSelection ? (
-                /* Suggested Competitors View */
+                /* Category Leaders View */
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <div className="text-[16px] leading-[22px] text-[#092540] font-bold font-dm-sans">
-                      Suggested competitors
+                      Category Leaders
                     </div>
                     <button
                       className="flex items-center gap-1 px-1 py-1 text-[14px] leading-[20px] text-[#195afe] hover:text-[#1448cc] font-dm-sans"
