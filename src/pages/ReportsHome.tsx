@@ -552,7 +552,7 @@ const ReportsHome: React.FC = () => {
           <EmptyState
             title="No reports yet"
             description="Get started by creating your first brand share report. You'll be able to track brand performance, analyze competitors, and monitor market trends."
-            actionText="Create a New Report"
+            actionText="Create your first report"
             onAction={() => navigate('/new-report')}
           />
         )}
