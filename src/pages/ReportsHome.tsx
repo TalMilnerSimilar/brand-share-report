@@ -346,8 +346,7 @@ const ReportsHome: React.FC = () => {
                           
                           {/* Category row */}
                           <div className="flex items-start gap-0.5 text-[14px] leading-[20px] text-[#092540] font-dm-sans">
-                            <span className="font-normal">Across</span>
-                            <span className="font-bold">{report.category}</span>
+                            <span className="font-normal">{report.category}</span>
                           </div>
                           
                           {/* Competitors count */}
