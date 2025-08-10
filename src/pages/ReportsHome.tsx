@@ -52,6 +52,7 @@ const parseNumber = (val: string | number): number => {
 
 const ReportsHome: React.FC = () => {
   const navigate = useNavigate();
+  const [reports, setReports] = useState<SavedReport[]>(mockReports);
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
@@ -63,7 +64,7 @@ const ReportsHome: React.FC = () => {
 
   // Enhanced data with sortable values
   const enhancedReports = useMemo(() => {
-    return mockReports.map(report => {
+    return reports.map(report => {
       const brandData = (unifiedBrands as any)[report.brand];
       
       const brandedClicks = brandData?.shareOfTotalClicks; // "Share of Branded Clicks" maps to shareOfTotalClicks
@@ -87,7 +88,7 @@ const ReportsHome: React.FC = () => {
         revenue
       };
     });
-  }, []);
+  }, [reports]);
 
   // Sorted data
   const sortedReports = useMemo(() => {
@@ -191,7 +192,8 @@ const ReportsHome: React.FC = () => {
   const confirmDelete = () => {
     if (reportToDelete) {
       console.log('Confirmed delete report:', reportToDelete);
-      // TODO: Implement actual delete functionality
+      // Remove the report from the reports array
+      setReports(prevReports => prevReports.filter(report => report.id !== reportToDelete));
       setDeleteModalOpen(false);
       setReportToDelete(null);
     }
@@ -248,7 +250,7 @@ const ReportsHome: React.FC = () => {
             <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/reports icon.svg" alt="Reports Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Total Reports:</span>
-              <span className="text-[14px] leading-5 text-[#6b7c8c]">{mockReports.length}</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{reports.length}</span>
             </div>
             <div className="w-5 self-stretch flex items-center justify-center">
               <div className="w-[1px] h-full bg-[#e6e9ec]" />
@@ -256,7 +258,7 @@ const ReportsHome: React.FC = () => {
             <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/brands icon.svg" alt="Brands Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Brands Tracked:</span>
-              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.brand)).size}</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(reports.map(r => r.brand)).size}</span>
             </div>
             <div className="w-5 self-stretch flex items-center justify-center">
               <div className="w-[1px] h-full bg-[#e6e9ec]" />
@@ -264,7 +266,7 @@ const ReportsHome: React.FC = () => {
             <div className="flex-1 flex items-center justify-center gap-2">
               <img src="/icons/categories icon.svg" alt="Categories Icon" className="w-4 h-4" />
               <span className="text-[14px] leading-5 text-[#092540]">Categories:</span>
-              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(mockReports.map(r => r.category.split(' ')[0])).size}</span>
+              <span className="text-[14px] leading-5 text-[#6b7c8c]">{new Set(reports.map(r => r.category.split(' ')[0])).size}</span>
             </div>
           </div>
         </div>
