@@ -207,8 +207,8 @@ const ReportsHome: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
                          <thead>
-               <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166]">
-                 <th rowSpan={2} className="text-left p-4 border-r border-[#e6e9ec] align-middle cursor-pointer" onClick={() => handleSort('reportName')}>
+               <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166] h-8">
+                 <th rowSpan={2} className="text-left px-4 py-0 border-r border-[#e6e9ec] align-middle cursor-pointer" onClick={() => handleSort('reportName')}>
                    <div className="flex items-center gap-1">
                      <span className="text-[12px] leading-[16px]">Report Name</span>
                      {sortKey === 'reportName' && (
@@ -220,24 +220,24 @@ const ReportsHome: React.FC = () => {
                      )}
                    </div>
                  </th>
-                 <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
+                 <th colSpan={2} className="text-center px-4 py-0 border-r border-[#e6e9ec] h-8">
                    <span className="text-[12px] leading-[16px]">Share of Branded Clicks</span>
                  </th>
-                 <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
+                 <th colSpan={2} className="text-center px-4 py-0 border-r border-[#e6e9ec] h-8">
                    <span className="text-[12px] leading-[16px]">Share of Product Views</span>
                  </th>
-                 <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
+                 <th colSpan={2} className="text-center px-4 py-0 border-r border-[#e6e9ec] h-8">
                    <span className="text-[12px] leading-[16px]">Share of Paid Clicks</span>
                  </th>
-                 <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
+                 <th colSpan={2} className="text-center px-4 py-0 border-r border-[#e6e9ec] h-8">
                    <span className="text-[12px] leading-[16px]">Share of Revenue</span>
                  </th>
-                 <th rowSpan={2} className="text-right p-4 align-middle">
+                 <th rowSpan={2} className="text-right px-4 py-0 align-middle">
                    <span className="text-[12px] leading-[16px]">Actions</span>
                  </th>
                </tr>
-               <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166]">
-                 <th className="text-right p-4 cursor-pointer" onClick={() => handleSort('brandedClicksValue')}>
+               <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166] h-8">
+                 <th className="text-right px-4 py-0 cursor-pointer" onClick={() => handleSort('brandedClicksValue')}>
                    <div className="flex items-center justify-end gap-1">
                      <span className="text-[12px] leading-[16px]">Value</span>
                      {sortKey === 'brandedClicksValue' && (
@@ -245,7 +245,7 @@ const ReportsHome: React.FC = () => {
                      )}
                    </div>
                  </th>
-                 <th className="text-left p-4 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('brandedClicksChange')}>
+                 <th className="text-left px-4 py-0 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('brandedClicksChange')}>
                    <div className="flex items-center gap-1">
                      <span className="text-[12px] leading-[16px]">Wow Change</span>
                      {sortKey === 'brandedClicksChange' && (
@@ -253,7 +253,7 @@ const ReportsHome: React.FC = () => {
                      )}
                    </div>
                  </th>
-                 <th className="text-right p-4 cursor-pointer" onClick={() => handleSort('productViewsValue')}>
+                 <th className="text-right px-4 py-0 cursor-pointer" onClick={() => handleSort('productViewsValue')}>
                    <div className="flex items-center justify-end gap-1">
                      <span className="text-[12px] leading-[16px]">Value</span>
                      {sortKey === 'productViewsValue' && (
@@ -261,7 +261,7 @@ const ReportsHome: React.FC = () => {
                      )}
                    </div>
                  </th>
-                 <th className="text-left p-4 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('productViewsChange')}>
+                 <th className="text-left px-4 py-0 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('productViewsChange')}>
                    <div className="flex items-center gap-1">
                      <span className="text-[12px] leading-[16px]">Wow Change</span>
                      {sortKey === 'productViewsChange' && (
@@ -269,7 +269,7 @@ const ReportsHome: React.FC = () => {
                      )}
                    </div>
                  </th>
-                 <th className="text-right p-4 cursor-pointer" onClick={() => handleSort('paidClicksValue')}>
+                 <th className="text-right px-4 py-0 cursor-pointer" onClick={() => handleSort('paidClicksValue')}>
                    <div className="flex items-center justify-end gap-1">
                      <span className="text-[12px] leading-[16px]">Value</span>
                      {sortKey === 'paidClicksValue' && (
@@ -277,7 +277,7 @@ const ReportsHome: React.FC = () => {
                      )}
                    </div>
                  </th>
-                 <th className="text-left p-4 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('paidClicksChange')}>
+                 <th className="text-left px-4 py-0 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('paidClicksChange')}>
                    <div className="flex items-center gap-1">
                      <span className="text-[12px] leading-[16px]">Wow Change</span>
                      {sortKey === 'paidClicksChange' && (
@@ -285,7 +285,7 @@ const ReportsHome: React.FC = () => {
                      )}
                    </div>
                  </th>
-                 <th className="text-right p-4 cursor-pointer" onClick={() => handleSort('revenueValue')}>
+                 <th className="text-right px-4 py-0 cursor-pointer" onClick={() => handleSort('revenueValue')}>
                    <div className="flex items-center justify-end gap-1">
                      <span className="text-[12px] leading-[16px]">Value</span>
                      {sortKey === 'revenueValue' && (
@@ -293,7 +293,7 @@ const ReportsHome: React.FC = () => {
                      )}
                    </div>
                  </th>
-                 <th className="text-left p-4 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('revenueChange')}>
+                 <th className="text-left px-4 py-0 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('revenueChange')}>
                    <div className="flex items-center gap-1">
                      <span className="text-[12px] leading-[16px]">Wow Change</span>
                      {sortKey === 'revenueChange' && (
