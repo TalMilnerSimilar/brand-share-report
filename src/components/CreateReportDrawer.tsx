@@ -54,7 +54,7 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
       aria-hidden={!isOpen}
     >
       <aside
-        className={`fixed right-0 top-0 h-full w-[480px] bg-white border-l border-[#e6e9ec] shadow-[0px_1px_8px_0px_rgba(9,37,64,0.08),0px_5px_24px_0px_rgba(9,37,64,0.08)] transform transition-transform duration-200 ${
+        className={`fixed right-0 top-0 h-full w-[700px] bg-white border-l border-[#e6e9ec] shadow-[0px_1px_8px_0px_rgba(9,37,64,0.08),0px_5px_24px_0px_rgba(9,37,64,0.08)] transform transition-transform duration-200 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
