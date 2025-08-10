@@ -6,7 +6,7 @@ interface CreateReportDrawerProps {
   onSave?: (report: { title: string; category: string }) => void;
 }
 
-// Build a deterministic catalog of ~200 categories with up to 4 levels
+// Build a domain-specific catalog with different categories per level
 const LEVEL1: string[] = [
   'Electronics',
   'Home & Kitchen',
@@ -27,134 +27,135 @@ const LEVEL1: string[] = [
   'Movies & TV'
 ];
 
-const LEVEL2: string[] = [
-  'Accessories & Supplies',
-  'Appliances',
-  'Storage & Organization',
-  'Furniture',
-  'Décor',
-  'Cleaning & Care',
-  'Components',
-  'Wearables',
-  'Nutrition',
-  'Safety',
-  'Art & Craft',
-  'Stationery',
-  'Audio & Video',
-  'Camera & Photo',
-  'Smart Home'
-];
+// Level 2 options differ per L1
+const LEVEL2_BY_L1: Record<string, string[]> = {
+  Electronics: ['Accessories & Supplies','Audio & Video','Camera & Photo','Smart Home','Wearables','Components','Computers & Tablets'],
+  'Home & Kitchen': ['Appliances','Furniture','Décor','Storage & Organization','Cleaning & Care','Bedding','Kitchen & Dining'],
+  'Beauty & Personal Care': ['Makeup','Skin Care','Hair Care','Tools & Accessories','Fragrance'],
+  'Sports & Outdoors': ['Exercise & Fitness','Camping & Hiking','Cycling','Water Sports','Team Sports'],
+  'Toys & Games': ['STEM Toys','Puzzles','Board Games','Dolls & Accessories','Action Figures'],
+  Automotive: ['Car Electronics','Exterior Accessories','Interior Accessories','Car Care','Motorcycle & Powersports'],
+  'Clothing, Shoes & Jewelry': ['Men','Women','Kids','Shoes','Jewelry'],
+  'Health & Household': ['Vitamins','Wellness','Medical Supplies','Household Supplies','Baby & Child Care'],
+  'Grocery & Gourmet Food': ['Snacks','Beverages','Pantry Staples','Breakfast Foods','Sauces & Condiments'],
+  'Pet Supplies': ['Dog','Cat','Fish & Aquatic','Small Animals','Birds'],
+  'Tools & Home Improvement': ['Hand Tools','Power Tools','Lighting','Electrical','Hardware'],
+  'Office Products': ['Desk Accessories','Paper','Writing & Correction','Organization','Office Electronics'],
+  Baby: ['Nursery','Feeding','Diapering','Bathing','Gear'],
+  'Industrial & Scientific': ['Lab & Test','Measurement','Packaging','Material Handling','Safety'],
+  Books: ["Literature & Fiction","Children's Books","Education & Teaching","Business & Money","Mystery & Thriller"],
+  Music: ['CDs & Vinyl','Digital Music','Instruments','Accessories'],
+  'Movies & TV': ['Blu-ray','DVD','Streaming','TV Series','Documentary']
+};
 
-const LEVEL3: string[] = [
-  'Audio & Video Accessories',
-  'Cables & Adapters',
-  'Batteries, Chargers & Power',
-  'Mounts & Stands',
-  'Cases & Covers',
-  'Replacement Parts',
-  'Lighting',
-  'Small Appliances',
-  'Cookware',
-  'Bedding',
-  'Organization Bins',
-  'Backpacks & Bags',
-  'Exercise & Fitness',
-  'Camping & Hiking',
-  'Bike Accessories',
-  'STEM Toys',
-  'Puzzles',
-  'Board Games',
-  'Car Electronics',
-  'Car Care',
-  'Men',
-  'Women',
-  'Kids',
-  'Vitamins',
-  'Wellness',
-  'Snacks',
-  'Beverages',
-  'Dog',
-  'Cat',
-  'Hand Tools',
-  'Power Tools',
-  'Desk Accessories',
-  'Paper',
-  'Lab & Test',
-  'Measurement'
-];
+// Level 3 options differ per L1+L2 (sparse mapping; others may have fewer levels)
+const LEVEL3_BY_L1L2: Record<string, string[]> = {
+  'Electronics|Accessories & Supplies': ['Cables & Adapters','Batteries & Chargers','Mounts & Stands','Cases & Covers','Screen Protectors'],
+  'Electronics|Audio & Video': ['Headphones','Speakers','Soundbars','Microphones','AV Receivers'],
+  'Electronics|Camera & Photo': ['Lenses','Tripods','Camera Bags','Lighting','Memory Cards'],
+  'Electronics|Smart Home': ['Smart Switches','Smart Bulbs','Thermostats','Cameras','Hubs'],
+  'Electronics|Wearables': ['Smartwatches','Fitness Trackers','VR Headsets','Wearable Accessories'],
+  'Electronics|Components': ['CPUs','Motherboards','Memory','SSDs','GPUs'],
+  'Electronics|Computers & Tablets': ['Laptops','Desktops','Tablets','Monitors','Keyboards'],
 
-const LEVEL4: string[] = [
-  'TV Accessories & Parts',
-  'Streaming Devices',
-  'Remote Controls & Accessories',
-  'Headphones',
-  'Speakers',
-  'Microphones',
-  'HDMI Cables',
-  'USB-C Cables',
-  'Wireless Chargers',
-  'Rechargeable Batteries',
-  'Lens Filters',
-  'Tripods',
-  'LED Bulbs',
-  'Smart Switches',
-  'Air Fryers',
-  'Coffee Makers',
-  'Nonstick Pans',
-  'Knife Sets',
-  'Duvet Covers',
-  'Pillowcases',
-  'Stackable Bins',
-  'Drawer Organizers',
-  'Treadmills',
-  'Dumbbells',
-  'Tents',
-  'Sleeping Bags',
-  'Dog Treats',
-  'Dog Leashes',
-  'Cordless Drills',
-  'Impact Drivers',
-  'Notebooks',
-  'Pens & Markers',
-  'Digital Calipers',
-  'Multimeters'
-];
+  'Home & Kitchen|Appliances': ['Air Fryers','Coffee Makers','Blenders','Microwaves','Robot Vacuums'],
+  'Home & Kitchen|Furniture': ['Sofas','Dining Sets','Office Chairs','Beds','TV Stands'],
+  'Home & Kitchen|Décor': ['Wall Art','Rugs','Curtains','Mirrors','Vases'],
+  'Home & Kitchen|Storage & Organization': ['Stackable Bins','Drawer Organizers','Closet Systems','Shelving Units','Laundry Baskets'],
+  'Home & Kitchen|Bedding': ['Duvet Covers','Pillowcases','Sheets','Comforters','Blankets'],
+  'Home & Kitchen|Kitchen & Dining': ['Cookware','Knife Sets','Dinnerware','Bakeware','Utensils'],
+
+  'Beauty & Personal Care|Makeup': ['Face','Eyes','Lips','Makeup Tools'],
+  'Beauty & Personal Care|Skin Care': ['Cleansers','Moisturizers','Serums','Masks','Sunscreens'],
+  'Beauty & Personal Care|Hair Care': ['Shampoo','Conditioner','Styling','Treatments'],
+
+  'Sports & Outdoors|Exercise & Fitness': ['Treadmills','Dumbbells','Yoga','Resistance Bands','Exercise Bikes'],
+  'Sports & Outdoors|Camping & Hiking': ['Tents','Sleeping Bags','Backpacks','Camp Kitchen'],
+  'Sports & Outdoors|Cycling': ['Helmets','Bike Pumps','Lights','Locks'],
+
+  'Toys & Games|STEM Toys': ['Science Kits','Building Sets','Robotics'],
+  'Toys & Games|Board Games': ['Strategy','Family','Party Games'],
+
+  'Automotive|Car Electronics': ['Dash Cams','Car Stereos','GPS Units','OBD Scanners'],
+  'Automotive|Interior Accessories': ['Seat Covers','Floor Mats','Organizers','Sun Shades'],
+  'Automotive|Car Care': ['Wash','Wax','Detailing Tools'],
+
+  'Clothing, Shoes & Jewelry|Men': ['Tops','Bottoms','Outerwear','Underwear','Accessories'],
+  'Clothing, Shoes & Jewelry|Women': ['Dresses','Tops','Bottoms','Outerwear','Handbags'],
+  'Clothing, Shoes & Jewelry|Kids': ['Boys Clothing','Girls Clothing','Baby Clothing','Shoes','Accessories'],
+  'Clothing, Shoes & Jewelry|Shoes': ['Running','Casual','Boots','Sandals','Dress'],
+  'Clothing, Shoes & Jewelry|Jewelry': ['Necklaces','Earrings','Rings','Bracelets','Watches'],
+
+  'Health & Household|Vitamins': ['Multivitamins','Vitamin D','Vitamin C','Probiotics'],
+  'Health & Household|Wellness': ['Sleep','Stress Relief','Fitness Supplements'],
+  'Health & Household|Medical Supplies': ['Bandages','Thermometers','Gloves','First Aid Kits'],
+
+  'Grocery & Gourmet Food|Snacks': ['Chips','Protein Bars','Nuts & Seeds','Cookies'],
+  'Grocery & Gourmet Food|Beverages': ['Coffee','Tea','Juice','Sparkling Water'],
+
+  'Pet Supplies|Dog': ['Food','Treats','Leashes & Collars','Beds'],
+  'Pet Supplies|Cat': ['Food','Litter','Toys','Trees & Scratching'],
+
+  'Tools & Home Improvement|Hand Tools': ['Screwdrivers','Hammers','Wrenches','Measuring'],
+  'Tools & Home Improvement|Power Tools': ['Cordless Drills','Impact Drivers','Saws','Sanders'],
+
+  'Office Products|Desk Accessories': ['Organizers','Monitor Stands','Mousepads','Cable Management'],
+  'Office Products|Paper': ['Notebooks','Printer Paper','Sticky Notes','Index Cards'],
+
+  'Baby|Nursery': ['Cribs','Mattresses','Monitors','Bedding'],
+  'Baby|Feeding': ['Bottles','Breastfeeding','Highchairs','Sterilizers'],
+
+  'Industrial & Scientific|Lab & Test': ['Microscopes','Pipettes','Centrifuges','Lab Glassware'],
+  'Industrial & Scientific|Measurement': ['Digital Calipers','Multimeters','Scales','Thermometers'],
+
+  'Books|Literature & Fiction': ['Classics','Contemporary','Historical','Science Fiction'],
+  "Books|Children's Books": ['Picture Books','Early Readers','Chapter Books','Young Adult'],
+  'Music|Instruments': ['Guitars','Keyboards','Drums','Studio Gear'],
+  'Movies & TV|TV Series': ['Drama','Comedy','Sci-Fi','Documentary']
+};
+
+// Level 4 options differ per L1+L2+L3 (sparse; used where it adds clarity)
+const LEVEL4_BY_L1L2L3: Record<string, string[]> = {
+  'Electronics|Audio & Video|Headphones': ['Over-Ear','In-Ear','On-Ear','Noise-Cancelling'],
+  'Electronics|Audio & Video|Speakers': ['Bookshelf','Floorstanding','Portable','Soundbars'],
+  'Electronics|Accessories & Supplies|Cables & Adapters': ['HDMI','USB-C','DisplayPort','Audio'],
+  'Electronics|Camera & Photo|Lenses': ['Prime','Zoom','Wide Angle','Telephoto'],
+  'Home & Kitchen|Appliances|Coffee Makers': ['Drip','Espresso','Single-Serve','French Press'],
+  'Clothing, Shoes & Jewelry|Shoes|Running': ['Road','Trail','Racing','Stability'],
+  'Sports & Outdoors|Exercise & Fitness|Yoga': ['Mats','Blocks','Straps','Wheels'],
+  'Grocery & Gourmet Food|Beverages|Coffee': ['Whole Bean','Ground','Pods','Instant'],
+  'Pet Supplies|Dog|Food': ['Dry','Wet','Freeze-Dried','Grain-Free'],
+  'Tools & Home Improvement|Power Tools|Saws': ['Circular','Jigsaw','Miter','Table'],
+  'Office Products|Paper|Notebooks': ['Spiral','Hardcover','Softcover','Dot Grid'],
+  'Baby|Nursery|Cribs': ['Convertible','Mini','Portable','Standard']
+};
 
 function buildCategoryList(maxCount: number): string[] {
   const list: string[] = [];
   const seen = new Set<string>();
 
-  for (const l1 of LEVEL1) {
-    // 1 level
-    if (!seen.has(l1)) {
-      list.push(l1);
-      seen.add(l1);
-      if (list.length >= maxCount) return list.slice(0, maxCount);
+  const add = (s: string) => {
+    if (!seen.has(s)) {
+      list.push(s);
+      seen.add(s);
+      return list.length >= maxCount;
     }
+    return false;
+  };
 
-    for (const l2 of LEVEL2) {
-      const two = `${l1} > ${l2}`;
-      if (!seen.has(two)) {
-        list.push(two);
-        seen.add(two);
-        if (list.length >= maxCount) return list.slice(0, maxCount);
-      }
-
-      for (const l3 of LEVEL3) {
-        const three = `${l1} > ${l2} > ${l3}`;
-        if (!seen.has(three)) {
-          list.push(three);
-          seen.add(three);
-          if (list.length >= maxCount) return list.slice(0, maxCount);
-        }
-
-        for (const l4 of LEVEL4) {
-          const four = `${l1} > ${l2} > ${l3} > ${l4}`;
-          if (!seen.has(four)) {
-            list.push(four);
-            seen.add(four);
-            if (list.length >= maxCount) return list.slice(0, maxCount);
-          }
+  for (const l1 of LEVEL1) {
+    if (add(l1)) return list.slice(0, maxCount);
+    const l2s = LEVEL2_BY_L1[l1] || [];
+    for (const l2 of l2s) {
+      if (add(`${l1} > ${l2}`)) return list.slice(0, maxCount);
+      const key2 = `${l1}|${l2}`;
+      const l3s = LEVEL3_BY_L1L2[key2] || [];
+      for (const l3 of l3s) {
+        if (add(`${l1} > ${l2} > ${l3}`)) return list.slice(0, maxCount);
+        const key3 = `${key2}|${l3}`;
+        const l4s = LEVEL4_BY_L1L2L3[key3] || [];
+        for (const l4 of l4s) {
+          if (add(`${l1} > ${l2} > ${l3} > ${l4}`)) return list.slice(0, maxCount);
         }
       }
     }
