@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import Tooltip from '../components/Tooltip';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import Toast from '../components/Toast';
+import EmptyState from '../components/EmptyState';
 
 type SavedReport = {
   id: string;
@@ -308,8 +309,9 @@ const ReportsHome: React.FC = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto relative">
-          <table className="w-full">
+        {reports.length > 0 ? (
+          <div className="overflow-x-auto relative">
+            <table className="w-full">
                          <thead>
                <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166] h-8">
                  <th rowSpan={2} className="text-left px-4 py-0 border-r border-[#e6e9ec] align-middle cursor-pointer" onClick={() => handleSort('reportName')}>
@@ -544,8 +546,16 @@ const ReportsHome: React.FC = () => {
                 );
               })}
             </tbody>
-          </table>
-        </div>
+            </table>
+          </div>
+        ) : (
+          <EmptyState
+            title="No reports yet"
+            description="Get started by creating your first brand share report. You'll be able to track brand performance, analyze competitors, and monitor market trends."
+            actionText="Create a New Report"
+            onAction={() => navigate('/new-report')}
+          />
+        )}
 
         {/* Dropdown menu - positioned outside table */}
         {openMenuRow !== null && menuPosition && (
