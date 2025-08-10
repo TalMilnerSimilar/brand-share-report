@@ -4,9 +4,10 @@ import Tooltip from './Tooltip';
 
 interface HeroTileProps {
   reportRange: string;
+  onEditList?: () => void;
 }
 
-const HeroTile: React.FC<HeroTileProps> = ({ reportRange }) => {
+const HeroTile: React.FC<HeroTileProps> = ({ reportRange, onEditList }) => {
   const competitors = ['Adidas', 'New Balance', 'Hoka', 'Asics'];
 
   const getDisplayDate = (range: string) => {
@@ -96,7 +97,7 @@ const HeroTile: React.FC<HeroTileProps> = ({ reportRange }) => {
           </div>
           <div className="edit-button-container">
             <Tooltip content="Customize which competitors to compare against">
-              <button className="edit-button">
+              <button className="edit-button" onClick={onEditList}>
                 Edit List
               </button>
             </Tooltip>
