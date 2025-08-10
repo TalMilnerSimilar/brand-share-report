@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import unifiedBrands from '../data/unifiedBrands';
 
 interface CreateReportDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave?: (report: { title: string; category: string }) => void;
+  onSave?: (report: { title: string; category: string; brand: string }) => void;
 }
 
 // Build a domain-specific catalog with different categories per level
@@ -167,14 +166,37 @@ function buildCategoryList(maxCount: number): string[] {
 
 const allCategories: string[] = buildCategoryList(200);
 
-const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose, onSave }) => {
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [selectedBrand, setSelectedBrand] = useState<string>('');
-  const overlayRef = useRef<HTMLDivElement>(null);
+// Mock brand list
+const brandsMock: string[] = [
+  'Amazon',
+  'Amazon Basics',
+  'Generic',
+  'NIVEA',
+  'CeraVe',
+  'Nike',
+  'Adidas',
+  'Apple',
+  'Samsung',
+  'Sony',
+  'LG',
+  'Philips',
+  'Bosch',
+  'KitchenAid',
+  'Dyson',
+  'Black+Decker',
+  'DeWalt',
+  'Makita',
+  'Oral-B',
+  'Gillette'
+];
 
-  const brandNames: string[] = Object.keys(unifiedBrands || {});
+const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose, onSave }) => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [search, setSearch] = useState('');
+  const [brandSearch, setBrandSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -186,21 +208,34 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
 
   useEffect(() => {
     if (!isOpen) {
+      setCurrentStep(1);
       setSearch('');
+      setBrandSearch('');
       setSelectedCategory('');
       setSelectedBrand('');
-      setStep(1);
     }
   }, [isOpen]);
 
-  const filtered = allCategories.filter((c) =>
+  // Auto-advance to step 2 when category is selected
+  useEffect(() => {
+    if (selectedCategory && currentStep === 1) {
+      setCurrentStep(2);
+    }
+  }, [selectedCategory, currentStep]);
+
+  const filteredCategories = allCategories.filter((c) =>
     c.toLowerCase().includes(search.trim().toLowerCase())
+  );
+
+  const filteredBrands = brandsMock.filter((b) =>
+    b.toLowerCase().includes(brandSearch.trim().toLowerCase())
   );
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === overlayRef.current) onClose();
   };
 
+  // Save enabled when category and brand are selected
   const canSave = Boolean(selectedCategory && selectedBrand);
 
   const getDerivedTitle = (): string => {
@@ -229,7 +264,11 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
         {/* Header */}
         <div className="flex items-center justify-between px-8 pt-8 pb-4">
           <h2 className="text-[24px] leading-6 font-normal font-dm-sans text-[#092540] mr-4">Create New Report</h2>
-          <button aria-label="Close" className="w-10 h-10 rounded-full hover:bg-[#f3f7ff] active:bg-[#e8eeff] flex items-center justify-center" onClick={onClose}>
+          <button
+            aria-label="Close"
+            className="w-10 h-10 rounded-full hover:bg-[#f3f7ff] active:bg-[#e8eeff] flex items-center justify-center"
+            onClick={onClose}
+          >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M5 5l10 10M15 5L5 15" stroke="#3A5166" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
@@ -238,63 +277,141 @@ const CreateReportDrawer: React.FC<CreateReportDrawerProps> = ({ isOpen, onClose
 
         {/* Body */}
         <div className="bg-[#f7f7f8] h-[calc(100%-160px)] overflow-auto px-8 py-4">
-          {/* Step 1 */}
-          <div className={`bg-white rounded-lg shadow-[0px_1px_8px_0px_rgba(9,37,64,0.08),0px_5px_24px_0px_rgba(9,37,64,0.08)] p-6 mb-6 ${step >= 1 ? '' : 'opacity-50'}`}>
-            <div className="flex items-center gap-4 mb-2">
-              <div className={`w-6 h-6 rounded-full ${step >= 1 ? 'bg-[#3E74FE]' : 'bg-[#cbd1d7]'} text-white text-[14px] leading-[20px] flex items-center justify-center`}>1</div>
-              <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select your Category</div>
-            </div>
-            <div className="text-[14px] leading-[20px] text-[#092540] mb-3 font-dm-sans">Search or browse to set the base category for this report.</div>
-
-            <div className="relative border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]">
-              <div className="flex items-center h-10 px-4 gap-2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.25 12.5a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5Zm6 2-3.2-3.2" stroke="#B6BEC6" strokeWidth="1.5" strokeLinecap="round" /></svg>
-                <input className="flex-1 outline-none text-[14px] leading-[20px] placeholder-[#b6bec6] text-[#3a5166]" placeholder="Search or select your category" value={search} onChange={(e) => setSearch(e.target.value)} />
-              </div>
-              <div className="h-px bg-[#3E74FE]" />
-
-              <div className="max-h-60 overflow-auto py-1">
-                {filtered.length === 0 && (<div className="px-4 py-2 text-[14px] text-[#6b7c8c]">No results</div>)}
-                {filtered.map((c) => (
-                  <button key={c} className={`w-full text-left h-11 px-4 hover:bg-[#f7f7f8] ${selectedCategory === c ? 'bg-[#eef2ff]' : ''}`} onClick={() => { setSelectedCategory(c); setStep(2); }}>
-                    <span className="text-[14px] leading-[20px] text-[#092540]">{c}</span>
-                  </button>
-                ))}
+          
+          {/* Step 1 - Category (completed if step > 1) */}
+          {currentStep > 1 ? (
+            <div className="bg-white rounded-lg p-6 mb-6 flex items-center gap-6">
+              <div className="flex items-center gap-6">
+                <div className="w-6 h-6 rounded-full bg-[#18571da] flex items-center justify-center">
+                  <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 4.5L4.5 8L11 1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select your Category</div>
               </div>
             </div>
-          </div>
+          ) : (
+            /* Step 1 - Category (active) */
+            <div className="bg-white rounded-lg shadow-[0px_1px_8px_0px_rgba(9,37,64,0.08),0px_5px_24px_0px_rgba(9,37,64,0.08)] p-6 mb-6">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-6 h-6 rounded-full bg-[#3E74FE] text-white text-[14px] leading-[20px] flex items-center justify-center">1</div>
+                <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select your Category</div>
+              </div>
+              <div className="text-[14px] leading-[20px] text-[#092540] mb-3 font-dm-sans">Search or browse to set the base category for this report.</div>
 
-          {/* Step 2 */}
-          <div className={`bg-white rounded-lg p-6 mb-6 flex flex-col gap-3 ${step >= 2 ? '' : 'opacity-50 pointer-events-none'}`}>
-            <div className="flex items-center gap-4">
-              <div className={`w-6 h-6 rounded-full ${step >= 2 ? 'bg-[#3E74FE]' : 'bg-[#cbd1d7]'} text-white text-[14px] leading-[20px] flex items-center justify-center`}>2</div>
-              <div className={`${step >= 2 ? 'text-[#092540]' : 'text-[#b6bec6]'} text-[20px] leading-[28px] font-dm-sans`}>Select your Brand</div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-auto">
-              {brandNames.map((b) => (
-                <button key={b} className={`text-left px-3 py-2 rounded border ${selectedBrand === b ? 'border-[#195afe] bg-[#f3f7ff]' : 'border-[#e6e9ec] hover:bg-[#f7f7f8]'}`} onClick={() => setSelectedBrand(b)}>
-                  <span className="text-[14px] leading-[20px] text-[#092540]">{b}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+              <div className="relative border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]">
+                <div className="flex items-center h-10 px-4 gap-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.25 12.5a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5Zm6 2-3.2-3.2" stroke="#B6BEC6" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                  <input
+                    className="flex-1 outline-none text-[14px] leading-[20px] placeholder-[#b6bec6] text-[#3a5166]"
+                    placeholder="Search or select your category"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+                <div className="h-px bg-[#3E74FE]" />
 
-          {/* Step 3 (placeholder, still disabled) */}
-          <div className={`bg-white rounded-lg p-6 mb-4 flex items-center gap-4 ${step >= 3 ? '' : 'opacity-50 pointer-events-none'}`}>
-            <div className={`w-6 h-6 rounded-full ${step >= 3 ? 'bg-[#3E74FE]' : 'bg-[#cbd1d7]'} text-white text-[14px] leading-[20px] flex items-center justify-center`}>3</div>
-            <div className={`${step >= 3 ? 'text-[#092540]' : 'text-[#b6bec6]'} text-[20px] leading-[28px] font-dm-sans`}>Select Competitors</div>
+                <div className="max-h-60 overflow-auto py-1">
+                  {filteredCategories.length === 0 && (
+                    <div className="px-4 py-2 text-[14px] text-[#6b7c8c]">No results</div>
+                  )}
+                  {filteredCategories.map((c) => (
+                    <button
+                      key={c}
+                      className={`w-full text-left h-11 px-4 hover:bg-[#f7f7f8] ${
+                        selectedCategory === c ? 'bg-[#eef2ff]' : ''
+                      }`}
+                      onClick={() => setSelectedCategory(c)}
+                    >
+                      <span className="text-[14px] leading-[20px] text-[#092540]">{c}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 2 - Brand (active when step >= 2) */}
+          {currentStep >= 2 ? (
+            <div className="bg-white rounded-lg shadow-[0px_1px_8px_0px_rgba(9,37,64,0.08),0px_5px_24px_0px_rgba(9,37,64,0.08)] p-6 mb-6">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-6 h-6 rounded-full bg-[#3E74FE] text-white text-[14px] leading-[20px] flex items-center justify-center">2</div>
+                <div className="text-[20px] leading-[28px] text-[#092540] font-dm-sans">Select your Brand</div>
+              </div>
+              <div className="text-[14px] leading-[20px] text-[#092540] mb-3 font-dm-sans">Choose the brand you want to analyze in this report.</div>
+
+              <div className="mb-1">
+                <div className="text-[14px] leading-[20px] text-[#6b7c8c] font-dm-sans">Brand:</div>
+              </div>
+              <div className="relative border border-[#cbd1d7] rounded-[3px] shadow-[0px_3px_5px_0px_rgba(42,62,82,0.12)]">
+                <div className="flex items-center h-10 px-4 gap-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.25 12.5a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5Zm6 2-3.2-3.2" stroke="#B6BEC6" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                  <input
+                    className="flex-1 outline-none text-[14px] leading-[20px] placeholder-[#b6bec6] text-[#3a5166]"
+                    placeholder="Search or select your brand"
+                    value={brandSearch}
+                    onChange={(e) => setBrandSearch(e.target.value)}
+                  />
+                </div>
+                <div className="h-px bg-[#3E74FE]" />
+
+                <div className="max-h-60 overflow-auto py-1">
+                  {filteredBrands.length === 0 && (
+                    <div className="px-4 py-2 text-[14px] text-[#6b7c8c]">No results</div>
+                  )}
+                  {filteredBrands.map((b) => (
+                    <button
+                      key={b}
+                      className={`w-full text-left h-11 px-4 hover:bg-[#f7f7f8] ${
+                        selectedBrand === b ? 'bg-[#eef2ff]' : ''
+                      }`}
+                      onClick={() => setSelectedBrand(b)}
+                    >
+                      <span className="text-[14px] leading-[20px] text-[#092540]">{b}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Step 2 - Brand (disabled placeholder) */
+            <div className="bg-white rounded-lg p-6 mb-4 flex items-center gap-4">
+              <div className="w-6 h-6 rounded-full bg-[#cbd1d7] text-white text-[14px] leading-[20px] flex items-center justify-center">2</div>
+              <div className="text-[20px] leading-[28px] text-[#b6bec6] font-dm-sans">Select your Brand</div>
+            </div>
+          )}
+
+          {/* Step 3 (disabled placeholder) */}
+          <div className="bg-white rounded-lg p-6 mb-4 flex items-center gap-4">
+            <div className="w-6 h-6 rounded-full bg-[#cbd1d7] text-white text-[14px] leading-[20px] flex items-center justify-center">3</div>
+            <div className="text-[20px] leading-[28px] text-[#b6bec6] font-dm-sans">Select Competitors</div>
           </div>
         </div>
 
         {/* Footer */}
         <div className="border-t border-[#e6e9ec] px-6 py-4 flex items-center justify-between">
-          <button className="px-4 py-2 rounded-[18px] text-[14px] leading-[20px] font-medium text-[#195afe] font-dm-sans hover:bg-gray-50" onClick={onClose}>Close</button>
-          <button className={`px-4 py-2 rounded-[18px] text-[14px] leading-[20px] font-medium text-white font-dm-sans ${canSave ? 'bg-[#195afe] hover:bg-[#1448cc]' : 'bg-[#cbd1d7] cursor-not-allowed'}`} onClick={() => {
-            if (!canSave) return;
-            const derived = getDerivedTitle();
-            onSave?.({ title: derived, category: selectedCategory });
-            onClose();
-          }} disabled={!canSave}>
+          <button
+            className="px-4 py-2 rounded-[18px] text-[14px] leading-[20px] font-medium text-[#195afe] font-dm-sans hover:bg-gray-50"
+            onClick={onClose}
+          >
+            Close
+          </button>
+          <button
+            className={`px-4 py-2 rounded-[18px] text-[14px] leading-[20px] font-medium text-white font-dm-sans ${
+              canSave ? 'bg-[#195afe] hover:bg-[#1448cc]' : 'bg-[#cbd1d7] cursor-not-allowed'
+            }`}
+            onClick={() => {
+              if (!canSave) return;
+              const derived = getDerivedTitle();
+              onSave?.({ title: derived, category: selectedCategory, brand: selectedBrand });
+              onClose();
+            }}
+            disabled={!canSave}
+          >
             Save and Analyze
           </button>
         </div>

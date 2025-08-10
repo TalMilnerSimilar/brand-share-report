@@ -611,12 +611,12 @@ const ReportsHome: React.FC = () => {
         <CreateReportDrawer
           isOpen={drawerOpen}
           onClose={() => setDrawerOpen(false)}
-          onSave={({ title, category }) => {
+          onSave={({ title, category, brand }) => {
             // naive id generation
             const id = title.trim().toLowerCase().replace(/\s+/g, '-');
             const newReport: SavedReport = {
               id,
-              brand: title.trim(),
+              brand: brand,
               category,
               competitors: [],
             };
