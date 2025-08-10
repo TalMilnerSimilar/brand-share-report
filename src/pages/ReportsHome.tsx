@@ -7,6 +7,7 @@ import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import Toast from '../components/Toast';
 import EmptyState from '../components/EmptyState';
 import CreateReportDrawer from '../components/CreateReportDrawer';
+import EditReportDrawer from '../components/EditReportDrawer';
 
 type SavedReport = {
   id: string;
@@ -118,6 +119,8 @@ const ReportsHome: React.FC = () => {
   const [toastVisible, setToastVisible] = useState(false);
   const [deletedReport, setDeletedReport] = useState<SavedReport | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false);
+  const [reportBeingEdited, setReportBeingEdited] = useState<SavedReport | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Generate random metric data for brands not in unified data
@@ -252,10 +255,13 @@ const ReportsHome: React.FC = () => {
   };
 
   const handleEdit = (reportId: string) => {
-    console.log('Edit report:', reportId);
     setOpenMenuRow(null);
     setMenuPosition(null);
-    // TODO: Navigate to edit page or open edit modal
+    const r = sortedReports.find(r => r.id === reportId) || reports.find(r => r.id === reportId) || null;
+    if (r) {
+      setReportBeingEdited(r);
+      setEditDrawerOpen(true);
+    }
   };
 
   const handleDelete = (reportId: string) => {
@@ -704,6 +710,30 @@ const ReportsHome: React.FC = () => {
             
             setReports(prev => [...prev, newReport]);
             setDrawerOpen(false);
+          }}
+        />
+
+        {/* Edit Report Drawer */}
+        <EditReportDrawer
+          isOpen={editDrawerOpen}
+          onClose={() => setEditDrawerOpen(false)}
+          initialReport={reportBeingEdited ? {
+            title: `${reportBeingEdited.brand} — ${reportBeingEdited.category}`,
+            category: reportBeingEdited.category,
+            brand: reportBeingEdited.brand,
+            competitors: reportBeingEdited.competitors
+          } : null}
+          onSave={({ title, category, brand, competitors }) => {
+            const leafCategory = category.includes(' > ')
+              ? category.split(' > ').pop()?.trim() || category
+              : category;
+            setReports(prev => prev.map(r => r.id === (reportBeingEdited?.id || r.id) ? {
+              ...r,
+              brand,
+              category: leafCategory,
+              competitors
+            } : r));
+            setEditDrawerOpen(false);
           }}
         />
 
