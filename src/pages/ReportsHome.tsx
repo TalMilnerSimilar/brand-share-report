@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import unifiedBrands from '../data/unifiedBrands';
 import Button from '../components/Button';
@@ -26,8 +26,106 @@ const mockReports: SavedReport[] = [
   },
 ];
 
+type SortKey = 'reportName' | 'brandedClicksValue' | 'brandedClicksChange' | 'productViewsValue' | 'productViewsChange' | 'paidClicksValue' | 'paidClicksChange' | 'revenueValue' | 'revenueChange';
+
+const parseNumber = (val: string | number): number => {
+  if (typeof val === 'number') return val;
+  if (typeof val !== 'string') return 0;
+  const cleanVal = val.replace(/[$%+\s]/g, '');
+  if (cleanVal.includes('M')) return parseFloat(cleanVal) * 1000000;
+  if (cleanVal.includes('K')) return parseFloat(cleanVal) * 1000;
+  if (cleanVal.includes('PP')) return parseFloat(cleanVal);
+  return parseFloat(cleanVal) || 0;
+};
+
 const ReportsHome: React.FC = () => {
   const navigate = useNavigate();
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortAsc, setSortAsc] = useState(true);
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageInput, setPageInput] = useState('1');
+  const rowsPerPage = 5;
+
+  // Enhanced data with sortable values
+  const enhancedReports = useMemo(() => {
+    return mockReports.map(report => {
+      const brandData = (unifiedBrands as any)[report.brand];
+      const brandedClicks = brandData?.brandedClicks;
+      const productViews = brandData?.productViews;
+      const paidClicks = brandData?.paidClicks;
+      const revenue = brandData?.revenue;
+      
+      return {
+        ...report,
+        brandedClicksValue: brandedClicks?.share * 100 || 0,
+        brandedClicksChange: brandedClicks?.change * 100 || 0,
+        productViewsValue: productViews?.share * 100 || 0,
+        productViewsChange: productViews?.change * 100 || 0,
+        paidClicksValue: paidClicks?.share * 100 || 0,
+        paidClicksChange: paidClicks?.change * 100 || 0,
+        revenueValue: revenue?.share * 100 || 0,
+        revenueChange: revenue?.change * 100 || 0,
+        brandedClicks,
+        productViews,
+        paidClicks,
+        revenue
+      };
+    });
+  }, []);
+
+  // Sorted data
+  const sortedReports = useMemo(() => {
+    if (!sortKey) return enhancedReports;
+    
+    return [...enhancedReports].sort((a, b) => {
+      let aVal: any;
+      let bVal: any;
+      
+      if (sortKey === 'reportName') {
+        aVal = a.brand;
+        bVal = b.brand;
+        const result = aVal.localeCompare(bVal);
+        return sortAsc ? result : -result;
+      } else {
+        aVal = (a as any)[sortKey];
+        bVal = (b as any)[sortKey];
+        const result = aVal - bVal;
+        return sortAsc ? result : -result;
+      }
+    });
+  }, [enhancedReports, sortKey, sortAsc]);
+
+  // Pagination
+  const totalPages = Math.ceil(sortedReports.length / rowsPerPage);
+  
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) setCurrentPage(totalPages);
+  }, [totalPages, currentPage]);
+
+  useEffect(() => {
+    setPageInput(currentPage.toString());
+  }, [currentPage]);
+
+  const pagedReports = useMemo(() => {
+    const start = (currentPage - 1) * rowsPerPage;
+    return sortedReports.slice(start, start + rowsPerPage);
+  }, [sortedReports, currentPage]);
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortAsc(!sortAsc);
+    } else {
+      setSortKey(key);
+      setSortAsc(true);
+    }
+  };
+
+  const clampPage = (p: number) => {
+    if (isNaN(p) || p < 1) return 1;
+    if (p > totalPages) return totalPages;
+    return p;
+  };
 
   return (
     <div className="p-6" style={{ paddingLeft: '64px', paddingRight: '64px' }}>
@@ -110,8 +208,17 @@ const ReportsHome: React.FC = () => {
           <table className="w-full">
                          <thead>
                <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166]">
-                 <th rowSpan={2} className="text-left p-4 border-r border-[#e6e9ec] align-middle">
-                   <span className="text-[12px] leading-[16px]">Report Name</span>
+                 <th rowSpan={2} className="text-left p-4 border-r border-[#e6e9ec] align-middle cursor-pointer" onClick={() => handleSort('reportName')}>
+                   <div className="flex items-center gap-1">
+                     <span className="text-[12px] leading-[16px]">Report Name</span>
+                     {sortKey === 'reportName' && (
+                       <img
+                         src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'}
+                         className="w-3 h-3 text-[#4D87F7]"
+                         alt="sort"
+                       />
+                     )}
+                   </div>
                  </th>
                  <th colSpan={2} className="text-center p-4 border-r border-[#e6e9ec]">
                    <span className="text-[12px] leading-[16px]">Share of Branded Clicks</span>
@@ -130,42 +237,81 @@ const ReportsHome: React.FC = () => {
                  </th>
                </tr>
                <tr className="border-b border-[#e6e9ec] font-medium text-[#3a5166]">
-                 <th className="text-right p-4">
-                   <span className="text-[12px] leading-[16px]">Value</span>
+                 <th className="text-right p-4 cursor-pointer" onClick={() => handleSort('brandedClicksValue')}>
+                   <div className="flex items-center justify-end gap-1">
+                     <span className="text-[12px] leading-[16px]">Value</span>
+                     {sortKey === 'brandedClicksValue' && (
+                       <img src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'} className="w-3 h-3" alt="sort" />
+                     )}
+                   </div>
                  </th>
-                 <th className="text-left p-4 border-r border-[#e6e9ec]">
-                   <span className="text-[12px] leading-[16px]">Wow Change</span>
+                 <th className="text-left p-4 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('brandedClicksChange')}>
+                   <div className="flex items-center gap-1">
+                     <span className="text-[12px] leading-[16px]">Wow Change</span>
+                     {sortKey === 'brandedClicksChange' && (
+                       <img src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'} className="w-3 h-3" alt="sort" />
+                     )}
+                   </div>
                  </th>
-                 <th className="text-right p-4">
-                   <span className="text-[12px] leading-[16px]">Value</span>
+                 <th className="text-right p-4 cursor-pointer" onClick={() => handleSort('productViewsValue')}>
+                   <div className="flex items-center justify-end gap-1">
+                     <span className="text-[12px] leading-[16px]">Value</span>
+                     {sortKey === 'productViewsValue' && (
+                       <img src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'} className="w-3 h-3" alt="sort" />
+                     )}
+                   </div>
                  </th>
-                 <th className="text-left p-4 border-r border-[#e6e9ec]">
-                   <span className="text-[12px] leading-[16px]">Wow Change</span>
+                 <th className="text-left p-4 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('productViewsChange')}>
+                   <div className="flex items-center gap-1">
+                     <span className="text-[12px] leading-[16px]">Wow Change</span>
+                     {sortKey === 'productViewsChange' && (
+                       <img src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'} className="w-3 h-3" alt="sort" />
+                     )}
+                   </div>
                  </th>
-                 <th className="text-right p-4">
-                   <span className="text-[12px] leading-[16px]">Value</span>
+                 <th className="text-right p-4 cursor-pointer" onClick={() => handleSort('paidClicksValue')}>
+                   <div className="flex items-center justify-end gap-1">
+                     <span className="text-[12px] leading-[16px]">Value</span>
+                     {sortKey === 'paidClicksValue' && (
+                       <img src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'} className="w-3 h-3" alt="sort" />
+                     )}
+                   </div>
                  </th>
-                 <th className="text-left p-4 border-r border-[#e6e9ec]">
-                   <span className="text-[12px] leading-[16px]">Wow Change</span>
+                 <th className="text-left p-4 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('paidClicksChange')}>
+                   <div className="flex items-center gap-1">
+                     <span className="text-[12px] leading-[16px]">Wow Change</span>
+                     {sortKey === 'paidClicksChange' && (
+                       <img src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'} className="w-3 h-3" alt="sort" />
+                     )}
+                   </div>
                  </th>
-                 <th className="text-right p-4">
-                   <span className="text-[12px] leading-[16px]">Value</span>
+                 <th className="text-right p-4 cursor-pointer" onClick={() => handleSort('revenueValue')}>
+                   <div className="flex items-center justify-end gap-1">
+                     <span className="text-[12px] leading-[16px]">Value</span>
+                     {sortKey === 'revenueValue' && (
+                       <img src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'} className="w-3 h-3" alt="sort" />
+                     )}
+                   </div>
                  </th>
-                 <th className="text-left p-4 border-r border-[#e6e9ec]">
-                   <span className="text-[12px] leading-[16px]">Wow Change</span>
+                 <th className="text-left p-4 border-r border-[#e6e9ec] cursor-pointer" onClick={() => handleSort('revenueChange')}>
+                   <div className="flex items-center gap-1">
+                     <span className="text-[12px] leading-[16px]">Wow Change</span>
+                     {sortKey === 'revenueChange' && (
+                       <img src={sortAsc ? '/icons/chevron-up.svg' : '/icons/chevron-down.svg'} className="w-3 h-3" alt="sort" />
+                     )}
+                   </div>
                  </th>
                </tr>
              </thead>
             <tbody>
-              {mockReports.map((report) => {
-                const brandData = (unifiedBrands as any)[report.brand];
-                const brandedClicks = brandData?.brandedClicks;
-                const productViews = brandData?.productViews;
-                const paidClicks = brandData?.paidClicks; // Add paid clicks data
-                const revenue = brandData?.revenue;
-                
+              {pagedReports.map((report, idx) => {
                 return (
-                  <tr key={report.id} className="border-b border-gray-200 transition-colors duration-150">
+                  <tr 
+                    key={report.id} 
+                    className={`border-b border-gray-200 transition-colors duration-150 ${hoveredRow === idx ? 'bg-blue-50' : ''}`}
+                    onMouseEnter={() => setHoveredRow(idx)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                  >
                     <td className="p-4 border-r border-gray-200">
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-[#195afe] cursor-pointer">
@@ -185,64 +331,64 @@ const ReportsHome: React.FC = () => {
                     
                                         {/* Branded Clicks - Value & Wow Change */}
                      <td className="p-4 text-sm text-gray-600 text-right">
-                       {brandedClicks ? `${(brandedClicks.share * 100).toFixed(1)}%` : '-'}
+                       {report.brandedClicks ? `${(report.brandedClicks.share * 100).toFixed(1)}%` : '-'}
                      </td>
                      <td className="p-4 border-r border-[#e6e9ec]">
-                       {brandedClicks && (
+                       {report.brandedClicks && (
                          <div
                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                             brandedClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                             report.brandedClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
                            }`}
                          >
-                           {brandedClicks.change >= 0 ? '+' : ''}{(brandedClicks.change * 100).toFixed(1)} PP
+                           {report.brandedClicks.change >= 0 ? '+' : ''}{(report.brandedClicks.change * 100).toFixed(1)} PP
                          </div>
                        )}
                      </td>
 
                      {/* Product Views - Value & Wow Change */}
                      <td className="p-4 text-sm text-gray-600 text-right">
-                       {productViews ? `${(productViews.share * 100).toFixed(1)}%` : '-'}
+                       {report.productViews ? `${(report.productViews.share * 100).toFixed(1)}%` : '-'}
                      </td>
                      <td className="p-4 border-r border-[#e6e9ec]">
-                       {productViews && (
+                       {report.productViews && (
                          <div
                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                             productViews.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                             report.productViews.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
                            }`}
                          >
-                           {productViews.change >= 0 ? '+' : ''}{(productViews.change * 100).toFixed(1)} PP
+                           {report.productViews.change >= 0 ? '+' : ''}{(report.productViews.change * 100).toFixed(1)} PP
                          </div>
                        )}
                      </td>
 
                      {/* Paid Clicks - Value & Wow Change */}
                      <td className="p-4 text-sm text-gray-600 text-right">
-                       {paidClicks ? `${(paidClicks.share * 100).toFixed(1)}%` : '-'}
+                       {report.paidClicks ? `${(report.paidClicks.share * 100).toFixed(1)}%` : '-'}
                      </td>
                      <td className="p-4 border-r border-[#e6e9ec]">
-                       {paidClicks && (
+                       {report.paidClicks && (
                          <div
                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                             paidClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                             report.paidClicks.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
                            }`}
                          >
-                           {paidClicks.change >= 0 ? '+' : ''}{(paidClicks.change * 100).toFixed(1)} PP
+                           {report.paidClicks.change >= 0 ? '+' : ''}{(report.paidClicks.change * 100).toFixed(1)} PP
                          </div>
                        )}
                      </td>
 
                      {/* Revenue - Value & Wow Change */}
                      <td className="p-4 text-sm text-gray-600 text-right">
-                       {revenue ? `${(revenue.share * 100).toFixed(1)}%` : '-'}
+                       {report.revenue ? `${(report.revenue.share * 100).toFixed(1)}%` : '-'}
                      </td>
                      <td className="p-4 border-r border-[#e6e9ec]">
-                       {revenue && (
+                       {report.revenue && (
                          <div
                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-[26px] text-[10px] font-bold tracking-[0.3px] leading-[12px] ${
-                             revenue.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
+                             report.revenue.change >= 0 ? 'bg-[#e6faf5] text-[#009688]' : 'bg-[#ffe6e6] text-[#bb3f3f]'
                            }`}
                          >
-                           {revenue.change >= 0 ? '+' : ''}{(revenue.change * 100).toFixed(1)} PP
+                           {report.revenue.change >= 0 ? '+' : ''}{(report.revenue.change * 100).toFixed(1)} PP
                          </div>
                        )}
                      </td>
@@ -262,6 +408,66 @@ const ReportsHome: React.FC = () => {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex items-center justify-end gap-4 p-4 border-t border-gray-200 select-none">
+          <div className="flex items-center gap-2">
+            <button
+              className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
+            >
+              <div className="flex -space-x-1">
+                <img src="/icons/chevron-left.svg" alt="First" className="w-4 h-4" />
+                <img src="/icons/chevron-left.svg" alt="First" className="w-4 h-4 -ml-1" />
+              </div>
+            </button>
+            <button
+              className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              <img src="/icons/chevron-left.svg" alt="Prev" className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs text-gray-600">
+            <input
+              type="text"
+              value={pageInput}
+              onChange={(e) => setPageInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setCurrentPage(clampPage(parseInt(pageInput, 10)));
+                }
+              }}
+              className="px-1.5 py-0.5 border border-gray-200 rounded text-center"
+              style={{ width: '30px' }}
+            />
+            <span>out of</span>
+            <span>{totalPages}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+            >
+              <img src="/icons/chevron-right.svg" alt="Next" className="w-4 h-4" />
+            </button>
+            <button
+              className="w-6 h-6 flex items-center justify-center disabled:opacity-30"
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
+            >
+              <div className="flex -space-x-1">
+                <img src="/icons/chevron-right.svg" alt="Last" className="w-4 h-4" />
+                <img src="/icons/chevron-right.svg" alt="Last" className="w-4 h-4 -ml-1" />
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </div>
