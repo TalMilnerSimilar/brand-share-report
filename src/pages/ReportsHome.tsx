@@ -4,6 +4,7 @@ import unifiedBrands from '../data/unifiedBrands';
 import Button from '../components/Button';
 import Tooltip from '../components/Tooltip';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
+import Toast from '../components/Toast';
 
 type SavedReport = {
   id: string;
@@ -60,6 +61,8 @@ const ReportsHome: React.FC = () => {
   const [menuPosition, setMenuPosition] = useState<{top: number, left: number} | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reportToDelete, setReportToDelete] = useState<string | null>(null);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [deletedReport, setDeletedReport] = useState<SavedReport | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Enhanced data with sortable values
@@ -192,16 +195,40 @@ const ReportsHome: React.FC = () => {
   const confirmDelete = () => {
     if (reportToDelete) {
       console.log('Confirmed delete report:', reportToDelete);
+      
+      // Find the report to delete for undo functionality
+      const reportToDeleteObj = reports.find(report => report.id === reportToDelete);
+      if (reportToDeleteObj) {
+        setDeletedReport(reportToDeleteObj);
+      }
+      
       // Remove the report from the reports array
       setReports(prevReports => prevReports.filter(report => report.id !== reportToDelete));
       setDeleteModalOpen(false);
       setReportToDelete(null);
+      
+      // Show toast
+      setToastVisible(true);
     }
   };
 
   const cancelDelete = () => {
     setDeleteModalOpen(false);
     setReportToDelete(null);
+  };
+
+  const handleUndo = () => {
+    if (deletedReport) {
+      // Add the report back to the reports array
+      setReports(prevReports => [...prevReports, deletedReport]);
+      setToastVisible(false);
+      setDeletedReport(null);
+    }
+  };
+
+  const handleToastClose = () => {
+    setToastVisible(false);
+    setDeletedReport(null);
   };
 
   return (
@@ -558,6 +585,14 @@ const ReportsHome: React.FC = () => {
           onClose={cancelDelete}
           onConfirm={confirmDelete}
           reportName={reportToDelete ? sortedReports.find(r => r.id === reportToDelete)?.brand : undefined}
+        />
+
+        {/* Toast */}
+        <Toast
+          isVisible={toastVisible}
+          message="Report deleted successfully"
+          onUndo={handleUndo}
+          onClose={handleToastClose}
         />
 
       </div>
